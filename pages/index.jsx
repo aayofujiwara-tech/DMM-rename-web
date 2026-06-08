@@ -8,6 +8,7 @@ export default function Home() {
   const [textInput, setTextInput] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [folderPath, setFolderPath] = useState('')
   const fileInputRef = useRef(null)
 
   // フォルダ選択からファイル名を取得
@@ -61,6 +62,40 @@ export default function Home() {
     navigator.clipboard.writeText(text)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleDownloadScript = () => {
+    const lines = ['# DMM Renamer - 自動リネームスクリプト']
+    lines.push('# このスクリプトはDMM Renamerで生成されました')
+    lines.push('# 実行前に必ずバックアップを取ってください')
+    lines.push('')
+
+    const basePath = folderPath.trim()
+
+    results
+      .filter(r => r.status === 'ok')
+      .forEach(r => {
+        const oldPath = basePath
+          ? `"${basePath}\\${r.filename}"`
+          : `".\\${r.filename}"`
+        const newPath = basePath
+          ? `"${basePath}\\${r.newName}"`
+          : `".\\${r.newName}"`
+        lines.push(`Rename-Item ${oldPath} ${newPath}`)
+      })
+
+    lines.push('')
+    lines.push('Write-Host "リネーム完了しました！" -ForegroundColor Green')
+    lines.push('Read-Host "Enterキーを押して終了"')
+
+    const content = lines.join('\r\n')
+    const blob = new Blob(['﻿' + content], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'rename.ps1'
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   const okCount = results.filter(r => r.status === 'ok').length
@@ -234,6 +269,126 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
+
+              {/* フォルダパス入力 */}
+              {okCount > 0 && (
+                <div className="folder-path-input">
+                  <label className="method-label">
+                    📁 ファイルが保存されているフォルダのパスを入力
+                  </label>
+                  <input
+                    type="text"
+                    className="path-input"
+                    value={folderPath}
+                    onChange={e => setFolderPath(e.target.value)}
+                    placeholder="例: C:\Users\ain12\Downloads\DMM"
+                  />
+                  <p className="path-hint">
+                    Windowsのエクスプローラーでフォルダを開き、アドレスバーをクリックするとパスをコピーできます。
+                  </p>
+                </div>
+              )}
+
+              {/* スクリプトダウンロードボタン */}
+              {okCount > 0 && (
+                <button className="btn-download" onClick={handleDownloadScript}>
+                  ⬇ PowerShellスクリプトをダウンロード（{okCount}件）
+                </button>
+              )}
+
+              {/* 使い方説明 */}
+              {okCount > 0 && (
+                <div className="howto">
+                  <h3 className="howto-title">📋 スクリプトの実行方法</h3>
+                  <ol className="howto-steps">
+                    <li className="howto-step">
+                      <span className="howto-num">1</span>
+                      <div className="howto-content">
+                        <strong>上のボタンでスクリプトをダウンロード</strong>
+                        <p>
+                          「PowerShellスクリプトをダウンロード」ボタンをクリックすると、
+                          <code>rename.ps1</code> というファイルがダウンロードされます。
+                        </p>
+                      </div>
+                    </li>
+                    <li className="howto-step">
+                      <span className="howto-num">2</span>
+                      <div className="howto-content">
+                        <strong>PowerShellを管理者として開く</strong>
+                        <p>
+                          Windowsのスタートメニューで「PowerShell」と検索し、
+                          右クリックして「管理者として実行」を選択してください。
+                        </p>
+                        <div className="howto-note">
+                          💡 管理者として実行しないとスクリプトが動かない場合があります
+                        </div>
+                      </div>
+                    </li>
+                    <li className="howto-step">
+                      <span className="howto-num">3</span>
+                      <div className="howto-content">
+                        <strong>実行ポリシーを変更する（初回のみ）</strong>
+                        <p>以下のコマンドをPowerShellに貼り付けてEnterを押してください。</p>
+                        <div className="howto-code">
+                          <code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code>
+                          <button
+                            className="btn-copy-code"
+                            onClick={() => navigator.clipboard.writeText('Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser')}
+                          >
+                            コピー
+                          </button>
+                        </div>
+                        <p>確認が出たら <code>Y</code> を入力してEnterを押してください。</p>
+                        <div className="howto-note">
+                          💡 これは一度だけ設定すれば次回からは不要です
+                        </div>
+                      </div>
+                    </li>
+                    <li className="howto-step">
+                      <span className="howto-num">4</span>
+                      <div className="howto-content">
+                        <strong>スクリプトを実行する</strong>
+                        <p>
+                          ダウンロードした <code>rename.ps1</code> を右クリックして
+                          「PowerShellで実行」を選択してください。
+                        </p>
+                        <p style={{marginTop: '8px'}}>
+                          または、PowerShellに以下を貼り付けて実行してください：
+                        </p>
+                        <div className="howto-code">
+                          <code>{folderPath
+                            ? `& "${folderPath}\\rename.ps1"`
+                            : '& "ダウンロードフォルダのパス\\rename.ps1"'
+                          }</code>
+                          <button
+                            className="btn-copy-code"
+                            onClick={() => navigator.clipboard.writeText(
+                              folderPath
+                                ? `& "${folderPath}\\rename.ps1"`
+                                : '& "ダウンロードフォルダのパス\\rename.ps1"'
+                            )}
+                          >
+                            コピー
+                          </button>
+                        </div>
+                      </div>
+                    </li>
+                    <li className="howto-step">
+                      <span className="howto-num">5</span>
+                      <div className="howto-content">
+                        <strong>リネーム完了！</strong>
+                        <p>
+                          スクリプトが実行されると、.dcvファイルが自動的にリネームされます。
+                          エクスプローラーで対象フォルダを確認してみてください。
+                        </p>
+                        <div className="howto-note">
+                          ⚠️ 実行前に必ずバックアップを取ることをおすすめします
+                        </div>
+                      </div>
+                    </li>
+                  </ol>
+                </div>
+              )}
             </section>
           )}
         </div>
