@@ -163,17 +163,17 @@ export default function Home() {
             <div className="step">
               <span className="step-num">1</span>
               <div className="step-title">ファイル名を貼り付け</div>
-              <p className="step-desc">DMMでDLした.dcvのファイル名をコピペするだけ。フォルダ選択にも対応。</p>
+              <p className="step-desc">DMMでダウンロードした.dcvファイルのファイル名をコピーして貼り付けるだけ。フォルダを選択して一括取得も可能。</p>
             </div>
             <div className="step">
               <span className="step-num">2</span>
               <div className="step-title">変換ボタンを押す</div>
-              <p className="step-desc">女優名・タイトルをFANZAの公式データベースから自動で取得します。</p>
+              <p className="step-desc">ボタンを押すだけでFANZAの品番からタイトル・女優名を自動検索。複数ファイルも一括で処理できます。</p>
             </div>
             <div className="step">
               <span className="step-num">3</span>
-              <div className="step-title">結果をコピー</div>
-              <p className="step-desc">リネーム後のファイル名をワンクリックでクリップボードにコピー。</p>
+              <div className="step-title">スクリプトで一括リネーム</div>
+              <p className="step-desc">変換結果をコピーするか、PowerShellスクリプトをダウンロード。実行するだけでファイルが自動リネームされます。</p>
             </div>
           </div>
         </div>
