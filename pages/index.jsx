@@ -72,13 +72,92 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
 
-      <div className="container">
-        <header>
-          <h1>DMM Renamer</h1>
-          <p className="subtitle">.dcvファイルを女優名・タイトルにリネーム</p>
-        </header>
+      {/* ナビゲーション */}
+      <nav className="nav">
+        <span className="nav-logo">DMM Renamer</span>
+        <a href="#tool" className="nav-cta">今すぐ使う →</a>
+      </nav>
 
-        <main>
+      {/* ヒーロー */}
+      <section className="hero">
+        <div className="hero-inner">
+          <h1 className="hero-title">
+            DMMファイルを、<br />
+            <span className="accent">自動でリネーム。</span>
+          </h1>
+          <p className="hero-sub">
+            ダウンロードしたままの謎のファイル名を、女優名・タイトルに整理。<br />
+            貼り付けるだけ、無料、登録不要。
+          </p>
+          <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
+
+          <div className="rename-demo">
+            <div className="rename-demo-label">変換例</div>
+            <div className="rename-before">miaa00629mhb.dcv</div>
+            <div className="rename-arrow">↓</div>
+            <div className="rename-after">[MIAA-629] タイトル名 - 波多野結衣.dcv</div>
+          </div>
+        </div>
+      </section>
+
+      {/* 使い方 */}
+      <section className="how">
+        <div className="section-inner">
+          <h2 className="section-title">使い方</h2>
+          <div className="steps">
+            <div className="step">
+              <span className="step-num">1</span>
+              <div className="step-title">ファイル名を貼り付け</div>
+              <p className="step-desc">DMMでDLした.dcvのファイル名をコピペするだけ。フォルダ選択にも対応。</p>
+            </div>
+            <div className="step">
+              <span className="step-num">2</span>
+              <div className="step-title">変換ボタンを押す</div>
+              <p className="step-desc">女優名・タイトルをFANZAの公式データベースから自動で取得します。</p>
+            </div>
+            <div className="step">
+              <span className="step-num">3</span>
+              <div className="step-title">結果をコピー</div>
+              <p className="step-desc">リネーム後のファイル名をワンクリックでクリップボードにコピー。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 特徴 */}
+      <section className="features">
+        <div className="section-inner">
+          <h2 className="section-title">特徴</h2>
+          <div className="feature-grid">
+            <div className="feature-card">
+              <div className="feature-icon">🆓</div>
+              <div className="feature-title">完全無料</div>
+              <p className="feature-desc">登録不要・制限なし。アカウント作成も料金も一切不要で利用できます。</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🔒</div>
+              <div className="feature-title">ファイル不要</div>
+              <p className="feature-desc">ファイル名だけでOK。本体ファイルのアップロードは一切必要ありません。</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">⚡</div>
+              <div className="feature-title">一括処理</div>
+              <p className="feature-desc">複数のファイルをまとめて変換。大量のファイルも効率よく整理できます。</p>
+            </div>
+            <div className="feature-card">
+              <div className="feature-icon">🎯</div>
+              <div className="feature-title">FANZA公式データ</div>
+              <p className="feature-desc">公式データベースから正確な情報を取得。タイトル・女優名を確実に反映。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ツール本体 */}
+      <section className="tool-section" id="tool">
+        <div className="section-inner">
+          <h2 className="section-title">ツールを使う</h2>
+
           {/* 入力エリア */}
           <section className="input-section">
             {/* フォルダ選択 */}
@@ -157,8 +236,13 @@ export default function Home() {
               </ul>
             </section>
           )}
-        </main>
-      </div>
+        </div>
+      </section>
+
+      {/* フッター */}
+      <footer className="footer">
+        © 2026 DMM Renamer
+      </footer>
     </>
   )
 }
