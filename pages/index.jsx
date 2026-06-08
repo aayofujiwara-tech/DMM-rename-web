@@ -92,12 +92,15 @@ export default function Home() {
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
+        // PowerShellインジェクション対策: " を除去
+        const safeFilename = r.filename.replace(/"/g, '')
+        const safeNewName = r.newName.replace(/"/g, '')
         const oldPath = basePath
-          ? `"${basePath}\\${r.filename}"`
-          : `".\\${r.filename}"`
+          ? `"${basePath}\\${safeFilename}"`
+          : `".\\${safeFilename}"`
         const newPath = basePath
-          ? `"${basePath}\\${r.newName}"`
-          : `".\\${r.newName}"`
+          ? `"${basePath}\\${safeNewName}"`
+          : `".\\${safeNewName}"`
         lines.push(`Rename-Item ${oldPath} ${newPath}`)
       })
 

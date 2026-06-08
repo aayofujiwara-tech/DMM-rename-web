@@ -16,6 +16,12 @@ export default async function handler(req, res) {
   if (!Array.isArray(filenames) || filenames.length === 0) {
     return res.status(400).json({ error: 'filenamesが必要です' })
   }
+  if (filenames.length > 100) {
+    return res.status(400).json({ error: 'ファイル名は100件以下にしてください' })
+  }
+  if (filenames.some(f => typeof f !== 'string' || f.length > 500)) {
+    return res.status(400).json({ error: 'ファイル名が無効です' })
+  }
 
   // cidExtractorはESMなのでdynamic importで読み込む
   const { extractCid } = await import('../../lib/cidExtractor.js')
