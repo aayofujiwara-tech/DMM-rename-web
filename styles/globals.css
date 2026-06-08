@@ -137,6 +137,10 @@ body {
 }
 
 .rename-demo-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
   font-size: 11px;
   color: var(--text-secondary);
   font-family: var(--font-body);
@@ -145,16 +149,28 @@ body {
   letter-spacing: 1px;
 }
 
+.rename-demo-note {
+  font-size: 11px;
+  color: #3a4a5a;
+  font-family: var(--font-body);
+  font-weight: normal;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .rename-before { color: var(--text-secondary); margin-bottom: 6px; }
 .rename-arrow { color: var(--border); margin-bottom: 6px; }
 .rename-after { color: #4ecca3; }
 
-@keyframes fadeInOut {
-  0%, 100% { opacity: 0; transform: translateY(4px); }
-  15%, 85% { opacity: 1; transform: translateY(0); }
+@keyframes slideIn {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-.rename-after { animation: fadeInOut 3s ease infinite; }
+.rename-after {
+  color: #4ecca3;
+  animation: slideIn 0.4s ease forwards;
+}
 
 /* セクション共通 */
 .section-inner {

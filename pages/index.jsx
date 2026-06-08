@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import Head from 'next/head'
 
 export default function Home() {
@@ -9,7 +9,24 @@ export default function Home() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [folderPath, setFolderPath] = useState('')
+  const [demoIndex, setDemoIndex] = useState(0)
   const fileInputRef = useRef(null)
+
+  const demoItems = [
+    { before: 'ssis00100hhb.dcv',               after: '[SSIS-100] 君だけの特別な時間 - 涼川ひなた.dcv' },
+    { before: 'jufe00300hhb.dcv',               after: '[JUFE-300] 秘密の放課後レッスン - 桜井もも.dcv' },
+    { before: '1dandy00812a2d_v1_drm_a_4k.dcv', after: '[DANDY-812] 憧れの先輩と二人きり - 七瀬あおい.dcv' },
+    { before: 'ipx00500hhb.dcv',               after: '[IPX-500] 甘えたい夜に - 白石りな.dcv' },
+    { before: 'bmw00272mhb2.dcv',              after: '[BMW-272] 恋する季節のメロディー - 星野ことり.dcv' },
+    { before: 'pred00248hhb.dcv',              after: '[PRED-248] ふたりだけの秘密 - 朝倉みく.dcv' },
+  ]
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setDemoIndex(prev => (prev + 1) % demoItems.length)
+    }, 3000)
+    return () => clearInterval(timer)
+  }, [])
 
   // フォルダ選択からファイル名を取得
   const handleFolderSelect = (e) => {
@@ -127,10 +144,13 @@ export default function Home() {
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
           <div className="rename-demo">
-            <div className="rename-demo-label">変換例</div>
-            <div className="rename-before">miaa00629mhb.dcv</div>
+            <div className="rename-demo-label">
+              変換イメージ
+              <span className="rename-demo-note">※タイトル・女優名はすべて架空のサンプルです</span>
+            </div>
+            <div className="rename-before">{demoItems[demoIndex].before}</div>
             <div className="rename-arrow">↓</div>
-            <div className="rename-after">[MIAA-629] タイトル名 - 波多野結衣.dcv</div>
+            <div className="rename-after" key={demoIndex}>{demoItems[demoIndex].after}</div>
           </div>
         </div>
       </section>
