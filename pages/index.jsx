@@ -10,9 +10,6 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [folderPath, setFolderPath] = useState('')
   const [demoIndex, setDemoIndex] = useState(0)
-  const [apiId, setApiId] = useState('')
-  const [affiliateId, setAffiliateId] = useState('')
-  const [showApiSettings, setShowApiSettings] = useState(true)
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -25,24 +22,11 @@ export default function Home() {
   ]
 
   useEffect(() => {
-    const savedApiId = localStorage.getItem('fanza_api_id') || ''
-    const savedAffiliateId = localStorage.getItem('fanza_affiliate_id') || ''
-    setApiId(savedApiId)
-    setAffiliateId(savedAffiliateId)
-  }, [])
-
-  useEffect(() => {
     const timer = setInterval(() => {
       setDemoIndex(prev => (prev + 1) % demoItems.length)
     }, 3000)
     return () => clearInterval(timer)
   }, [])
-
-  const handleApiSave = () => {
-    localStorage.setItem('fanza_api_id', apiId.trim())
-    localStorage.setItem('fanza_affiliate_id', affiliateId.trim())
-    setShowApiSettings(false)
-  }
 
   // フォルダ選択からファイル名を取得
   const handleFolderSelect = (e) => {
@@ -73,7 +57,7 @@ export default function Home() {
       const res = await fetch('/api/rename', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filenames, apiId: apiId.trim(), affiliateId: affiliateId.trim() }),
+        body: JSON.stringify({ filenames }),
       })
 
       if (!res.ok) throw new Error('サーバーエラー')
@@ -231,47 +215,6 @@ export default function Home() {
       <section className="tool-section" id="tool">
         <div className="section-inner">
           <h2 className="section-title">ツールを使う</h2>
-
-          {/* APIキー設定 */}
-          <div className="api-settings">
-            <button
-              className="api-settings-toggle"
-              onClick={() => setShowApiSettings(v => !v)}
-            >
-              ⚙ APIキー設定
-              <span className={`toggle-icon${showApiSettings ? ' open' : ''}`}>▼</span>
-            </button>
-            {showApiSettings && (
-              <div className="api-settings-body">
-                <p className="api-settings-desc">
-                  <a href="https://affiliate.dmm.com/api/" target="_blank" rel="noreferrer">FANZA Webサービス</a>のAPIキーを設定すると、より安定した検索が可能です。未設定の場合はスクレイピングで動作します。
-                </p>
-                <div className="api-settings-field">
-                  <label className="method-label">API ID</label>
-                  <input
-                    type="text"
-                    className="api-settings-input"
-                    value={apiId}
-                    onChange={e => setApiId(e.target.value)}
-                    placeholder="例: your_api_id"
-                  />
-                </div>
-                <div className="api-settings-field">
-                  <label className="method-label">アフィリエイトID</label>
-                  <input
-                    type="text"
-                    className="api-settings-input"
-                    value={affiliateId}
-                    onChange={e => setAffiliateId(e.target.value)}
-                    placeholder="例: your_affiliate_id-001"
-                  />
-                </div>
-                <button className="btn-api-save" onClick={handleApiSave}>
-                  保存して閉じる
-                </button>
-              </div>
-            )}
-          </div>
 
           {/* 入力エリア */}
           <section className="input-section">

@@ -12,10 +12,13 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { filenames, apiId, affiliateId } = req.body
+  const { filenames } = req.body
+
+  const apiId = process.env.FANZA_API_ID
+  const affiliateId = process.env.FANZA_AFFILIATE_ID
 
   if (!apiId || !affiliateId || !isValidApiKeys(apiId, affiliateId)) {
-    return res.status(400).json({ error: 'APIキーを設定してください。⚙ APIキー設定からAPI IDとアフィリエイトIDを入力してください。' })
+    return res.status(500).json({ error: 'サーバーのAPIキーが未設定です' })
   }
 
   if (!Array.isArray(filenames) || filenames.length === 0) {
