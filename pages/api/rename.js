@@ -1,4 +1,5 @@
 import { scrapeItem } from '../../lib/scraper'
+import { fetchFanzaItem, isValidApiKeys } from '../../lib/fanzaApi'
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
@@ -12,7 +13,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { filenames } = req.body
+  const { filenames, apiId, affiliateId } = req.body
+  const useApi = apiId && affiliateId && isValidApiKeys(apiId, affiliateId)
+
   if (!Array.isArray(filenames) || filenames.length === 0) {
     return res.status(400).json({ error: 'filenamesが必要です' })
   }
@@ -35,7 +38,9 @@ export default async function handler(req, res) {
     const { cid, label } = extractCid(filename)
 
     try {
-      const data = await scrapeItem(cid)
+      const data = useApi
+        ? (await fetchFanzaItem(cid, apiId, affiliateId)) ?? (await scrapeItem(cid))
+        : await scrapeItem(cid)
 
       if (data) {
         const { title, actresses } = data
