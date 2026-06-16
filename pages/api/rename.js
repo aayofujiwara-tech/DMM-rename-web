@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { filenames } = req.body
+  const { filenames, nameFormat = 'title_actress' } = req.body
 
   const apiId = process.env.FANZA_API_ID
   const affiliateId = process.env.FANZA_AFFILIATE_ID
@@ -34,6 +34,22 @@ export default async function handler(req, res) {
   // cidExtractorはESMなのでdynamic importで読み込む
   const { extractCid } = await import('../../lib/cidExtractor.js')
 
+  function buildNewName(label, title, actresses, fmt) {
+    const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
+    const safeActresses = actresses
+      .map(a => a.replace(/[\\/:*?"<>|]/g, '').trim())
+      .join('_')
+
+    if (fmt === 'actress_title') {
+      return safeActresses
+        ? `[${label}] ${safeActresses} - ${safeTitle}.dcv`
+        : `[${label}] ${safeTitle}.dcv`
+    }
+    return safeActresses
+      ? `[${label}] ${safeTitle} - ${safeActresses}.dcv`
+      : `[${label}] ${safeTitle}.dcv`
+  }
+
   const results = []
 
   for (let i = 0; i < filenames.length; i++) {
@@ -47,12 +63,7 @@ export default async function handler(req, res) {
 
       if (data) {
         const { title, actresses } = data
-        // リネーム後ファイル名を生成
-        const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
-        const safeActresses = actresses.map(a => a.replace(/[\\/:*?"<>|]/g, '').trim())
-        const actressStr = safeActresses.length > 0 ? ` - ${safeActresses.join('_')}` : ''
-        const newName = `[${label}] ${safeTitle}${actressStr}.dcv`
-
+        const newName = buildNewName(label, title, actresses, nameFormat)
         results.push({ filename, cid, label, status: 'ok', title, actresses, newName })
       } else {
         results.push({ filename, cid, label, status: 'not_found' })

@@ -10,6 +10,7 @@ export default function Home() {
   const [copied, setCopied] = useState(false)
   const [folderPath, setFolderPath] = useState('')
   const [demoIndex, setDemoIndex] = useState(0)
+  const [nameFormat, setNameFormat] = useState('title_actress')
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -57,7 +58,7 @@ export default function Home() {
       const res = await fetch('/api/rename', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filenames }),
+        body: JSON.stringify({ filenames, nameFormat }),
       })
 
       if (!res.ok) throw new Error('サーバーエラー')
@@ -249,6 +250,31 @@ export default function Home() {
                 placeholder={'miaa00629mhb.dcv\npred00248hhb.dcv\ndass00076hhb.dcv'}
                 rows={6}
               />
+            </div>
+
+            {/* ファイル名形式 */}
+            <div className="format-selector">
+              <label className="method-label">ファイル名の形式</label>
+              <div className="radio-group">
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    value="title_actress"
+                    checked={nameFormat === 'title_actress'}
+                    onChange={() => setNameFormat('title_actress')}
+                  />
+                  <span>[品番] タイトル - 女優名.dcv</span>
+                </label>
+                <label className="radio-label">
+                  <input
+                    type="radio"
+                    value="actress_title"
+                    checked={nameFormat === 'actress_title'}
+                    onChange={() => setNameFormat('actress_title')}
+                  />
+                  <span>[品番] 女優名 - タイトル.dcv</span>
+                </label>
+              </div>
             </div>
 
             {error && <p className="error">{error}</p>}
