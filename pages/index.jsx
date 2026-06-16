@@ -4,7 +4,6 @@ import Head from 'next/head'
 export default function Home() {
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
-  const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [textInput, setTextInput] = useState('')
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
@@ -35,6 +34,8 @@ export default function Home() {
     const dcvFiles = files.filter(f => f.name.endsWith('.dcv'))
     const names = dcvFiles.map(f => f.name).join('\n')
     setTextInput(names)
+    setResults([])
+    setError('')
   }
 
   const handleSubmit = async () => {
@@ -52,7 +53,6 @@ export default function Home() {
     }
 
     setLoading(true)
-    setProgress({ current: 0, total: filenames.length })
 
     try {
       const res = await fetch('/api/rename', {
@@ -88,14 +88,17 @@ export default function Home() {
     lines.push('# 実行前に必ずバックアップを取ってください')
     lines.push('')
 
-    const basePath = folderPath.trim()
+    // PowerShellの二重引用符内で特殊な意味を持つ文字を除去
+    // " → 文字列終端、` → エスケープ文字、$ → 変数展開
+    const sanitizePS = (str) => str.replace(/["`$]/g, '')
+
+    const basePath = sanitizePS(folderPath.trim())
 
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
-        // PowerShellインジェクション対策: " を除去
-        const safeFilename = r.filename.replace(/"/g, '')
-        const safeNewName = r.newName.replace(/"/g, '')
+        const safeFilename = sanitizePS(r.filename)
+        const safeNewName = sanitizePS(r.newName)
         const oldPath = basePath
           ? `"${basePath}\\${safeFilename}"`
           : `".\\${safeFilename}"`
@@ -194,9 +197,9 @@ export default function Home() {
               <p className="feature-desc">登録不要・制限なし。アカウント作成も料金も一切不要で利用できます。</p>
             </div>
             <div className="feature-card">
-              <div className="feature-icon">🔒</div>
-              <div className="feature-title">ファイル不要</div>
-              <p className="feature-desc">ファイル名だけでOK。本体ファイルのアップロードは一切必要ありません。</p>
+              <div className="feature-icon">📂</div>
+              <div className="feature-title">フォルダ選択に対応</div>
+              <p className="feature-desc">.dcvファイルが入ったフォルダを選択するだけでファイル名を自動取得。一つひとつコピペする手間が不要です。</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">⚡</div>
@@ -285,7 +288,7 @@ export default function Home() {
               disabled={loading || !textInput.trim()}
             >
               {loading
-                ? `取得中... (${progress.current}/${progress.total})`
+                ? '取得中...'
                 : '変換する'}
             </button>
           </section>

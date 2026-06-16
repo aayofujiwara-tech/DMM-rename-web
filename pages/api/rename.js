@@ -12,7 +12,10 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { filenames, nameFormat = 'title_actress' } = req.body
+  const VALID_FORMATS = new Set(['title_actress', 'actress_title'])
+  const rawFormat = req.body.nameFormat
+  const nameFormat = VALID_FORMATS.has(rawFormat) ? rawFormat : 'title_actress'
+  const { filenames } = req.body
 
   const apiId = process.env.FANZA_API_ID
   const affiliateId = process.env.FANZA_AFFILIATE_ID
@@ -57,6 +60,11 @@ export default async function handler(req, res) {
     if (!filename) continue
 
     const { cid, label } = extractCid(filename)
+
+    if (!cid || !/^[a-z][a-z0-9]{1,49}$/.test(cid)) {
+      results.push({ filename, cid, label, status: 'not_found' })
+      continue
+    }
 
     try {
       const data = await fetchFanzaItem(cid, apiId, affiliateId)
