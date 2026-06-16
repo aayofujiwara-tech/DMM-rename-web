@@ -1,11 +1,10 @@
-import { scrapeItem } from '../../lib/scraper'
 import { fetchFanzaItem, isValidApiKeys } from '../../lib/fanzaApi'
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 /**
  * POST /api/rename
- * body: { filenames: string[] }
+ * body: { filenames: string[], apiId: string, affiliateId: string }
  * response: { results: Array<{ filename, cid, label, status, title?, actresses?, newName? }> }
  */
 export default async function handler(req, res) {
@@ -14,7 +13,10 @@ export default async function handler(req, res) {
   }
 
   const { filenames, apiId, affiliateId } = req.body
-  const useApi = apiId && affiliateId && isValidApiKeys(apiId, affiliateId)
+
+  if (!apiId || !affiliateId || !isValidApiKeys(apiId, affiliateId)) {
+    return res.status(400).json({ error: 'APIキーを設定してください。⚙ APIキー設定からAPI IDとアフィリエイトIDを入力してください。' })
+  }
 
   if (!Array.isArray(filenames) || filenames.length === 0) {
     return res.status(400).json({ error: 'filenamesが必要です' })
@@ -38,9 +40,7 @@ export default async function handler(req, res) {
     const { cid, label } = extractCid(filename)
 
     try {
-      const data = useApi
-        ? (await fetchFanzaItem(cid, apiId, affiliateId)) ?? (await scrapeItem(cid))
-        : await scrapeItem(cid)
+      const data = await fetchFanzaItem(cid, apiId, affiliateId)
 
       if (data) {
         const { title, actresses } = data
