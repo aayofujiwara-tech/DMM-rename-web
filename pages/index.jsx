@@ -454,10 +454,30 @@ export default function Home() {
                           <div className="howto-sub-arrow">↓</div>
                           <div className="howto-sub-step">③「開く」または「実行」をクリック</div>
                           <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">④ エラーが出た場合は下記を参照</div>
+                          <div className="howto-sub-arrow">↓</div>
                           <div className="howto-sub-step">✅ リネーム完了！</div>
                         </div>
                         <div className="howto-note">
                           ⚠️ 実行前に確認ダイアログが出る場合があります。「開く」を選択してください。
+                        </div>
+                        <div className="howto-unblock">
+                          <p className="howto-unblock-title">
+                            「このスクリプトはデジタル署名されていません」エラーが出た場合
+                          </p>
+                          <p className="howto-unblock-desc">
+                            ブラウザからダウンロードしたファイルはWindowsが「インターネット由来」としてマークするため、
+                            以下のコマンドでマークを解除してから再実行してください。<strong>一度実行すれば次回以降は不要です。</strong>
+                          </p>
+                          <div className="howto-code">
+                            <code>{'Unblock-File -Path "$env:USERPROFILE\\Downloads\\rename.ps1"'}</code>
+                            <button
+                              className="btn-copy-code"
+                              onClick={() => navigator.clipboard.writeText('Unblock-File -Path "$env:USERPROFILE\\Downloads\\rename.ps1"')}
+                            >
+                              コピー
+                            </button>
+                          </div>
                         </div>
                       </div>
                     </li>
