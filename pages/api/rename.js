@@ -37,20 +37,22 @@ export default async function handler(req, res) {
   // cidExtractorはESMなのでdynamic importで読み込む
   const { extractCid } = await import('../../lib/cidExtractor.js')
 
-  function buildNewName(label, title, actresses, fmt) {
+  function buildNewName(label, title, actresses, fmt, partNumber) {
     const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
     const safeActresses = actresses
       .map(a => a.replace(/[\\/:*?"<>|]/g, '').trim())
       .join('_')
 
+    const part = partNumber ? ` (${partNumber})` : ''
+
     if (fmt === 'actress_title') {
       return safeActresses
-        ? `[${label}] ${safeActresses} - ${safeTitle}.dcv`
-        : `[${label}] ${safeTitle}.dcv`
+        ? `[${label}] ${safeActresses} - ${safeTitle}${part}.dcv`
+        : `[${label}] ${safeTitle}${part}.dcv`
     }
     return safeActresses
-      ? `[${label}] ${safeTitle} - ${safeActresses}.dcv`
-      : `[${label}] ${safeTitle}.dcv`
+      ? `[${label}] ${safeTitle} - ${safeActresses}${part}.dcv`
+      : `[${label}] ${safeTitle}${part}.dcv`
   }
 
   const results = []
@@ -59,7 +61,7 @@ export default async function handler(req, res) {
     const filename = filenames[i].trim()
     if (!filename) continue
 
-    const { cid, label } = extractCid(filename)
+    const { cid, label, partNumber } = extractCid(filename)
 
     if (!cid || !/^[a-z][a-z0-9]{1,49}$/.test(cid)) {
       results.push({ filename, cid, label, status: 'not_found' })
@@ -71,7 +73,7 @@ export default async function handler(req, res) {
 
       if (data) {
         const { title, actresses } = data
-        const newName = buildNewName(label, title, actresses, nameFormat)
+        const newName = buildNewName(label, title, actresses, nameFormat, partNumber)
         results.push({ filename, cid, label, status: 'ok', title, actresses, newName })
       } else {
         results.push({ filename, cid, label, status: 'not_found' })
@@ -82,6 +84,20 @@ export default async function handler(req, res) {
 
     // レート制限: 1秒間隔
     if (i < filenames.length - 1) await sleep(1000)
+  }
+
+  // 同一newNameが残っている場合は連番を付けてリネーム衝突を防ぐ
+  const nameCount = {}
+  for (const result of results) {
+    if (result.status !== 'ok') continue
+    nameCount[result.newName] = (nameCount[result.newName] ?? [])
+    nameCount[result.newName].push(result)
+  }
+  for (const [baseName, items] of Object.entries(nameCount)) {
+    if (items.length <= 1) continue
+    items.forEach((item, index) => {
+      item.newName = baseName.replace(/\.dcv$/, ` (${index + 1}).dcv`)
+    })
   }
 
   return res.status(200).json({ results })
