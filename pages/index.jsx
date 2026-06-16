@@ -108,22 +108,28 @@ export default function Home() {
       '# DMM Renamer - 自動リネームスクリプト',
       '# このスクリプトはDMM Renamerで生成されました',
       '# 実行前に必ずバックアップを取ってください',
+      '[Console]::OutputEncoding = [System.Text.Encoding]::UTF8',
+      '$OutputEncoding = [System.Text.Encoding]::UTF8',
       '',
     ]
 
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
-        // -LiteralPath: []などのPS特殊文字をワイルドカードとして解釈させない
-        // -NewName: ファイル名のみ指定（フルパス不可）
-        lines.push(
-          `Rename-Item -LiteralPath "${basePath}\\${sanitizePS(r.filename)}" -NewName "${sanitizePS(r.newName)}"`
-        )
+        const safeName = sanitizePS(r.filename)
+        const safeNew  = sanitizePS(r.newName)
+        lines.push(`try {`)
+        lines.push(`  Rename-Item -LiteralPath "${basePath}\\${safeName}" -NewName "${safeNew}"`)
+        lines.push(`  Write-Host "✓ ${safeNew}" -ForegroundColor Green`)
+        lines.push(`} catch {`)
+        lines.push(`  Write-Host "✗ エラー: ${safeName} - $_" -ForegroundColor Red`)
+        lines.push(`}`)
+        lines.push('')
       })
 
-    lines.push('')
-    lines.push('Write-Host "リネーム完了しました！" -ForegroundColor Green')
-    lines.push('Read-Host "Enterキーを押して終了"')
+    lines.push('Write-Host ""')
+    lines.push('Write-Host "処理が完了しました。このウィンドウを閉じるにはEnterを押してください。" -ForegroundColor Cyan')
+    lines.push('Read-Host')
 
     const content = lines.join('\r\n')
     const blob = new Blob(['﻿' + content], { type: 'text/plain;charset=utf-8' })
