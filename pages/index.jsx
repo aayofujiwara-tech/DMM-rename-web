@@ -351,13 +351,24 @@ export default function Home() {
                             : '例: C:\\Users\\ain12\\Downloads\\DMM'
                         }
                       />
-                      {folderName && (
-                        <p className="path-hint">
-                          💡 選択したフォルダ名: <code>{folderName}</code>
-                          　ブラウザのセキュリティ制限により絶対パスは自動取得できません。
-                          エクスプローラーでフォルダを開き、アドレスバーからパスをコピーしてください。
+                      <div className="path-hint-box">
+                        <p className="path-hint-title">
+                          ⚠️ ブラウザの仕様により、フォルダの場所（絶対パス）は自動取得できません
                         </p>
-                      )}
+                        {folderName && (
+                          <p className="path-hint">
+                            取得できたのはフォルダ名（<code>{folderName}</code>）のみです。
+                            スクリプトが正しい場所のファイルをリネームするために、上の入力欄にフォルダの絶対パスを貼り付けてください。
+                          </p>
+                        )}
+                        <p className="path-hint path-hint-steps">
+                          【パスのコピー方法】<br />
+                          ① エクスプローラーで <strong>{folderName || 'フォルダ'}</strong> を開く<br />
+                          ② 上部のアドレスバーをクリックする<br />
+                          ③ パスが選択されるので <strong>Ctrl+C</strong> でコピー<br />
+                          ④ 上の入力欄に <strong>Ctrl+V</strong> で貼り付け
+                        </p>
+                      </div>
                     </>
                   ) : (
                     <>
