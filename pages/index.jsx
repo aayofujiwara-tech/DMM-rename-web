@@ -93,29 +93,32 @@ export default function Home() {
   }
 
   const handleDownloadScript = () => {
-    const lines = ['# DMM Renamer - 自動リネームスクリプト']
-    lines.push('# このスクリプトはDMM Renamerで生成されました')
-    lines.push('# 実行前に必ずバックアップを取ってください')
-    lines.push('')
+    if (!folderPath.trim()) {
+      alert('フォルダのパスを入力してからダウンロードしてください。')
+      return
+    }
 
     // PowerShellの二重引用符内で特殊な意味を持つ文字を除去
     // " → 文字列終端、` → エスケープ文字、$ → 変数展開
     const sanitizePS = (str) => str.replace(/["`$]/g, '')
 
-    const basePath = sanitizePS(folderPath.trim())
+    const basePath = sanitizePS(folderPath.trim().replace(/[/\\]+$/, ''))
+
+    const lines = [
+      '# DMM Renamer - 自動リネームスクリプト',
+      '# このスクリプトはDMM Renamerで生成されました',
+      '# 実行前に必ずバックアップを取ってください',
+      '',
+    ]
 
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
-        const safeFilename = sanitizePS(r.filename)
-        const safeNewName = sanitizePS(r.newName)
-        const oldPath = basePath
-          ? `"${basePath}\\${safeFilename}"`
-          : `".\\${safeFilename}"`
-        const newPath = basePath
-          ? `"${basePath}\\${safeNewName}"`
-          : `".\\${safeNewName}"`
-        lines.push(`Rename-Item ${oldPath} ${newPath}`)
+        // -LiteralPath: []などのPS特殊文字をワイルドカードとして解釈させない
+        // -NewName: ファイル名のみ指定（フルパス不可）
+        lines.push(
+          `Rename-Item -LiteralPath "${basePath}\\${sanitizePS(r.filename)}" -NewName "${sanitizePS(r.newName)}"`
+        )
       })
 
     lines.push('')
@@ -389,8 +392,17 @@ export default function Home() {
 
               {/* スクリプトダウンロードボタン */}
               {okCount > 0 && (
-                <button className="btn-download" onClick={handleDownloadScript}>
+                <button
+                  className="btn-download"
+                  onClick={handleDownloadScript}
+                  disabled={!folderPath.trim()}
+                >
                   ⬇ PowerShellスクリプトをダウンロード（{okCount}件）
+                  {!folderPath.trim() && (
+                    <span style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
+                      ※ 上のフォルダパスを入力してください
+                    </span>
+                  )}
                 </button>
               )}
 
