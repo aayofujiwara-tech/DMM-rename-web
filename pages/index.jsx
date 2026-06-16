@@ -8,6 +8,8 @@ export default function Home() {
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
   const [folderPath, setFolderPath] = useState('')
+  const [folderName, setFolderName] = useState('')
+  const [inputMethod, setInputMethod] = useState('text')
   const [demoIndex, setDemoIndex] = useState(0)
   const [nameFormat, setNameFormat] = useState('title_actress')
   const fileInputRef = useRef(null)
@@ -36,6 +38,14 @@ export default function Home() {
     setTextInput(names)
     setResults([])
     setError('')
+    setInputMethod('folder')
+
+    // webkitRelativePathからフォルダ名を取得
+    if (files.length > 0 && files[0].webkitRelativePath) {
+      const folderN = files[0].webkitRelativePath.split('/')[0]
+      setFolderName(folderN)
+      setFolderPath('')
+    }
   }
 
   const handleSubmit = async () => {
@@ -249,7 +259,7 @@ export default function Home() {
               <label className="method-label">② ファイル名を貼り付け</label>
               <textarea
                 value={textInput}
-                onChange={e => setTextInput(e.target.value)}
+                onChange={e => { setTextInput(e.target.value); setInputMethod('text') }}
                 placeholder={'miaa00629mhb.dcv\npred00248hhb.dcv\ndass00076hhb.dcv'}
                 rows={6}
               />
@@ -328,16 +338,41 @@ export default function Home() {
                   <label className="method-label">
                     📁 ファイルが保存されているフォルダのパスを入力
                   </label>
-                  <input
-                    type="text"
-                    className="path-input"
-                    value={folderPath}
-                    onChange={e => setFolderPath(e.target.value)}
-                    placeholder="例: C:\Users\ain12\Downloads\DMM"
-                  />
-                  <p className="path-hint">
-                    Windowsのエクスプローラーでフォルダを開き、アドレスバーをクリックするとパスをコピーできます。
-                  </p>
+                  {inputMethod === 'folder' ? (
+                    <>
+                      <input
+                        type="text"
+                        className="path-input"
+                        value={folderPath}
+                        onChange={e => setFolderPath(e.target.value)}
+                        placeholder={
+                          folderName
+                            ? `例: C:\\Users\\ユーザー名\\Downloads\\${folderName}`
+                            : '例: C:\\Users\\ain12\\Downloads\\DMM'
+                        }
+                      />
+                      {folderName && (
+                        <p className="path-hint">
+                          💡 選択したフォルダ名: <code>{folderName}</code>
+                          　ブラウザのセキュリティ制限により絶対パスは自動取得できません。
+                          エクスプローラーでフォルダを開き、アドレスバーからパスをコピーしてください。
+                        </p>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <input
+                        type="text"
+                        className="path-input"
+                        value={folderPath}
+                        onChange={e => setFolderPath(e.target.value)}
+                        placeholder="例: C:\Users\ain12\Downloads\DMM"
+                      />
+                      <p className="path-hint">
+                        Windowsのエクスプローラーでフォルダを開き、アドレスバーをクリックするとパスをコピーできます。
+                      </p>
+                    </>
+                  )}
                 </div>
               )}
 
