@@ -418,9 +418,8 @@ export default function Home() {
                   <h3 className="howto-title">📋 ファイルのリネーム方法</h3>
 
                   <div className="howto-intro">
-                    上のボタンでダウンロードした <code>rename.ps1</code> を使って、
-                    ファイルを自動でリネームできます。<br />
-                    通常は <strong>ステップ1・2だけ</strong> で完了します。
+                    上のボタンでダウンロードした <code>rename.ps1</code> を使って
+                    ファイルを自動でリネームできます。
                   </div>
 
                   <ol className="howto-steps">
@@ -429,8 +428,8 @@ export default function Home() {
                       <div className="howto-content">
                         <strong>スクリプトをダウンロードする</strong>
                         <p>
-                          上の緑のボタン「PowerShellスクリプトをダウンロード」をクリックすると、
-                          <code>rename.ps1</code> というファイルがダウンロードされます。
+                          上の緑のボタン「PowerShellスクリプトをダウンロード」をクリックすると
+                          <code>rename.ps1</code> がダウンロードされます。
                         </p>
                         <div className="howto-image-desc">
                           💡 ダウンロード先は通常 <code>C:\Users\ユーザー名\Downloads</code> です
@@ -441,43 +440,38 @@ export default function Home() {
                     <li className="howto-step">
                       <span className="howto-num">2</span>
                       <div className="howto-content">
-                        <strong>右クリック →「PowerShellで実行」を選ぶ</strong>
+                        <strong>PowerShellを開いて以下を実行する</strong>
                         <p>
-                          ダウンロードした <code>rename.ps1</code> を
-                          <strong>右クリック</strong>して、
-                          メニューから <strong>「PowerShellで実行」</strong> を選択してください。
+                          スタートメニューで「PowerShell」と検索して開き、
+                          以下のコマンドを貼り付けてEnterを押してください。
                         </p>
-                        <div className="howto-steps-sub">
-                          <div className="howto-sub-step">① rename.ps1 を右クリック</div>
-                          <div className="howto-sub-arrow">↓</div>
-                          <div className="howto-sub-step">②「PowerShellで実行」をクリック</div>
-                          <div className="howto-sub-arrow">↓</div>
-                          <div className="howto-sub-step">③「開く」または「実行」をクリック</div>
-                          <div className="howto-sub-arrow">↓</div>
-                          <div className="howto-sub-step">④ エラーが出た場合は下記を参照</div>
-                          <div className="howto-sub-arrow">↓</div>
-                          <div className="howto-sub-step">✅ リネーム完了！</div>
+                        <div className="howto-code">
+                          <code>{'powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\\Downloads\\rename.ps1"'}</code>
+                          <button
+                            className="btn-copy-code"
+                            onClick={() => navigator.clipboard.writeText(
+                              'powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\\Downloads\\rename.ps1"'
+                            )}
+                          >
+                            コピー
+                          </button>
                         </div>
                         <div className="howto-note">
-                          ⚠️ 実行前に確認ダイアログが出る場合があります。「開く」を選択してください。
+                          💡 このコマンドは署名なしスクリプトを安全に実行できる方法です
                         </div>
-                        <div className="howto-unblock">
-                          <p className="howto-unblock-title">
-                            「このスクリプトはデジタル署名されていません」エラーが出た場合
-                          </p>
-                          <p className="howto-unblock-desc">
-                            ブラウザからダウンロードしたファイルはWindowsが「インターネット由来」としてマークするため、
-                            以下のコマンドでマークを解除してから再実行してください。<strong>一度実行すれば次回以降は不要です。</strong>
-                          </p>
-                          <div className="howto-code">
-                            <code>{'Unblock-File -Path "$env:USERPROFILE\\Downloads\\rename.ps1"'}</code>
-                            <button
-                              className="btn-copy-code"
-                              onClick={() => navigator.clipboard.writeText('Unblock-File -Path "$env:USERPROFILE\\Downloads\\rename.ps1"')}
-                            >
-                              コピー
-                            </button>
-                          </div>
+                      </div>
+                    </li>
+
+                    <li className="howto-step">
+                      <span className="howto-num">3</span>
+                      <div className="howto-content">
+                        <strong>✅ リネーム完了！</strong>
+                        <p>
+                          <code>✓ ファイル名.dcv</code> と表示されれば成功です。
+                          エクスプローラーで対象フォルダを確認してください。
+                        </p>
+                        <div className="howto-note">
+                          ⚠️ 実行前に大切なファイルのバックアップを取ることをおすすめします
                         </div>
                       </div>
                     </li>
@@ -485,59 +479,25 @@ export default function Home() {
                     <li className="howto-step howto-step-optional">
                       <span className="howto-num howto-num-optional">?</span>
                       <div className="howto-content">
-                        <strong>エラーが出た場合のみ：実行ポリシーを変更する</strong>
+                        <strong>スクリプトをDownloads以外に保存した場合</strong>
                         <p>
-                          「このシステムではスクリプトの実行が無効になっています」
-                          というエラーが表示された場合のみ、以下の手順を実施してください。
-                          <strong>一度だけ設定すれば次回以降は不要です。</strong>
+                          上のコマンドの <code>{'$env:USERPROFILE\\Downloads\\rename.ps1'}</code> の部分を
+                          実際の保存先パスに変更してください。
                         </p>
-
-                        <div className="howto-substeps">
-                          <div className="howto-substep">
-                            <span className="howto-substep-num">1</span>
-                            <div>
-                              <strong>PowerShellを管理者として開く</strong>
-                              <p>スタートメニューで「PowerShell」と検索 → 右クリック →「管理者として実行」</p>
-                            </div>
-                          </div>
-                          <div className="howto-substep">
-                            <span className="howto-substep-num">2</span>
-                            <div>
-                              <strong>以下のコマンドを貼り付けてEnterを押す</strong>
-                              <div className="howto-code">
-                                <code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code>
-                                <button
-                                  className="btn-copy-code"
-                                  onClick={() => navigator.clipboard.writeText('Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser')}
-                                >
-                                  コピー
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="howto-substep">
-                            <span className="howto-substep-num">3</span>
-                            <div>
-                              <strong>「Y」を入力してEnterを押す</strong>
-                              <p>確認が出たら <code>Y</code> を入力してEnterを押してください。</p>
-                            </div>
-                          </div>
-                          <div className="howto-substep">
-                            <span className="howto-substep-num">4</span>
-                            <div>
-                              <strong>ステップ2に戻って再度実行する</strong>
-                              <p>設定完了後、rename.ps1 を右クリック →「PowerShellで実行」で実行できます。</p>
-                            </div>
-                          </div>
+                        <div className="howto-code">
+                          <code>{'powershell -ExecutionPolicy Bypass -File "C:\\保存先\\rename.ps1"'}</code>
+                          <button
+                            className="btn-copy-code"
+                            onClick={() => navigator.clipboard.writeText(
+                              'powershell -ExecutionPolicy Bypass -File "C:\\保存先\\rename.ps1"'
+                            )}
+                          >
+                            コピー
+                          </button>
                         </div>
                       </div>
                     </li>
                   </ol>
-
-                  <div className="howto-warning">
-                    ⚠️ <strong>注意:</strong> スクリプトを実行するとファイル名が変更されます。
-                    実行前に大切なファイルのバックアップを取ることをおすすめします。
-                  </div>
                 </div>
               )}
             </section>
