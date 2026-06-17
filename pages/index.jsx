@@ -15,6 +15,7 @@ export default function Home() {
   const [demoIndex, setDemoIndex] = useState(0)
   const [nameFormat, setNameFormat] = useState('title_actress')
   const [progress, setProgress] = useState({ current: 0, total: 0 })
+  const [includeSubfolders, setIncludeSubfolders] = useState(false)
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -141,9 +142,7 @@ export default function Home() {
       return
     }
 
-    // PowerShell single-quoted strings don't expand variables; only ' needs escaping (doubled)
-    const sanitizePS = (str) => String(str).replace(/'/g, "''")
-    const basePath = sanitizePS(folderPath.trim().replace(/[/\\]+$/, ''))
+    const basePath = folderPath.trim().replace(/[/\\]+$/, '')
 
     const ps1Lines = [
       '# DMM Renamer - 自動リネームスクリプト',
@@ -154,19 +153,45 @@ export default function Home() {
       '',
     ]
 
-    results
-      .filter(r => r.status === 'ok')
-      .forEach(r => {
-        const safeName = sanitizePS(r.filename)
-        const safeNew  = sanitizePS(r.newName)
-        ps1Lines.push(`try {`)
-        ps1Lines.push(`  Rename-Item -LiteralPath '${basePath}\\${safeName}' -NewName '${safeNew}'`)
-        ps1Lines.push(`  Write-Host '✓ ${safeNew}' -ForegroundColor Green`)
-        ps1Lines.push(`} catch {`)
-        ps1Lines.push(`  Write-Host ('✗ エラー: ${safeName} - ' + $_) -ForegroundColor Red`)
-        ps1Lines.push(`}`)
-        ps1Lines.push('')
-      })
+    if (includeSubfolders) {
+      ps1Lines.push('# サブフォルダも含めて検索してリネーム')
+      ps1Lines.push(`$baseDir = "${basePath}"`)
+      ps1Lines.push('')
+      results
+        .filter(r => r.status === 'ok')
+        .forEach(r => {
+          ps1Lines.push(`# ${r.filename} -> ${r.newName}`)
+          ps1Lines.push(`$target = Get-ChildItem -LiteralPath $baseDir -Filter "${r.filename}" -Recurse | Select-Object -First 1`)
+          ps1Lines.push(`if ($target) {`)
+          ps1Lines.push(`  try {`)
+          ps1Lines.push(`    Rename-Item -LiteralPath $target.FullName -NewName "${r.newName}"`)
+          ps1Lines.push(`    Write-Host "✓ $($target.DirectoryName)\\${r.newName}" -ForegroundColor Green`)
+          ps1Lines.push(`  } catch {`)
+          ps1Lines.push(`    Write-Host "✗ エラー: ${r.filename} - $_" -ForegroundColor Red`)
+          ps1Lines.push(`  }`)
+          ps1Lines.push(`} else {`)
+          ps1Lines.push(`  Write-Host "- スキップ（見つからず）: ${r.filename}" -ForegroundColor Yellow`)
+          ps1Lines.push(`}`)
+          ps1Lines.push('')
+        })
+    } else {
+      // PowerShell single-quoted strings don't expand variables; only ' needs escaping (doubled)
+      const sanitizePS = (str) => String(str).replace(/'/g, "''")
+      const safeBase = sanitizePS(basePath)
+      results
+        .filter(r => r.status === 'ok')
+        .forEach(r => {
+          const safeName = sanitizePS(r.filename)
+          const safeNew  = sanitizePS(r.newName)
+          ps1Lines.push(`try {`)
+          ps1Lines.push(`  Rename-Item -LiteralPath '${safeBase}\\${safeName}' -NewName '${safeNew}'`)
+          ps1Lines.push(`  Write-Host '✓ ${safeNew}' -ForegroundColor Green`)
+          ps1Lines.push(`} catch {`)
+          ps1Lines.push(`  Write-Host ('✗ エラー: ${safeName} - ' + $_) -ForegroundColor Red`)
+          ps1Lines.push(`}`)
+          ps1Lines.push('')
+        })
+    }
 
     ps1Lines.push('Write-Host ""')
     ps1Lines.push('Write-Host "処理が完了しました。Enterを押して閉じてください。" -ForegroundColor Cyan')
@@ -297,6 +322,10 @@ export default function Home() {
             {/* フォルダ選択 */}
             <div className="method">
               <label className="method-label">① フォルダを選択</label>
+              <p className="method-desc">
+                .dcv / .wsdcfファイルが入っているフォルダを選択してください。
+                選択したフォルダ直下のファイル名が自動で取得されます。
+              </p>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -310,9 +339,6 @@ export default function Home() {
               >
                 フォルダを選択
               </button>
-              <p className="folder-note">
-                ⚠️ フォルダ直下のファイルのみ対象です。サブフォルダ内のファイルは処理されません。
-              </p>
             </div>
 
             <div className="divider">または</div>
@@ -320,12 +346,34 @@ export default function Home() {
             {/* テキスト貼り付け */}
             <div className="method">
               <label className="method-label">② ファイル名を貼り付け</label>
+              <p className="method-desc">
+                エクスプローラーでファイルを選択してファイル名をコピーし、
+                以下に貼り付けてください。1行に1ファイル名を入力してください。
+              </p>
               <textarea
                 value={textInput}
                 onChange={e => { setTextInput(e.target.value); setInputMethod('text') }}
                 placeholder={'miaa00629mhb.dcv\npred00248hhb.dcv\n13dsvr01059vrv1uhqe1.wsdcf'}
                 rows={6}
               />
+            </div>
+
+            {/* サブフォルダオプション */}
+            <div className="subfolder-option">
+              <label className="checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={includeSubfolders}
+                  onChange={e => setIncludeSubfolders(e.target.checked)}
+                />
+                <span>サブフォルダ内のファイルも処理する</span>
+              </label>
+              <p className="subfolder-note">
+                {includeSubfolders
+                  ? '⚠️ 指定フォルダ内のすべてのサブフォルダも対象になります。実行前に必ずバックアップを取ってください。'
+                  : '💡 チェックを入れると、サブフォルダ内のファイルも一括でリネームできます。'
+                }
+              </p>
             </div>
 
             {/* ファイル名形式 */}
@@ -425,9 +473,35 @@ export default function Home() {
                   <label className={`method-label ${folderPath.trim() ? 'label-ok' : 'label-required'}`}>
                     {folderPath.trim()
                       ? '✅ フォルダのパス（入力済み）'
-                      : '⚠️ ファイルが保存されているフォルダのパスを入力（必須）'
+                      : '⚠️ リネーム対象フォルダのパスを入力（必須）'
                     }
                   </label>
+                  <div className="path-howto">
+                    <div className="path-howto-item">
+                      <span className="path-howto-badge">フォルダ選択を使った場合</span>
+                      <span>
+                        上で選択したフォルダ（{folderName ? <code>{folderName}</code> : 'フォルダ名'}）を
+                        エクスプローラーで開いてアドレスバーをクリックし、パスをコピーしてください。
+                      </span>
+                    </div>
+                    <div className="path-howto-item">
+                      <span className="path-howto-badge">ファイル名を貼り付けた場合</span>
+                      <span>
+                        対象ファイルが入っているフォルダをエクスプローラーで開き、
+                        アドレスバーをクリックしてパスをコピーしてください。
+                      </span>
+                    </div>
+                    {includeSubfolders && (
+                      <div className="path-howto-item path-howto-warn">
+                        <span className="path-howto-badge path-howto-badge-warn">サブフォルダ処理ON</span>
+                        <span>
+                          サブフォルダも処理する場合は、<strong>一番上の親フォルダ</strong>のパスを入力してください。
+                          例: サブフォルダが <code>D:\movie\古川いおり\VR</code> なら
+                          親フォルダ <code>D:\movie\古川いおり</code> を指定します。
+                        </span>
+                      </div>
+                    )}
+                  </div>
                   <input
                     type="text"
                     className={`path-input ${folderPath.trim() ? 'path-input-ok' : 'path-input-empty'}`}
@@ -435,19 +509,6 @@ export default function Home() {
                     onChange={e => setFolderPath(e.target.value)}
                     placeholder="例: D:\ain\movie\古川いおり"
                   />
-                  {!folderPath.trim() && (
-                    <p className="path-hint path-hint-required">
-                      フォルダのパスが未入力だとスクリプトが正しく動作しません。<br />
-                      Windowsのエクスプローラーでフォルダを開き、
-                      アドレスバーをクリックしてパスをコピーしてください。<br />
-                      ⚠️ スクリプトはフォルダ直下のファイルのみリネームします。サブフォルダ内のファイルは対象外です。
-                    </p>
-                  )}
-                  {folderPath.trim() && inputMethod === 'folder' && folderName && (
-                    <p className="path-hint">
-                      💡 選択したフォルダ名: <code>{folderName}</code>
-                    </p>
-                  )}
                 </div>
               )}
 
