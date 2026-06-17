@@ -12,6 +12,7 @@ export default function Home() {
   const [inputMethod, setInputMethod] = useState('text')
   const [demoIndex, setDemoIndex] = useState(0)
   const [nameFormat, setNameFormat] = useState('title_actress')
+  const [progress, setProgress] = useState({ current: 0, total: 0 })
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -51,6 +52,7 @@ export default function Home() {
   const handleSubmit = async () => {
     setError('')
     setResults([])
+    setProgress({ current: 0, total: 0 })
 
     const filenames = textInput
       .split('\n')
@@ -63,18 +65,45 @@ export default function Home() {
     }
 
     setLoading(true)
+    setProgress({ current: 0, total: filenames.length })
 
     try {
-      const res = await fetch('/api/rename', {
+      const response = await fetch('/api/rename', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filenames, nameFormat }),
       })
 
-      if (!res.ok) throw new Error('サーバーエラー')
+      if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.error || 'サーバーエラー')
+      }
 
-      const data = await res.json()
-      setResults(data.results)
+      const reader = response.body.getReader()
+      const decoder = new TextDecoder()
+      let buffer = ''
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        buffer += decoder.decode(value, { stream: true })
+        const lines = buffer.split('\n')
+        buffer = lines.pop()
+
+        for (const line of lines) {
+          if (!line.startsWith('data: ')) continue
+          try {
+            const event = JSON.parse(line.slice(6))
+            if (event.type === 'progress') {
+              setProgress({ current: event.current, total: event.total })
+              setResults(prev => [...prev, event.result])
+            } else if (event.type === 'done') {
+              setResults(event.results)
+            }
+          } catch {}
+        }
+      }
     } catch (e) {
       setError(`エラー: ${e.message}`)
     } finally {
@@ -307,13 +336,37 @@ export default function Home() {
               disabled={loading || !textInput.trim()}
             >
               {loading
-                ? '取得中...'
+                ? `取得中... (${progress.current}/${progress.total})`
                 : '変換する'}
             </button>
           </section>
 
+          {/* プログレスバー */}
+          {loading && progress.total > 0 && (
+            <div className="progress-section">
+              <div className="progress-header">
+                <span>取得中...</span>
+                <span>{progress.current} / {progress.total} 件</span>
+              </div>
+              <div className="progress-bar-wrap">
+                <div
+                  className="progress-bar-fill"
+                  style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                />
+              </div>
+              <div className="progress-items">
+                {results.map((r, i) => (
+                  <div key={i} className={`progress-item ${r.status}`}>
+                    {r.status === 'ok' ? '✓' : '━'} {r.filename}
+                    {r.status === 'ok' && <span className="progress-item-new">→ {r.newName}</span>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 結果エリア */}
-          {results.length > 0 && (
+          {!loading && results.length > 0 && (
             <section className="result-section">
               <div className="result-header">
                 <h2>結果</h2>
