@@ -9,7 +9,8 @@ const VALID_FORMATS = new Set(['title_actress', 'actress_title'])
 function buildNewName(label, title, actresses, fmt, partNumber) {
   const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
   const safeActresses = actresses
-    .map(a => a.replace(/[\\/:*?"<>|]/g, '').trim())
+    .map(a => a.replace(/[\\/:*?"<>|]/g, '').replace(/\.+$/, '').trim())
+    .filter(a => a.length > 0)
     .join('_')
 
   const part = partNumber ? ` (${partNumber})` : ''
@@ -32,7 +33,21 @@ async function processFile(file, apiId, affiliateId, nameFormat) {
   }
 
   try {
-    const data = await fetchFanzaItem(cid, apiId, affiliateId)
+    let data = await fetchFanzaItem(cid, apiId, affiliateId)
+
+    // ヒットしなかった場合、ゼロパディングを変えて再検索
+    // 例: ipt00016 → まずipt016（1個残し）、次にipt16（全除去）
+    if (!data) {
+      const zeroMatch = cid.match(/^([a-z_]+)(0{2,})(\d+)$/i)
+      if (zeroMatch) {
+        const [, prefix, , num] = zeroMatch
+        data = await fetchFanzaItem(`${prefix}0${num}`, apiId, affiliateId)
+        if (!data) {
+          data = await fetchFanzaItem(`${prefix}${num}`, apiId, affiliateId)
+        }
+      }
+    }
+
     if (data) {
       const { title, actresses } = data
       const newName = buildNewName(label, title, actresses, nameFormat, partNumber)
