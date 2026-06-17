@@ -213,7 +213,7 @@ export default function Home() {
           </h1>
           <p className="hero-sub">
             ダウンロードしたままの謎のファイル名を、女優名・タイトルに整理。<br />
-            貼り付けるだけ、無料、登録不要。
+            2D（.dcv）・VR（.wsdcf）両対応。貼り付けるだけ、無料、登録不要。
           </p>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
@@ -237,7 +237,7 @@ export default function Home() {
             <div className="step">
               <span className="step-num">1</span>
               <div className="step-title">ファイル名を貼り付け</div>
-              <p className="step-desc">DMMでダウンロードした.dcvファイルのファイル名をコピーして貼り付けるだけ。フォルダを選択して一括取得も可能。</p>
+              <p className="step-desc">DMMでダウンロードした.dcv（2D）・.wsdcf（VR）のファイル名をコピーして貼り付けるだけ。フォルダを選択して一括取得も可能。</p>
             </div>
             <div className="step">
               <span className="step-num">2</span>
@@ -266,7 +266,7 @@ export default function Home() {
             <div className="feature-card">
               <div className="feature-icon">📂</div>
               <div className="feature-title">フォルダ選択に対応</div>
-              <p className="feature-desc">.dcvファイルが入ったフォルダを選択するだけでファイル名を自動取得。一つひとつコピペする手間が不要です。</p>
+              <p className="feature-desc">.dcv（2D）・.wsdcf（VR）ファイルが入ったフォルダを選択するだけでファイル名を自動取得。一つひとつコピペする手間が不要です。</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">⚡</div>
@@ -315,7 +315,7 @@ export default function Home() {
               <textarea
                 value={textInput}
                 onChange={e => { setTextInput(e.target.value); setInputMethod('text') }}
-                placeholder={'miaa00629mhb.dcv\npred00248hhb.dcv\ndass00076hhb.dcv'}
+                placeholder={'miaa00629mhb.dcv\npred00248hhb.dcv\n13dsvr01059vrv1uhqe1.wsdcf'}
                 rows={6}
               />
             </div>
