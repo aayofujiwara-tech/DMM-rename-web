@@ -144,6 +144,16 @@ export default function Home() {
 
     const basePath = folderPath.trim().replace(/[/\\]+$/, '')
 
+    // PowerShell single-quoted strings: only ' needs escaping (doubled). $ and ` are not expanded.
+    const sanitizePS = (str) => String(str).replace(/'/g, "''")
+    // 制御文字・改行を含むパスやファイル名はスクリプトインジェクションの原因になるため拒否する
+    const hasDangerousChars = (str) => /[\r\n\x00-\x1f]/.test(str)
+
+    if (hasDangerousChars(basePath)) {
+      alert('フォルダのパスに使用できない文字が含まれています。')
+      return
+    }
+
     const ps1Lines = [
       '# DMM Renamer - 自動リネームスクリプト',
       '# このスクリプトはDMM Renamerで生成されました',
@@ -153,33 +163,36 @@ export default function Home() {
       '',
     ]
 
+    const safeBase = sanitizePS(basePath)
+
     if (includeSubfolders) {
       ps1Lines.push('# サブフォルダも含めて検索してリネーム')
-      ps1Lines.push(`$baseDir = "${basePath}"`)
+      ps1Lines.push(`$baseDir = '${safeBase}'`)
       ps1Lines.push('')
       results
         .filter(r => r.status === 'ok')
+        .filter(r => !hasDangerousChars(r.filename) && !hasDangerousChars(r.newName))
         .forEach(r => {
-          ps1Lines.push(`# ${r.filename} -> ${r.newName}`)
-          ps1Lines.push(`$target = Get-ChildItem -LiteralPath $baseDir -Filter "${r.filename}" -Recurse | Select-Object -First 1`)
+          const safeName = sanitizePS(r.filename)
+          const safeNew  = sanitizePS(r.newName)
+          ps1Lines.push(`# ${safeName} -> ${safeNew}`)
+          ps1Lines.push(`$target = Get-ChildItem -LiteralPath $baseDir -Filter '${safeName}' -Recurse | Select-Object -First 1`)
           ps1Lines.push(`if ($target) {`)
           ps1Lines.push(`  try {`)
-          ps1Lines.push(`    Rename-Item -LiteralPath $target.FullName -NewName "${r.newName}"`)
-          ps1Lines.push(`    Write-Host "✓ $($target.DirectoryName)\\${r.newName}" -ForegroundColor Green`)
+          ps1Lines.push(`    Rename-Item -LiteralPath $target.FullName -NewName '${safeNew}'`)
+          ps1Lines.push(`    Write-Host ('✓ ' + $target.DirectoryName + '\\' + '${safeNew}') -ForegroundColor Green`)
           ps1Lines.push(`  } catch {`)
-          ps1Lines.push(`    Write-Host "✗ エラー: ${r.filename} - $_" -ForegroundColor Red`)
+          ps1Lines.push(`    Write-Host ('✗ エラー: ${safeName} - ' + $_) -ForegroundColor Red`)
           ps1Lines.push(`  }`)
           ps1Lines.push(`} else {`)
-          ps1Lines.push(`  Write-Host "- スキップ（見つからず）: ${r.filename}" -ForegroundColor Yellow`)
+          ps1Lines.push(`  Write-Host '- スキップ（見つからず）: ${safeName}' -ForegroundColor Yellow`)
           ps1Lines.push(`}`)
           ps1Lines.push('')
         })
     } else {
-      // PowerShell single-quoted strings don't expand variables; only ' needs escaping (doubled)
-      const sanitizePS = (str) => String(str).replace(/'/g, "''")
-      const safeBase = sanitizePS(basePath)
       results
         .filter(r => r.status === 'ok')
+        .filter(r => !hasDangerousChars(r.filename) && !hasDangerousChars(r.newName))
         .forEach(r => {
           const safeName = sanitizePS(r.filename)
           const safeNew  = sanitizePS(r.newName)
