@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import Head from 'next/head'
+import JSZip from 'jszip'
 
 export default function Home() {
   const [results, setResults] = useState([])
@@ -121,19 +122,15 @@ export default function Home() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleDownloadScript = () => {
+  const handleDownloadZip = async () => {
     if (!folderPath.trim()) {
       alert('フォルダのパスを入力してからダウンロードしてください。')
       return
     }
 
-    // PowerShellの二重引用符内で特殊な意味を持つ文字を除去
-    // " → 文字列終端、` → エスケープ文字、$ → 変数展開
-    const sanitizePS = (str) => str.replace(/["`$]/g, '')
+    const basePath = folderPath.trim().replace(/[/\\]+$/, '')
 
-    const basePath = sanitizePS(folderPath.trim().replace(/[/\\]+$/, ''))
-
-    const lines = [
+    const ps1Lines = [
       '# DMM Renamer - 自動リネームスクリプト',
       '# このスクリプトはDMM Renamerで生成されました',
       '# 実行前に必ずバックアップを取ってください',
@@ -145,27 +142,37 @@ export default function Home() {
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
-        const safeName = sanitizePS(r.filename)
-        const safeNew  = sanitizePS(r.newName)
-        lines.push(`try {`)
-        lines.push(`  Rename-Item -LiteralPath "${basePath}\\${safeName}" -NewName "${safeNew}"`)
-        lines.push(`  Write-Host "✓ ${safeNew}" -ForegroundColor Green`)
-        lines.push(`} catch {`)
-        lines.push(`  Write-Host "✗ エラー: ${safeName} - $_" -ForegroundColor Red`)
-        lines.push(`}`)
-        lines.push('')
+        ps1Lines.push(`try {`)
+        ps1Lines.push(`  Rename-Item -LiteralPath "${basePath}\\${r.filename}" -NewName "${r.newName}"`)
+        ps1Lines.push(`  Write-Host "✓ ${r.newName}" -ForegroundColor Green`)
+        ps1Lines.push(`} catch {`)
+        ps1Lines.push(`  Write-Host "✗ エラー: ${r.filename} - $_" -ForegroundColor Red`)
+        ps1Lines.push(`}`)
+        ps1Lines.push('')
       })
 
-    lines.push('Write-Host ""')
-    lines.push('Write-Host "処理が完了しました。このウィンドウを閉じるにはEnterを押してください。" -ForegroundColor Cyan')
-    lines.push('Read-Host')
+    ps1Lines.push('Write-Host ""')
+    ps1Lines.push('Write-Host "処理が完了しました。Enterを押して閉じてください。" -ForegroundColor Cyan')
+    ps1Lines.push('Read-Host')
 
-    const content = lines.join('\r\n')
-    const blob = new Blob(['﻿' + content], { type: 'text/plain;charset=utf-8' })
+    const ps1Content = ps1Lines.join('\r\n')
+
+    const batContent = [
+      '@echo off',
+      'chcp 65001 > nul',
+      'powershell -ExecutionPolicy Bypass -File "%~dp0rename.ps1"',
+      'pause',
+    ].join('\r\n')
+
+    const zip = new JSZip()
+    zip.file('rename.ps1', '﻿' + ps1Content, { binary: false })
+    zip.file('実行する.bat', batContent, { binary: false })
+
+    const blob = await zip.generateAsync({ type: 'blob' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = 'rename.ps1'
+    a.download = 'rename.zip'
     a.click()
     URL.revokeObjectURL(url)
   }
@@ -453,13 +460,13 @@ export default function Home() {
               {okCount > 0 && (
                 <button
                   className="btn-download"
-                  onClick={handleDownloadScript}
-                  disabled={!folderPath.trim()}
+                  onClick={handleDownloadZip}
+                  disabled={okCount === 0 || !folderPath.trim()}
                 >
-                  ⬇ PowerShellスクリプトをダウンロード（{okCount}件）
+                  ⬇ リネームファイルをダウンロード（{okCount}件）
                   {!folderPath.trim() && (
-                    <span style={{ fontSize: '12px', display: 'block', marginTop: '4px' }}>
-                      ※ 上のフォルダパスを入力してください
+                    <span style={{ fontSize: '12px', display: 'block' }}>
+                      ※ フォルダのパスを入力してください
                     </span>
                   )}
                 </button>
@@ -471,21 +478,27 @@ export default function Home() {
                   <h3 className="howto-title">📋 ファイルのリネーム方法</h3>
 
                   <div className="howto-intro">
-                    上のボタンでダウンロードした <code>rename.ps1</code> を使って
+                    上のボタンでダウンロードしたZIPファイルを使って
                     ファイルを自動でリネームできます。
+                    <strong>ダブルクリックするだけで完了します。</strong>
                   </div>
 
                   <ol className="howto-steps">
                     <li className="howto-step">
                       <span className="howto-num">1</span>
                       <div className="howto-content">
-                        <strong>スクリプトをダウンロードする</strong>
+                        <strong>ZIPをダウンロードして展開する</strong>
                         <p>
-                          上の緑のボタン「PowerShellスクリプトをダウンロード」をクリックすると
-                          <code>rename.ps1</code> がダウンロードされます。
+                          上の緑のボタン「リネームファイルをダウンロード」をクリックすると
+                          <code>rename.zip</code> がダウンロードされます。
+                          右クリック →「すべて展開」で展開してください。
                         </p>
-                        <div className="howto-image-desc">
-                          💡 ダウンロード先は通常 <code>C:\Users\ユーザー名\Downloads</code> です
+                        <div className="howto-steps-sub">
+                          <div className="howto-sub-step">① rename.zip を右クリック</div>
+                          <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">②「すべて展開」をクリック</div>
+                          <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">③「展開」をクリック</div>
                         </div>
                       </div>
                     </li>
@@ -493,38 +506,22 @@ export default function Home() {
                     <li className="howto-step">
                       <span className="howto-num">2</span>
                       <div className="howto-content">
-                        <strong>PowerShellを開いて以下を実行する</strong>
+                        <strong>「実行する.bat」をダブルクリック</strong>
                         <p>
-                          スタートメニューで「PowerShell」と検索して開き、
-                          以下のコマンドを貼り付けてEnterを押してください。
+                          展開したフォルダの中にある
+                          <code>実行する.bat</code> を
+                          <strong>ダブルクリック</strong>してください。
                         </p>
-                        <div className="howto-code">
-                          <code>{'powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\\Downloads\\rename.ps1"'}</code>
-                          <button
-                            className="btn-copy-code"
-                            onClick={() => navigator.clipboard.writeText(
-                              'powershell -ExecutionPolicy Bypass -File "$env:USERPROFILE\\Downloads\\rename.ps1"'
-                            )}
-                          >
-                            コピー
-                          </button>
+                        <div className="howto-steps-sub">
+                          <div className="howto-sub-step">① 実行する.bat をダブルクリック</div>
+                          <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">②「開く」または「実行」をクリック</div>
+                          <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">✅ リネーム完了！</div>
                         </div>
                         <div className="howto-note">
-                          💡 このコマンドは署名なしスクリプトを安全に実行できる方法です
-                        </div>
-                      </div>
-                    </li>
-
-                    <li className="howto-step">
-                      <span className="howto-num">3</span>
-                      <div className="howto-content">
-                        <strong>✅ リネーム完了！</strong>
-                        <p>
-                          <code>✓ ファイル名.dcv</code> と表示されれば成功です。
-                          エクスプローラーで対象フォルダを確認してください。
-                        </p>
-                        <div className="howto-note">
-                          ⚠️ 実行前に大切なファイルのバックアップを取ることをおすすめします
+                          💡 黒い画面（コマンドプロンプト）が開いて処理が実行されます。
+                          「✓ ファイル名」と表示されれば成功です。
                         </div>
                       </div>
                     </li>
@@ -532,21 +529,17 @@ export default function Home() {
                     <li className="howto-step howto-step-optional">
                       <span className="howto-num howto-num-optional">?</span>
                       <div className="howto-content">
-                        <strong>スクリプトをDownloads以外に保存した場合</strong>
+                        <strong>「WindowsによってPCが保護されました」と表示された場合</strong>
                         <p>
-                          上のコマンドの <code>{'$env:USERPROFILE\\Downloads\\rename.ps1'}</code> の部分を
-                          実際の保存先パスに変更してください。
+                          Windowsのスマートスクリーンが表示された場合は以下の手順で実行してください。
                         </p>
-                        <div className="howto-code">
-                          <code>{'powershell -ExecutionPolicy Bypass -File "C:\\保存先\\rename.ps1"'}</code>
-                          <button
-                            className="btn-copy-code"
-                            onClick={() => navigator.clipboard.writeText(
-                              'powershell -ExecutionPolicy Bypass -File "C:\\保存先\\rename.ps1"'
-                            )}
-                          >
-                            コピー
-                          </button>
+                        <div className="howto-steps-sub">
+                          <div className="howto-sub-step">①「詳細情報」をクリック</div>
+                          <div className="howto-sub-arrow">↓</div>
+                          <div className="howto-sub-step">②「実行」をクリック</div>
+                        </div>
+                        <div className="howto-note">
+                          ⚠️ 実行前に大切なファイルのバックアップを取ることをおすすめします
                         </div>
                       </div>
                     </li>
