@@ -128,7 +128,9 @@ export default function Home() {
       return
     }
 
-    const basePath = folderPath.trim().replace(/[/\\]+$/, '')
+    // PowerShell single-quoted strings don't expand variables; only ' needs escaping (doubled)
+    const sanitizePS = (str) => String(str).replace(/'/g, "''")
+    const basePath = sanitizePS(folderPath.trim().replace(/[/\\]+$/, ''))
 
     const ps1Lines = [
       '# DMM Renamer - 自動リネームスクリプト',
@@ -142,11 +144,13 @@ export default function Home() {
     results
       .filter(r => r.status === 'ok')
       .forEach(r => {
+        const safeName = sanitizePS(r.filename)
+        const safeNew  = sanitizePS(r.newName)
         ps1Lines.push(`try {`)
-        ps1Lines.push(`  Rename-Item -LiteralPath "${basePath}\\${r.filename}" -NewName "${r.newName}"`)
-        ps1Lines.push(`  Write-Host "✓ ${r.newName}" -ForegroundColor Green`)
+        ps1Lines.push(`  Rename-Item -LiteralPath '${basePath}\\${safeName}' -NewName '${safeNew}'`)
+        ps1Lines.push(`  Write-Host '✓ ${safeNew}' -ForegroundColor Green`)
         ps1Lines.push(`} catch {`)
-        ps1Lines.push(`  Write-Host "✗ エラー: ${r.filename} - $_" -ForegroundColor Red`)
+        ps1Lines.push(`  Write-Host ('✗ エラー: ${safeName} - ' + $_) -ForegroundColor Red`)
         ps1Lines.push(`}`)
         ps1Lines.push('')
       })
