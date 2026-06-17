@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { flushSync } from 'react-dom'
 import Head from 'next/head'
 import JSZip from 'jszip'
 
@@ -106,8 +107,11 @@ export default function Home() {
           try {
             const event = JSON.parse(line.slice(6))
             if (event.type === 'progress') {
-              setProgress({ current: event.current, total: event.total })
-              setResults(prev => [...prev, event.result])
+              // flushSyncでReact 18の自動バッチングを回避し、1件ごとに即座に再レンダーする
+              flushSync(() => {
+                setProgress({ current: event.current, total: event.total })
+                setResults(prev => [...prev, event.result])
+              })
             } else if (event.type === 'done') {
               setResults(event.results)
             }
@@ -306,6 +310,9 @@ export default function Home() {
               >
                 フォルダを選択
               </button>
+              <p className="folder-note">
+                ⚠️ フォルダ直下のファイルのみ対象です。サブフォルダ内のファイルは処理されません。
+              </p>
             </div>
 
             <div className="divider">または</div>
@@ -432,7 +439,8 @@ export default function Home() {
                     <p className="path-hint path-hint-required">
                       フォルダのパスが未入力だとスクリプトが正しく動作しません。<br />
                       Windowsのエクスプローラーでフォルダを開き、
-                      アドレスバーをクリックしてパスをコピーしてください。
+                      アドレスバーをクリックしてパスをコピーしてください。<br />
+                      ⚠️ スクリプトはフォルダ直下のファイルのみリネームします。サブフォルダ内のファイルは対象外です。
                     </p>
                   )}
                   {folderPath.trim() && inputMethod === 'folder' && folderName && (

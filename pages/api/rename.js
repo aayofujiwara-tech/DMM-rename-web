@@ -122,9 +122,16 @@ export default async function handler(req, res) {
   res.setHeader('Content-Type', 'text/event-stream')
   res.setHeader('Cache-Control', 'no-cache')
   res.setHeader('Connection', 'keep-alive')
+  res.setHeader('X-Accel-Buffering', 'no') // nginx/Vercelのバッファリング抑制
+
+  // ヘッダーをすぐに送信してSSE接続を確立する（バッファリング防止）
+  res.socket?.setNoDelay(true)
+  res.flushHeaders()
 
   const sendEvent = (data) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`)
+    // compression middlewareがflushを追加している場合はすぐに送出する
+    if (typeof res.flush === 'function') res.flush()
   }
 
   const results = []
