@@ -32,10 +32,18 @@ export default function Home() {
     return () => clearInterval(timer)
   }, [])
 
+  // webkitdirectory は React JSX では確実に DOM に反映されないため直接 setAttribute で設定する
+  useEffect(() => {
+    if (fileInputRef.current) {
+      fileInputRef.current.setAttribute('webkitdirectory', '')
+      fileInputRef.current.setAttribute('directory', '')
+    }
+  }, [])
+
   // フォルダ選択からファイル名を取得
   const handleFolderSelect = (e) => {
     const files = [...e.target.files]
-    const dcvFiles = files.filter(f => f.name.endsWith('.dcv'))
+    const dcvFiles = files.filter(f => f.name.endsWith('.dcv') || f.name.endsWith('.wsdcf'))
     const names = dcvFiles.map(f => f.name).join('\n')
     setTextInput(names)
     setResults([])
@@ -288,8 +296,6 @@ export default function Home() {
                 type="file"
                 ref={fileInputRef}
                 onChange={handleFolderSelect}
-                webkitdirectory=""
-                directory=""
                 multiple
                 style={{ display: 'none' }}
               />
