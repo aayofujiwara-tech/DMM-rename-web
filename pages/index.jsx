@@ -272,7 +272,7 @@ export default function Home() {
             <div className="feature-card">
               <div className="feature-icon">⚡</div>
               <div className="feature-title">一括処理</div>
-              <p className="feature-desc">複数のファイルをまとめて変換。大量のファイルも効率よく整理できます。</p>
+              <p className="feature-desc">複数のファイルをまとめて変換。1回あたり最大50件まで処理できます。</p>
             </div>
             <div className="feature-card">
               <div className="feature-icon">🎯</div>
