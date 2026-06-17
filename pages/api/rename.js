@@ -25,6 +25,41 @@ function buildNewName(label, title, actresses, fmt, partNumber) {
     : `[${label}] ${safeTitle}${part}.dcv`
 }
 
+/**
+ * ゼロパディングの違いに対応するフォールバックCIDを生成する
+ * ゼロを1つずつ減らして全パターンを返す（数字プレフィックス有無の両方）
+ * 例: 504aki00008 → [504aki0008, 504aki008, 504aki08, 504aki8, aki0008, aki008, aki08, aki8]
+ *     ipt00016    → [ipt0016, ipt016, ipt16]
+ *     12gld00208  → [12gld0208, 12gld208]
+ */
+function getFallbackCids(cid) {
+  const seen = new Set()
+  const fallbacks = []
+
+  const add = (v) => { if (v !== cid && !seen.has(v)) { seen.add(v); fallbacks.push(v) } }
+
+  // プレフィックス保持でゼロを1つずつ減らす
+  const m = cid.match(/^(\d*[a-z_]+)(0{2,})(\d+)$/i)
+  if (m) {
+    const [, prefix, zeros, num] = m
+    for (let z = zeros.length - 1; z >= 0; z--) {
+      add(prefix + '0'.repeat(z) + num)
+    }
+  }
+
+  // 先頭の数字プレフィックスを除いたパターンも試す
+  const m2 = cid.match(/^(\d+)([a-z_]+)(0*)(\d+)$/i)
+  if (m2) {
+    const [, , alpha, zeros, num] = m2
+    for (let z = zeros.length - 1; z >= 0; z--) {
+      add(alpha + '0'.repeat(z) + num)
+    }
+    add(alpha + num)
+  }
+
+  return fallbacks
+}
+
 async function processFile(file, apiId, affiliateId, nameFormat) {
   const { filename, cid, label, partNumber } = file
 
@@ -35,17 +70,11 @@ async function processFile(file, apiId, affiliateId, nameFormat) {
   try {
     let data = await fetchFanzaItem(cid, apiId, affiliateId)
 
-    // ヒットしなかった場合、ゼロパディングを変えて再検索
-    // 例: ipt00016 → ipt016 → ipt16
-    //     12gld00208 → 12gld0208 → 12gld208（数字プレフィックスも対応）
+    // ヒットしなかった場合、ゼロパディングを変えて再検索（1つずつ減らして全パターン試す）
     if (!data) {
-      const zeroMatch = cid.match(/^(\d*[a-z_]+)(0{2,})(\d+)$/i)
-      if (zeroMatch) {
-        const [, prefix, , num] = zeroMatch
-        data = await fetchFanzaItem(`${prefix}0${num}`, apiId, affiliateId)
-        if (!data) {
-          data = await fetchFanzaItem(`${prefix}${num}`, apiId, affiliateId)
-        }
+      for (const fallbackCid of getFallbackCids(cid)) {
+        data = await fetchFanzaItem(fallbackCid, apiId, affiliateId)
+        if (data) break
       }
     }
 
