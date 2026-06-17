@@ -23,6 +23,7 @@ export default function Home() {
     { before: 'ipx00500hhb.dcv',               after: '[IPX-500] 甘えたい夜に - 白石りな.dcv' },
     { before: 'bmw00272mhb2.dcv',              after: '[BMW-272] 恋する季節のメロディー - 星野ことり.dcv' },
     { before: 'pred00248hhb.dcv',              after: '[PRED-248] ふたりだけの秘密 - 朝倉みく.dcv' },
+    { before: '13dsvr01059vrv1uhqe1.wsdcf',    after: '[DSVR-1059] VR 甘い囁きの夜 - 桐島なお.wsdcf' },
   ]
 
   useEffect(() => {
