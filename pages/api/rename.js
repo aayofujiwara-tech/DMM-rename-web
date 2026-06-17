@@ -36,9 +36,10 @@ async function processFile(file, apiId, affiliateId, nameFormat) {
     let data = await fetchFanzaItem(cid, apiId, affiliateId)
 
     // ヒットしなかった場合、ゼロパディングを変えて再検索
-    // 例: ipt00016 → まずipt016（1個残し）、次にipt16（全除去）
+    // 例: ipt00016 → ipt016 → ipt16
+    //     12gld00208 → 12gld0208 → 12gld208（数字プレフィックスも対応）
     if (!data) {
-      const zeroMatch = cid.match(/^([a-z_]+)(0{2,})(\d+)$/i)
+      const zeroMatch = cid.match(/^(\d*[a-z_]+)(0{2,})(\d+)$/i)
       if (zeroMatch) {
         const [, prefix, , num] = zeroMatch
         data = await fetchFanzaItem(`${prefix}0${num}`, apiId, affiliateId)
