@@ -51,6 +51,7 @@ function getFallbackCids(cid) {
   const m2 = cid.match(/^(\d+)([a-z_]+)(0*)(\d+)$/i)
   if (m2) {
     const [, , alpha, zeros, num] = m2
+    add(alpha + zeros + num)  // プレフィックス除去・ゼロ保持（例: 84rmild00421 → rmild00421）
     for (let z = zeros.length - 1; z >= 0; z--) {
       add(alpha + '0'.repeat(z) + num)
     }
