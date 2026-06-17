@@ -27,7 +27,7 @@ function buildNewName(label, title, actresses, fmt, partNumber) {
 async function processFile(file, apiId, affiliateId, nameFormat) {
   const { filename, cid, label, partNumber } = file
 
-  if (!cid || !/^[a-z0-9]{2,50}$/.test(cid)) {
+  if (!cid || !/^[a-z0-9_]{2,50}$/.test(cid)) {
     return { filename, cid, label, status: 'not_found' }
   }
 
