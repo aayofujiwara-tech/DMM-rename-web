@@ -408,54 +408,30 @@ export default function Home() {
               {/* フォルダパス入力 */}
               {okCount > 0 && (
                 <div className="folder-path-input">
-                  <label className="method-label">
-                    📁 ファイルが保存されているフォルダのパスを入力
+                  <label className={`method-label ${folderPath.trim() ? 'label-ok' : 'label-required'}`}>
+                    {folderPath.trim()
+                      ? '✅ フォルダのパス（入力済み）'
+                      : '⚠️ ファイルが保存されているフォルダのパスを入力（必須）'
+                    }
                   </label>
-                  {inputMethod === 'folder' ? (
-                    <>
-                      <input
-                        type="text"
-                        className="path-input"
-                        value={folderPath}
-                        onChange={e => setFolderPath(e.target.value)}
-                        placeholder={
-                          folderName
-                            ? `例: C:\\Users\\ユーザー名\\Downloads\\${folderName}`
-                            : '例: C:\\Users\\ain12\\Downloads\\DMM'
-                        }
-                      />
-                      <div className="path-hint-box">
-                        <p className="path-hint-title">
-                          ⚠️ ブラウザの仕様により、フォルダの場所（絶対パス）は自動取得できません
-                        </p>
-                        {folderName && (
-                          <p className="path-hint">
-                            取得できたのはフォルダ名（<code>{folderName}</code>）のみです。
-                            スクリプトが正しい場所のファイルをリネームするために、上の入力欄にフォルダの絶対パスを貼り付けてください。
-                          </p>
-                        )}
-                        <p className="path-hint path-hint-steps">
-                          【パスのコピー方法】<br />
-                          ① エクスプローラーで <strong>{folderName || 'フォルダ'}</strong> を開く<br />
-                          ② 上部のアドレスバーをクリックする<br />
-                          ③ パスが選択されるので <strong>Ctrl+C</strong> でコピー<br />
-                          ④ 上の入力欄に <strong>Ctrl+V</strong> で貼り付け
-                        </p>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <input
-                        type="text"
-                        className="path-input"
-                        value={folderPath}
-                        onChange={e => setFolderPath(e.target.value)}
-                        placeholder="例: C:\Users\ain12\Downloads\DMM"
-                      />
-                      <p className="path-hint">
-                        Windowsのエクスプローラーでフォルダを開き、アドレスバーをクリックするとパスをコピーできます。
-                      </p>
-                    </>
+                  <input
+                    type="text"
+                    className={`path-input ${folderPath.trim() ? 'path-input-ok' : 'path-input-empty'}`}
+                    value={folderPath}
+                    onChange={e => setFolderPath(e.target.value)}
+                    placeholder="例: D:\ain\movie\古川いおり"
+                  />
+                  {!folderPath.trim() && (
+                    <p className="path-hint path-hint-required">
+                      フォルダのパスが未入力だとスクリプトが正しく動作しません。<br />
+                      Windowsのエクスプローラーでフォルダを開き、
+                      アドレスバーをクリックしてパスをコピーしてください。
+                    </p>
+                  )}
+                  {folderPath.trim() && inputMethod === 'folder' && folderName && (
+                    <p className="path-hint">
+                      💡 選択したフォルダ名: <code>{folderName}</code>
+                    </p>
                   )}
                 </div>
               )}
