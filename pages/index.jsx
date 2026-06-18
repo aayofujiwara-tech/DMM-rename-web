@@ -19,6 +19,7 @@ export default function Home() {
   const [showLabel, setShowLabel] = useState(true)
   const [shareOpen, setShareOpen] = useState(false)
   const [linkCopied, setLinkCopied] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -44,6 +45,15 @@ export default function Home() {
       fileInputRef.current.setAttribute('webkitdirectory', '')
       fileInputRef.current.setAttribute('directory', '')
     }
+  }, [])
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
   // フォルダ選択からファイル名を取得
@@ -317,8 +327,15 @@ export default function Home() {
 
       {/* ナビゲーション */}
       <nav className="nav">
-        <span className="nav-logo">DMM Renamer</span>
-        <a href="#tool" className="nav-cta">今すぐ使う →</a>
+        <div className="nav-left">
+          <span className="nav-logo">DMM Renamer</span>
+          <span className="nav-beta">β プロトタイプ</span>
+        </div>
+        <div className="nav-right">
+          <a href="/about" className="nav-link">このツールについて</a>
+          <a href="/source" className="nav-link">ソースコード</a>
+          <a href="#tool" className="nav-cta">今すぐ使う →</a>
+        </div>
       </nav>
 
       {/* ヒーロー */}
@@ -332,11 +349,16 @@ export default function Home() {
             ダウンロードしたままの謎のファイル名を、女優名・タイトルに整理。<br />
             2D（.dcv）・VR（.wsdcf）両対応。貼り付けるだけ、無料、登録不要。
           </p>
-          <div className="os-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
-              <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
-            </svg>
-Windows / Mac / Linux 対応
+          <div className="hero-badges">
+            <div className="os-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+              </svg>
+              Windows専用ツールです
+            </div>
+            <div className="os-badge os-badge-pc">
+              🖥️ PC専用（スマホ・タブレット非対応）
+            </div>
           </div>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
@@ -413,6 +435,31 @@ Windows / Mac / Linux 対応
           </div>
         </div>
       </section>
+
+      {/* モバイル警告 */}
+      {isMobile && (
+        <div className="mobile-warning">
+          <div className="mobile-warning-icon">📱</div>
+          <h3>スマートフォン・タブレットには非対応です</h3>
+          <p>
+            DMMの動画ファイル（.dcv）はPC版DMM Playerでのみダウンロード可能なため、
+            本ツールはPC（Windows/Mac）専用です。
+          </p>
+          <p>
+            スマートフォンでDMMの動画を管理する場合は、
+            DMM公式アプリをご利用ください。
+          </p>
+          <a
+            href="https://www.dmm.co.jp/app/"
+            target="_blank"
+            rel="noreferrer"
+            className="btn-feedback"
+            style={{marginTop: '12px', display: 'inline-block'}}
+          >
+            DMM公式アプリを見る →
+          </a>
+        </div>
+      )}
 
       {/* ツール本体 */}
       <section className="tool-section" id="tool">

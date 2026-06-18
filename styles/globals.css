@@ -1223,6 +1223,122 @@ code {
   color: #3a5a4a;
 }
 
+/* ナビ拡張 */
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-beta {
+  font-size: 11px;
+  color: #e8b840;
+  background: rgba(232, 184, 64, 0.1);
+  border: 1px solid rgba(232, 184, 64, 0.25);
+  border-radius: 4px;
+  padding: 2px 7px;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-link {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nav-link:hover { color: var(--text-primary); }
+
+/* バッジ複数並び */
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.os-badge-pc {
+  background: rgba(78, 204, 163, 0.1);
+  border-color: rgba(78, 204, 163, 0.2);
+  color: #4ecca3;
+}
+
+/* モバイル警告 */
+.mobile-warning {
+  margin: 24px auto;
+  max-width: 760px;
+  padding: 28px;
+  background: rgba(233, 69, 96, 0.06);
+  border: 1px solid rgba(233, 69, 96, 0.2);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.mobile-warning-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+.mobile-warning h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.mobile-warning p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 8px;
+}
+
+/* ソースコードブロック */
+.source-block {
+  background: #0a0a14;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 12px;
+}
+
+.source-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+}
+
+.source-filename {
+  font-family: 'Consolas', monospace;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.source-code {
+  padding: 20px;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  color: #a0b0c0;
+  line-height: 1.7;
+  overflow-x: auto;
+  white-space: pre;
+  margin: 0;
+}
+
+/* モバイル対応 */
+@media (max-width: 700px) {
+  .nav-link { display: none; }
+}
+
 /* OSバッジ */
 .os-badge {
   display: inline-flex;
