@@ -1161,80 +1161,118 @@ code {
   color: #2a3a4a;
 }
 
-/* X シェアボタン固定 */
-.share-btn {
+/* シェアコンテナ */
+.share-container {
   position: fixed;
   bottom: 32px;
   right: 32px;
-  z-index: 50;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* メインボタン */
+.share-main-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1a1a2e;
+  border: 1px solid #0f3460;
+  color: var(--text-primary);
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 0;
-  padding: 12px;
-  background: #000;
-  border: 1px solid #333;
-  border-radius: 50px;
-  color: #fff;
-  text-decoration: none;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.share-main-btn:hover {
+  background: #0f3460;
+  border-color: #1e4a8a;
+  transform: scale(1.05);
+}
+
+.share-main-btn-open {
+  background: #0f3460;
+  border-color: var(--accent);
+}
+
+/* シェアメニュー */
+.share-menu {
+  background: #16213e;
+  border: 1px solid #1e3a6e;
+  border-radius: 12px;
+  padding: 8px;
+  min-width: 200px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: shareMenuIn 0.15s ease;
+}
+
+@keyframes shareMenuIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.share-menu-label {
+  font-size: 11px;
+  color: #3a4a5a;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 4px 12px 8px;
+  margin: 0;
+}
+
+.share-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--text-secondary);
   font-size: 13px;
   font-family: var(--font-body);
-  font-weight: 500;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
-  transition:
-    padding 0.25s ease,
-    gap 0.25s ease,
-    border-color 0.2s,
-    box-shadow 0.2s;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 44px;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  text-align: left;
 }
 
-.share-btn:hover {
-  padding: 12px 20px;
-  gap: 8px;
-  border-color: #555;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-  max-width: 160px;
+.share-menu-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
 }
 
-.share-icon {
-  width: 20px;
-  height: 20px;
-  min-width: 20px;
-  min-height: 20px;
+.share-menu-divider {
+  height: 1px;
+  background: #1e3a6e;
+  margin: 4px 8px;
 }
 
-.share-text {
-  max-width: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition:
-    max-width 0.25s ease,
-    opacity 0.2s ease;
-}
-
-.share-btn:hover .share-text {
-  max-width: 100px;
-  opacity: 1;
+/* オーバーレイ */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
 }
 
 @media (max-width: 700px) {
-  .share-btn {
+  .share-container {
     bottom: 20px;
     right: 20px;
-    padding: 10px;
-    max-width: 40px;
   }
 
-  .share-btn:hover {
-    padding: 10px 16px;
-    max-width: 140px;
+  .share-main-btn {
+    width: 44px;
+    height: 44px;
   }
 
-  .share-icon {
-    width: 18px;
-    height: 18px;
-    min-width: 18px;
+  .share-menu {
+    min-width: 180px;
   }
 }
