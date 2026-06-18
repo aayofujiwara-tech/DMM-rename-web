@@ -6,7 +6,7 @@ const CONCURRENCY = 5
 const DELAY_BETWEEN_BATCHES = 200
 const VALID_FORMATS = new Set(['title_actress', 'actress_title'])
 
-function buildNewName(label, title, actresses, fmt, partNumber) {
+function buildNewName(label, title, actresses, fmt, partNumber, showLabel) {
   const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
   const safeActresses = actresses
     .map(a => a.replace(/[\\/:*?"<>|]/g, '').replace(/\.+$/, '').trim())
@@ -14,15 +14,16 @@ function buildNewName(label, title, actresses, fmt, partNumber) {
     .join('_')
 
   const part = partNumber ? ` (${partNumber})` : ''
+  const labelPart = showLabel ? `[${label}] ` : ''
 
   if (fmt === 'actress_title') {
     return safeActresses
-      ? `[${label}] ${safeActresses} - ${safeTitle}${part}.dcv`
-      : `[${label}] ${safeTitle}${part}.dcv`
+      ? `${labelPart}${safeActresses} - ${safeTitle}${part}.dcv`
+      : `${labelPart}${safeTitle}${part}.dcv`
   }
   return safeActresses
-    ? `[${label}] ${safeTitle} - ${safeActresses}${part}.dcv`
-    : `[${label}] ${safeTitle}${part}.dcv`
+    ? `${labelPart}${safeTitle} - ${safeActresses}${part}.dcv`
+    : `${labelPart}${safeTitle}${part}.dcv`
 }
 
 /**
@@ -61,7 +62,7 @@ function getFallbackCids(cid) {
   return fallbacks
 }
 
-async function processFile(file, apiId, affiliateId, nameFormat) {
+async function processFile(file, apiId, affiliateId, nameFormat, showLabel) {
   const { filename, cid, label, partNumber } = file
 
   if (!cid || !/^[a-z0-9_]{2,50}$/.test(cid)) {
@@ -81,7 +82,7 @@ async function processFile(file, apiId, affiliateId, nameFormat) {
 
     if (data) {
       const { title, actresses } = data
-      const newName = buildNewName(label, title, actresses, nameFormat, partNumber)
+      const newName = buildNewName(label, title, actresses, nameFormat, partNumber, showLabel)
       return { filename, cid, label, status: 'ok', title, actresses, newName }
     }
     return { filename, cid, label, status: 'not_found' }
@@ -95,7 +96,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { filenames } = req.body
+  const { filenames, showLabel = true } = req.body
   const nameFormat = VALID_FORMATS.has(req.body.nameFormat) ? req.body.nameFormat : 'title_actress'
 
   const apiId = process.env.FANZA_API_ID
@@ -144,7 +145,7 @@ export default async function handler(req, res) {
 
     if (rateLimitHit) {
       for (const file of batch) {
-        const result = await processFile(file, apiId, affiliateId, nameFormat)
+        const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
         results.push(result)
         completed++
         sendEvent({ type: 'progress', current: completed, total: files.length, result })
@@ -155,7 +156,7 @@ export default async function handler(req, res) {
 
     const batchResults = await Promise.all(
       batch.map(async (file) => {
-        const result = await processFile(file, apiId, affiliateId, nameFormat)
+        const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
         if (result.status === 'rate_limit') rateLimitHit = true
         return result
       })

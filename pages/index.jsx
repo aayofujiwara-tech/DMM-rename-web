@@ -16,6 +16,7 @@ export default function Home() {
   const [nameFormat, setNameFormat] = useState('title_actress')
   const [progress, setProgress] = useState({ current: 0, total: 0 })
   const [includeSubfolders, setIncludeSubfolders] = useState(false)
+  const [showLabel, setShowLabel] = useState(true)
   const fileInputRef = useRef(null)
 
   const demoItems = [
@@ -83,7 +84,7 @@ export default function Home() {
       const response = await fetch('/api/rename', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filenames, nameFormat }),
+        body: JSON.stringify({ filenames, nameFormat, showLabel }),
       })
 
       if (!response.ok) {
@@ -411,6 +412,22 @@ export default function Home() {
                   />
                   <span>[品番] 女優名 - タイトル.dcv</span>
                 </label>
+              </div>
+              <div className="subfolder-option" style={{marginTop: '12px'}}>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showLabel}
+                    onChange={e => setShowLabel(e.target.checked)}
+                  />
+                  <span>品番を含める（例: [MIAA-629]）</span>
+                </label>
+                <p className="subfolder-note">
+                  {showLabel
+                    ? '✅ ファイル名の先頭に品番が付きます'
+                    : '⚠️ 品番なしでリネームされます。後から品番を確認できなくなる場合があります。'
+                  }
+                </p>
               </div>
             </div>
 
