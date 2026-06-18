@@ -340,6 +340,15 @@ Windows / Mac / Linux 対応
           </div>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
+          <div className="proto-notice">
+            🚧 現在プロトタイプ版です。正常に動作しない場合や
+            対応していないファイル名パターンがあれば、
+            <a href="https://twitter.com/messages/compose?recipient_id=uminobozu125" target="_blank" rel="noreferrer">
+              X（@uminobozu125）のDM
+            </a>
+            でお知らせください。
+          </div>
+
           <div className="rename-demo">
             <div className="rename-demo-label">
               変換イメージ
@@ -742,6 +751,30 @@ Windows / Mac / Linux 対応
                   </div>
                 </div>
               )}
+
+              {results.some(r => r.status === 'not_found') && (
+                <div className="feedback-section">
+                  <h4 className="feedback-title">🔍 取得できなかったファイルについて</h4>
+                  <p className="feedback-desc">
+                    販売停止・削除済みのコンテンツは情報を取得できません。<br />
+                    それ以外の理由で取得できなかった場合は、ファイル名をXのDMでお知らせください。対応を検討します。
+                  </p>
+                  <a
+                    href={`https://twitter.com/messages/compose?recipient_id=uminobozu125&text=${encodeURIComponent(
+                      'DMM Renamerでヒットしなかったファイル名を報告します。\n\n' +
+                      results.filter(r => r.status === 'not_found').map(r => `・${r.filename}`).join('\n')
+                    )}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="btn-feedback"
+                  >
+                    📩 X（@uminobozu125）のDMで報告する
+                  </a>
+                  <p className="feedback-note">
+                    ※ Xのアカウントが必要です。ファイル名以外の個人情報は不要です。
+                  </p>
+                </div>
+              )}
             </section>
           )}
         </div>
@@ -756,7 +789,7 @@ Windows / Mac / Linux 対応
             {/* X */}
             <a
               href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(
-                'DMMのダウンロードファイルを自動でリネームできるツール\n\nmiaa00629mhb.dcv\n→ [MIAA-629] タイトル名 - 女優名.dcv\n\n無料・登録不要で使えます\n#DMM #FANZA'
+                'DMMのダウンロードファイルを自動でリネームできるツール\n\nmiaa00629mhb.dcv\n→ [MIAA-629] タイトル名 - 女優名.dcv\n\n無料・登録不要で使えます\n@uminobozu125 #DMM #FANZA'
               )}&url=${encodeURIComponent('https://dmm-rename-web.vercel.app')}`}
               target="_blank"
               rel="noreferrer"
@@ -873,6 +906,8 @@ Windows / Mac / Linux 対応
           <a href="/privacy">プライバシーポリシー</a>
           <span>|</span>
           <a href="/age-check">年齢確認</a>
+          <span>|</span>
+          <a href="https://twitter.com/messages/compose?recipient_id=uminobozu125" target="_blank" rel="noreferrer">バグ報告</a>
         </div>
         <p className="footer-age">
           🔞 本サービスは18歳以上の方を対象としています
