@@ -653,6 +653,9 @@ export default function Home() {
         <p className="footer-age">
           🔞 本サービスは18歳以上の方を対象としています
         </p>
+        <p className="footer-operator">
+          運営: 海野坊頭
+        </p>
       </footer>
     </>
   )

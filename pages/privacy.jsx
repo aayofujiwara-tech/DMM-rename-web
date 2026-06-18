@@ -12,6 +12,10 @@ export default function Privacy() {
           <Link href="/" className="legal-back">← トップに戻る</Link>
           <h1>プライバシーポリシー</h1>
           <p className="legal-updated">最終更新日: 2026年6月1日</p>
+          <p style={{fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '32px'}}>
+            本プライバシーポリシーは、海野坊頭が運営するDMM Renamerにおける
+            個人情報の取り扱いについて定めるものです。
+          </p>
 
           <section>
             <h2>収集する情報</h2>
@@ -54,6 +58,7 @@ export default function Privacy() {
                   DMMの利用規約
                 </a>
               </li>
+              {/* TODO: Cloudflareへ移行後、以下のリンクをCloudflareのプライバシーポリシーに差し替える */}
               <li>
                 <strong>Vercel</strong>:
                 本サービスのホスティングに使用しています。
