@@ -327,10 +327,10 @@ export default function Home() {
             2D（.dcv）・VR（.wsdcf）両対応。貼り付けるだけ、無料、登録不要。
           </p>
           <div className="os-badge">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
-              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
             </svg>
-            Windows専用ツールです
+Windows / Mac / Linux 対応
           </div>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
@@ -412,7 +412,7 @@ export default function Home() {
               <p className="method-desc">
                 .dcvファイルが入っているフォルダを選択してください。
                 選択したフォルダ直下のファイル名が自動で取得されます。
-                <span className="os-note">※ リネームスクリプトはWindowsのみ対応しています</span>
+                <span className="os-note">※ リネームスクリプトはWindows・Mac・Linux対応です</span>
               </p>
               <input
                 type="file"
