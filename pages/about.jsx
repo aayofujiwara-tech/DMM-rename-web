@@ -83,6 +83,11 @@ export default function About() {
           </section>
 
           <section>
+            <h2>動作環境</h2>
+            <p>本ツールはPC（Windows・Mac・Linux）専用です。スマートフォン・タブレットには対応していません。</p>
+          </section>
+
+          <section>
             <h2>使用している外部サービス</h2>
             <ul>
               <li>
