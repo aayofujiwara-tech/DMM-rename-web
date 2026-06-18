@@ -1,0 +1,156 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!-- 背景 -->
+  <rect width="1200" height="630" fill="#0d0d1a"/>
+
+  <!-- 背景グラデーション -->
+  <defs>
+    <radialGradient id="grad" cx="30%" cy="50%" r="70%">
+      <stop offset="0%" stop-color="#1e2d5a" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#0d0d1a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#ffffff" opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grad)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- 左アクセントライン -->
+  <rect x="80" y="160" width="4" height="140" fill="#e94560" rx="2"/>
+
+  <!-- タイトル -->
+  <text x="108" y="240"
+    font-family="Arial Black, Impact, sans-serif"
+    font-size="80"
+    font-weight="900"
+    fill="#e94560"
+    letter-spacing="-2">DMM Renamer</text>
+
+  <!-- サブタイトル（英語） -->
+  <text x="108" y="295"
+    font-family="Arial, sans-serif"
+    font-size="28"
+    fill="#8892a4">Auto-rename your DMM download files</text>
+
+  <!-- 区切り線 -->
+  <line x1="108" y1="325" x2="860" y2="325" stroke="#1e3a6e" stroke-width="1"/>
+
+  <!-- 変換例ボックス -->
+  <rect x="80" y="348" width="800" height="140" rx="12" fill="#16213e"/>
+  <rect x="80" y="348" width="800" height="140" rx="12" fill="none" stroke="#1e3a6e" stroke-width="1"/>
+
+  <!-- BEFORE ラベル -->
+  <text x="112" y="378"
+    font-family="Arial, sans-serif"
+    font-size="13"
+    fill="#3a4a5a"
+    letter-spacing="3">BEFORE</text>
+
+  <!-- 変換前ファイル名 -->
+  <text x="112" y="410"
+    font-family="Courier New, monospace"
+    font-size="26"
+    fill="#8892a4">miaa00629mhb.dcv</text>
+
+  <!-- 矢印 -->
+  <text x="112" y="442"
+    font-family="Arial, sans-serif"
+    font-size="20"
+    fill="#e94560">↓</text>
+
+  <!-- AFTER ラベル -->
+  <text x="140" y="442"
+    font-family="Arial, sans-serif"
+    font-size="13"
+    fill="#3a4a5a"
+    letter-spacing="3">AFTER</text>
+
+  <!-- 変換後ファイル名 -->
+  <text x="112" y="470"
+    font-family="Courier New, monospace"
+    font-size="24"
+    fill="#4ecca3">[MIAA-629] Title - Actress.dcv</text>
+
+  <!-- 右側装飾 -->
+  <g opacity="0.12">
+    <rect x="960" y="140" width="160" height="200" rx="12" fill="#e94560"/>
+  </g>
+  <g opacity="0.08">
+    <rect x="990" y="180" width="160" height="200" rx="12" fill="#4ecca3"/>
+  </g>
+
+  <!-- ファイルアイコン -->
+  <g transform="translate(950, 170)">
+    <rect x="0" y="0" width="150" height="190" rx="10" fill="#16213e" stroke="#1e3a6e" stroke-width="1.5"/>
+    <rect x="0" y="0" width="150" height="44" rx="10" fill="#1e2d5a"/>
+    <rect x="0" y="34" width="150" height="10" fill="#1e2d5a"/>
+    <text x="75" y="26"
+      font-family="Arial Black, sans-serif"
+      font-size="13"
+      fill="#e94560"
+      text-anchor="middle"
+      font-weight="900">.dcv</text>
+    <text x="75" y="100"
+      font-family="Courier New, monospace"
+      font-size="11"
+      fill="#4ecca3"
+      text-anchor="middle">[MIAA-629]</text>
+    <text x="75" y="118"
+      font-family="Arial, sans-serif"
+      font-size="10"
+      fill="#8892a4"
+      text-anchor="middle">Title Name</text>
+    <text x="75" y="134"
+      font-family="Arial, sans-serif"
+      font-size="10"
+      fill="#8892a4"
+      text-anchor="middle">Actress Name</text>
+    <rect x="30" y="155" width="90" height="22" rx="4" fill="#e94560" opacity="0.9"/>
+    <text x="75" y="170"
+      font-family="Arial Black, sans-serif"
+      font-size="11"
+      fill="white"
+      text-anchor="middle"
+      font-weight="900">RENAMED</text>
+  </g>
+
+  <!-- Free バッジ -->
+  <rect x="108" y="520" width="80" height="28" rx="14" fill="#16213e" stroke="#1e3a6e" stroke-width="1"/>
+  <text x="148" y="538"
+    font-family="Arial Black, sans-serif"
+    font-size="12"
+    fill="#4ecca3"
+    text-anchor="middle"
+    font-weight="900">FREE</text>
+
+  <!-- No Registration バッジ -->
+  <rect x="200" y="520" width="160" height="28" rx="14" fill="#16213e" stroke="#1e3a6e" stroke-width="1"/>
+  <text x="280" y="538"
+    font-family="Arial, sans-serif"
+    font-size="12"
+    fill="#8892a4"
+    text-anchor="middle">No Registration</text>
+
+  <!-- No Upload バッジ -->
+  <rect x="372" y="520" width="140" height="28" rx="14" fill="#16213e" stroke="#1e3a6e" stroke-width="1"/>
+  <text x="442" y="538"
+    font-family="Arial, sans-serif"
+    font-size="12"
+    fill="#8892a4"
+    text-anchor="middle">No Upload</text>
+
+  <!-- URL -->
+  <text x="108" y="598"
+    font-family="Arial, sans-serif"
+    font-size="18"
+    fill="#2a3a4a">dmm-rename-web.vercel.app</text>
+
+  <!-- 18+ バッジ -->
+  <circle cx="1140" cy="590" r="28" fill="none" stroke="#3a4a5a" stroke-width="2"/>
+  <text x="1140" y="597"
+    font-family="Arial Black, sans-serif"
+    font-size="15"
+    fill="#3a4a5a"
+    text-anchor="middle"
+    font-weight="900">18+</text>
+</svg>
