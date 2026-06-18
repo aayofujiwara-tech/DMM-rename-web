@@ -343,10 +343,10 @@ Windows / Mac / Linux 対応
           <div className="proto-notice">
             🚧 現在プロトタイプ版です。正常に動作しない場合や
             対応していないファイル名パターンがあれば、
-            <a href="https://twitter.com/messages/compose?recipient_id=uminobozu125" target="_blank" rel="noreferrer">
-              X（@uminobozu125）のDM
+            <a href="https://x.com/uminobozu125" target="_blank" rel="noreferrer">
+              X（@uminobozu125）
             </a>
-            でお知らせください。
+            にDMでお知らせください。
           </div>
 
           <div className="rename-demo">
@@ -760,18 +760,15 @@ Windows / Mac / Linux 対応
                     それ以外の理由で取得できなかった場合は、ファイル名をXのDMでお知らせください。対応を検討します。
                   </p>
                   <a
-                    href={`https://twitter.com/messages/compose?recipient_id=uminobozu125&text=${encodeURIComponent(
-                      'DMM Renamerでヒットしなかったファイル名を報告します。\n\n' +
-                      results.filter(r => r.status === 'not_found').map(r => `・${r.filename}`).join('\n')
-                    )}`}
+                    href="https://x.com/uminobozu125"
                     target="_blank"
                     rel="noreferrer"
                     className="btn-feedback"
                   >
-                    📩 X（@uminobozu125）のDMで報告する
+                    📩 X（@uminobozu125）にDMで報告する
                   </a>
                   <p className="feedback-note">
-                    ※ Xのアカウントが必要です。ファイル名以外の個人情報は不要です。
+                    ※ プロフィールページからDMをお送りください。ファイル名以外の個人情報は不要です。
                   </p>
                 </div>
               )}
@@ -907,7 +904,7 @@ Windows / Mac / Linux 対応
           <span>|</span>
           <a href="/age-check">年齢確認</a>
           <span>|</span>
-          <a href="https://twitter.com/messages/compose?recipient_id=uminobozu125" target="_blank" rel="noreferrer">バグ報告</a>
+          <a href="https://x.com/uminobozu125" target="_blank" rel="noreferrer">バグ報告</a>
         </div>
         <p className="footer-age">
           🔞 本サービスは18歳以上の方を対象としています
