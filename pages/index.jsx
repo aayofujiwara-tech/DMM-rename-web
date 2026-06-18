@@ -261,6 +261,12 @@ export default function Home() {
             ダウンロードしたままの謎のファイル名を、女優名・タイトルに整理。<br />
             2D（.dcv）・VR（.wsdcf）両対応。貼り付けるだけ、無料、登録不要。
           </p>
+          <div className="os-badge">
+            <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+              <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+            </svg>
+            Windows専用ツールです
+          </div>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
 
           <div className="rename-demo">
@@ -339,8 +345,9 @@ export default function Home() {
             <div className="method">
               <label className="method-label">① フォルダを選択</label>
               <p className="method-desc">
-                .dcv / .wsdcfファイルが入っているフォルダを選択してください。
+                .dcvファイルが入っているフォルダを選択してください。
                 選択したフォルダ直下のファイル名が自動で取得されます。
+                <span className="os-note">※ リネームスクリプトはWindowsのみ対応しています</span>
               </p>
               <input
                 type="file"
@@ -569,6 +576,12 @@ export default function Home() {
                     上のボタンでダウンロードしたZIPファイルを使って
                     ファイルを自動でリネームできます。
                     <strong>ダブルクリックするだけで完了します。</strong>
+                    <div className="howto-os-warning">
+                      <svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14">
+                        <path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-12.9-1.801"/>
+                      </svg>
+                      本スクリプトはWindows専用です。Mac・Linuxには対応していません。
+                    </div>
                   </div>
 
                   <ol className="howto-steps">

@@ -1161,6 +1161,40 @@ code {
   color: #2a3a4a;
 }
 
+/* OSバッジ */
+.os-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.os-note {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #3a4a5a;
+}
+
+.howto-os-warning {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: #3a4a5a;
+}
+
 /* シェアコンテナ */
 .share-container {
   position: fixed;
