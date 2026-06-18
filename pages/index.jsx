@@ -149,8 +149,8 @@ export default function Home() {
 
     // PowerShell single-quoted strings: only ' needs escaping (doubled). $ and ` are not expanded.
     const sanitizePS = (str) => String(str).replace(/'/g, "''")
-    // 制御文字・改行を含むパスやファイル名はスクリプトインジェクションの原因になるため拒否する
-    const hasDangerousChars = (str) => /[\r\n\x00-\x1f]/.test(str)
+    // 制御文字・改行・シェル展開文字を含む値はスクリプトインジェクションの原因になるため拒否する
+    const hasDangerousChars = (str) => /[\r\n\x00-\x1f$`]/.test(str)
 
     if (hasDangerousChars(basePath)) {
       alert('フォルダのパスに使用できない文字が含まれています。')
@@ -235,9 +235,9 @@ export default function Home() {
         .forEach(r => {
           shLines.push(`TARGET=$(find '$BASE_DIR' -name '${sanitizeSh(r.filename)}' 2>/dev/null | head -1)`)
           shLines.push(`if [ -n "$TARGET" ]; then`)
-          shLines.push(`  mv "$TARGET" "$(dirname "$TARGET")/${sanitizeSh(r.newName)}" && echo "✓ ${r.newName}" || echo "✗ エラー: ${r.filename}"`)
+          shLines.push(`  mv "$TARGET" "$(dirname "$TARGET")"/'${sanitizeSh(r.newName)}' && echo '✓ ${sanitizeSh(r.newName)}' || echo '✗ エラー: ${sanitizeSh(r.filename)}'`)
           shLines.push(`else`)
-          shLines.push(`  echo "- スキップ（見つからず）: ${r.filename}"`)
+          shLines.push(`  echo '- スキップ（見つからず）: ${sanitizeSh(r.filename)}'`)
           shLines.push(`fi`)
           shLines.push('')
         })
@@ -246,7 +246,7 @@ export default function Home() {
         .filter(r => r.status === 'ok')
         .filter(r => !hasDangerousChars(r.filename) && !hasDangerousChars(r.newName))
         .forEach(r => {
-          shLines.push(`mv '${sanitizeSh(macBasePath)}/${sanitizeSh(r.filename)}' '${sanitizeSh(macBasePath)}/${sanitizeSh(r.newName)}' && echo "✓ ${r.newName}" || echo "✗ エラー: ${r.filename}"`)
+          shLines.push(`mv '${sanitizeSh(macBasePath)}/${sanitizeSh(r.filename)}' '${sanitizeSh(macBasePath)}/${sanitizeSh(r.newName)}' && echo '✓ ${sanitizeSh(r.newName)}' || echo '✗ エラー: ${sanitizeSh(r.filename)}'`)
         })
     }
 
