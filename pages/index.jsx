@@ -643,6 +643,16 @@ export default function Home() {
         <p className="footer-credit">
           Powered by <a href="https://affiliate.dmm.com/api/" target="_blank" rel="noreferrer">DMM Webサービス</a>
         </p>
+        <div className="footer-links">
+          <a href="/terms">利用規約</a>
+          <span>|</span>
+          <a href="/privacy">プライバシーポリシー</a>
+          <span>|</span>
+          <a href="/age-check">年齢確認</a>
+        </div>
+        <p className="footer-age">
+          🔞 本サービスは18歳以上の方を対象としています
+        </p>
       </footer>
     </>
   )

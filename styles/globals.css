@@ -968,3 +968,189 @@ code {
   color: var(--text-secondary);
   padding-left: 16px;
 }
+
+/* 年齢確認ページ */
+.age-check-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  padding: 24px;
+}
+
+.age-check-box {
+  max-width: 480px;
+  width: 100%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+}
+
+.age-check-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.age-check-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.age-check-desc {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 32px;
+}
+
+.age-check-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.btn-agree {
+  padding: 14px;
+  background: linear-gradient(135deg, #e94560, #c73652);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.btn-agree:hover { opacity: 0.9; }
+
+.btn-disagree {
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.btn-disagree:hover { border-color: var(--text-secondary); }
+
+.age-check-note {
+  font-size: 11px;
+  color: #3a4a5a;
+  line-height: 1.6;
+}
+
+.age-check-note a {
+  color: #3a4a5a;
+  text-decoration: underline;
+}
+
+/* 法的ページ共通 */
+.legal-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 48px 24px;
+}
+
+.legal-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.legal-back {
+  display: inline-block;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 32px;
+  transition: color 0.2s;
+}
+
+.legal-back:hover { color: var(--text-primary); }
+
+.legal-page h1 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+}
+
+.legal-updated {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 40px;
+}
+
+.legal-page section {
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+
+.legal-page section:last-child {
+  border-bottom: none;
+}
+
+.legal-page h2 {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.legal-page p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+  margin-bottom: 8px;
+}
+
+.legal-page ul {
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.legal-page a {
+  color: #4ecca3;
+}
+
+/* フッターリンク */
+.footer-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  font-size: 12px;
+}
+
+.footer-links a {
+  color: #3a4a5a;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--text-secondary); }
+
+.footer-links span { color: #2a3a4a; }
+
+.footer-age {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #3a4a5a;
+}
