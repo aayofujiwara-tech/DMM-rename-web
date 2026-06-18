@@ -1195,6 +1195,48 @@ code {
   color: #3a4a5a;
 }
 
+/* OSセクション */
+.howto-os-section {
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.howto-os-section:last-of-type {
+  margin-bottom: 0;
+}
+
+.howto-os-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.howto-os-header-mac {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.howto-os-section .howto-steps {
+  padding: 16px;
+}
+
+.howto-os-section .howto-step {
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 16px 0;
+}
+
+.howto-os-section .howto-step:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
 /* シェアコンテナ */
 .share-container {
   position: fixed;
