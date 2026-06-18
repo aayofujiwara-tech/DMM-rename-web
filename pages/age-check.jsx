@@ -6,13 +6,13 @@ export default function AgeCheck() {
   const router = useRouter()
 
   useEffect(() => {
-    if (localStorage.getItem('age_verified') === 'true') {
+    if (sessionStorage.getItem('age_verified') === 'true') {
       router.replace('/')
     }
   }, [])
 
   const handleAgree = () => {
-    localStorage.setItem('age_verified', 'true')
+    sessionStorage.setItem('age_verified', 'true')
     router.replace('/')
   }
 

@@ -9,7 +9,7 @@ export default function App({ Component, pageProps }) {
   useEffect(() => {
     const excludePaths = ['/age-check', '/terms', '/privacy']
     if (excludePaths.includes(router.pathname)) return
-    if (localStorage.getItem('age_verified') !== 'true') {
+    if (sessionStorage.getItem('age_verified') !== 'true') {
       router.replace('/age-check')
     }
   }, [router.pathname])
