@@ -159,12 +159,18 @@ app.get('/api/ranking', async (c) => {
         (item.imageURL as Record<string, string>)?.small ||
         (item.imageURL as Record<string, string>)?.list ||
         (item.imageURL as Record<string, string>)?.large ||
+        ((item.sampleImageURL as Record<string, string[]>)?.sample_s?.[0]) ||
+        ((item.sampleImageURL as Record<string, string[]>)?.sample_l?.[0]) ||
         '',
       price: ((item.prices as Record<string, string>)?.price) ?? '',
     }))
 
     if (items.length > 0) {
-      console.log('[ranking] first item imageURL:', JSON.stringify(items[0].imageURL))
+      console.log('[ranking debug]', JSON.stringify({
+        imageURL: items[0].imageURL,
+        sampleURL: items[0].sampleImageURL,
+        prices: items[0].prices,
+      }))
     }
     return c.json({ items: result })
   } catch {
