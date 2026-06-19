@@ -22,6 +22,8 @@ export default function Document() {
         <meta property="og:locale" content="ja_JP" />
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@uminobozu125" />
+        <meta name="twitter:creator" content="@uminobozu125" />
         <meta name="twitter:title" content="DMM Renamer - DMMファイルを自動でリネーム" />
         <meta name="twitter:description" content="DMMでダウンロードした.dcvファイルを女優名・タイトルで自動リネーム。貼り付けるだけ、無料、登録不要。" />
         <meta name="twitter:image" content="https://dmm-rename-web.vercel.app/ogp.png" />
