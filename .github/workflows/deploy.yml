@@ -20,7 +20,14 @@ jobs:
 
       - name: Build with OpenNext
         run: npx @opennextjs/cloudflare@latest build
+
+      - name: Set Cloudflare secrets
+        run: |
+          printf '%s' "$FANZA_API_ID" | npx wrangler secret put FANZA_API_ID
+          printf '%s' "$FANZA_AFFILIATE_ID" | npx wrangler secret put FANZA_AFFILIATE_ID
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           FANZA_API_ID: ${{ secrets.FANZA_API_ID }}
           FANZA_AFFILIATE_ID: ${{ secrets.FANZA_AFFILIATE_ID }}
 
@@ -29,5 +36,3 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          FANZA_API_ID: ${{ secrets.FANZA_API_ID }}
-          FANZA_AFFILIATE_ID: ${{ secrets.FANZA_AFFILIATE_ID }}
