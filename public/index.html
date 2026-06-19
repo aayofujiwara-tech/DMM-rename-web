@@ -948,39 +948,87 @@ document.getElementById('shareCopyLink').addEventListener('click', () => {
 })
 
 // ===== ウィジェット =====
+function safeUrl(url) {
+  return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#'
+}
+
 async function loadWidget(endpoint, containerId, renderFn) {
   try {
     const res = await fetch(endpoint)
     const { items } = await res.json()
     const container = document.getElementById(containerId)
     if (!container || !items.length) return
-    container.innerHTML = items.map(renderFn).join('')
+    container.innerHTML = ''
+    items.forEach((item, i) => container.appendChild(renderFn(item, i)))
   } catch (e) {
     console.warn('widget load failed', e)
   }
 }
 
 function renderRankItem(item, index) {
-  const numClass = index < 3 ? 'rank-num top3' : 'rank-num'
-  const price = item.price ? `<div class="rank-price">¥${item.price}</div>` : ''
-  const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  return `<a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer sponsored" class="rank-item">
-    <span class="${numClass}">${index + 1}</span>
-    <img class="rank-thumb" src="${item.imageUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
-    <div class="rank-info"><div class="rank-title">${safeTitle}</div>${price}</div>
-  </a>`
+  const a = document.createElement('a')
+  a.href = safeUrl(item.affiliateUrl)
+  a.target = '_blank'
+  a.rel = 'noopener noreferrer sponsored'
+  a.className = 'rank-item'
+
+  const num = document.createElement('span')
+  num.className = index < 3 ? 'rank-num top3' : 'rank-num'
+  num.textContent = String(index + 1)
+
+  const img = document.createElement('img')
+  img.className = 'rank-thumb'
+  img.src = safeUrl(item.imageUrl)
+  img.alt = ''
+  img.loading = 'lazy'
+  img.addEventListener('error', () => { img.style.display = 'none' })
+
+  const info = document.createElement('div')
+  info.className = 'rank-info'
+
+  const titleEl = document.createElement('div')
+  titleEl.className = 'rank-title'
+  titleEl.textContent = item.title ?? ''
+  info.appendChild(titleEl)
+
+  if (item.price) {
+    const priceEl = document.createElement('div')
+    priceEl.className = 'rank-price'
+    priceEl.textContent = `¥${item.price}`
+    info.appendChild(priceEl)
+  }
+
+  a.appendChild(num)
+  a.appendChild(img)
+  a.appendChild(info)
+  return a
 }
 
 function renderPickupItem(item) {
-  const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  return `<a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer sponsored" class="pickup-item">
-    <img class="pickup-thumb" src="${item.imageUrl}" alt="${safeTitle}" loading="lazy" onerror="this.style.display='none'">
-    <div class="pickup-title">${safeTitle}</div>
-  </a>`
+  const a = document.createElement('a')
+  a.href = safeUrl(item.affiliateUrl)
+  a.target = '_blank'
+  a.rel = 'noopener noreferrer sponsored'
+  a.className = 'pickup-item'
+
+  const img = document.createElement('img')
+  img.className = 'pickup-thumb'
+  img.src = safeUrl(item.imageUrl)
+  img.alt = item.title ?? ''
+  img.loading = 'lazy'
+  img.addEventListener('error', () => { img.style.display = 'none' })
+
+  const titleEl = document.createElement('div')
+  titleEl.className = 'pickup-title'
+  titleEl.textContent = item.title ?? ''
+
+  a.appendChild(img)
+  a.appendChild(titleEl)
+  return a
 }
 
-loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', (item, i) => renderRankItem(item, i))
-loadWidget('/api/ranking?type=date&hits=4', 'newrelease-list', (item, i) => renderRankItem(item, i))
+loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', renderRankItem)
+loadWidget('/api/ranking?type=date&hits=4', 'newrelease-list', renderRankItem)
 </script>
 </body>
 </html>
