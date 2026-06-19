@@ -1,8 +1,6 @@
 import { extractCid } from '../../../lib/cidExtractor'
 import { fetchFanzaItem, isValidApiKeys } from '../../../lib/fanzaApi'
 
-export const runtime = 'edge'
-
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 const CONCURRENCY = 5
