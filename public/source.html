@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>安全性について - DMM Renamer</title>
+  <title>安全性について | DMM Renamer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -17,39 +17,53 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 .nav-logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;text-decoration:none;}
 .nav-beta{font-size:11px;color:#e94560;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 7px;}
 .nav-right{display:flex;align-items:center;gap:16px;}
-.nav-link{font-size:13px;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;}
-.nav-link:hover{color:var(--text-primary);}
-.nav-link-active{color:var(--text-primary);}
 .nav-cta{padding:9px 22px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:14px;font-weight:500;transition:background 0.2s;}
 .nav-cta:hover{background:#c73652;}
-.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px;}
-.page-back{display:inline-block;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
+.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px 80px;}
+.page-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
 .page-back:hover{color:var(--text-primary);}
-.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px;}
-.page-updated{font-size:13px;color:var(--text-secondary);margin-bottom:40px;}
-.page-section{margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--border);}
-.page-section:last-child{border-bottom:none;}
-.page-h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
-.page-p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:8px;}
+.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:48px;}
+.page-section{margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--border);}
+.page-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.page-h2{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:16px;}
+.page-p{font-size:14px;color:var(--text-secondary);line-height:1.9;margin-bottom:10px;}
+/* table */
 .safety-table{width:100%;border-collapse:collapse;font-size:14px;}
-.safety-table th,.safety-table td{padding:12px 16px;border:1px solid var(--border);text-align:left;}
-.safety-table th{background:var(--bg-secondary);color:var(--text-secondary);font-weight:600;width:40%;}
+.safety-table th,.safety-table td{padding:12px 16px;border:1px solid var(--border);text-align:left;line-height:1.6;}
+.safety-table th{background:var(--bg-secondary);color:var(--text-secondary);font-weight:600;width:44%;}
 .safety-table td{background:var(--bg-primary);color:var(--text-primary);}
-.file-cards{display:flex;flex-direction:column;gap:12px;}
-.file-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
-.file-card-header{padding:10px 16px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-family:'Consolas',monospace;font-size:13px;color:#4ecca3;}
-.file-card-body{padding:12px 16px;background:var(--bg-primary);font-size:13px;color:var(--text-secondary);line-height:1.6;}
-.faq-list{display:flex;flex-direction:column;gap:16px;}
-.faq-item{padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;}
-.faq-q{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:8px;}
-.faq-a{font-size:13px;color:var(--text-secondary);line-height:1.7;}
+/* code blocks */
+.code-blocks{display:flex;flex-direction:column;gap:20px;}
+.code-block{border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.code-block-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg-secondary);border-bottom:1px solid var(--border);}
+.code-block-filename{font-family:'Consolas',monospace;font-size:13px;color:#4ecca3;}
+.code-block-lang{font-size:11px;color:var(--text-secondary);background:var(--bg-primary);padding:2px 8px;border-radius:4px;border:1px solid var(--border);}
+.code-block-body{padding:18px 20px;background:#060610;font-family:'Consolas',monospace;font-size:12px;color:#a0b0c0;line-height:1.8;overflow-x:auto;white-space:pre;}
+.kw{color:#cc99cd;}.cm{color:#5a7060;font-style:italic;}.str{color:#7ec8e3;}.var{color:#f8c555;}.fn{color:#4ecca3;}
+/* accordion */
+.accordion-list{display:flex;flex-direction:column;gap:8px;}
+.accordion{border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color 0.2s;}
+.accordion.open{border-color:#1e4a8a;}
+.accordion-btn{width:100%;display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-secondary);border:none;cursor:pointer;text-align:left;transition:background 0.2s;gap:16px;}
+.accordion-btn:hover{background:var(--bg-card);}
+.accordion-q{font-size:14px;font-weight:600;color:var(--text-primary);font-family:var(--font-body);}
+.accordion-chevron{font-size:12px;color:var(--text-secondary);min-width:16px;text-align:center;transition:transform 0.2s;}
+.accordion.open .accordion-chevron{transform:rotate(180deg);}
+.accordion-body{padding:20px;border-top:1px solid var(--border);background:var(--bg-primary);font-size:14px;color:var(--text-secondary);line-height:1.8;display:none;}
+.accordion.open .accordion-body{display:block;}
+/* github box */
+.github-box{padding:20px 24px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+.github-box-text{font-size:14px;color:var(--text-secondary);line-height:1.7;}
+.github-link{display:inline-block;padding:10px 20px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;color:#4ecca3;font-size:13px;text-decoration:none;white-space:nowrap;transition:border-color 0.2s;}
+.github-link:hover{border-color:#4ecca3;}
 .footer{padding:32px 24px;text-align:center;background:var(--bg-primary);border-top:1px solid var(--border);color:#3a4a5a;font-size:13px;}
 .footer-links{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-size:12px;}
 .footer-links a{color:#3a4a5a;text-decoration:none;transition:color 0.2s;}
 .footer-links a:hover{color:var(--text-secondary);}
 .footer-links span{color:#2a3a4a;}
 .footer-age{margin-top:8px;font-size:12px;color:#3a4a5a;}
-@media(max-width:700px){.nav{padding:12px 20px;}.nav-link{display:none;}.page-wrap{padding:32px 16px;}.safety-table th,.safety-table td{padding:8px 12px;font-size:13px;}}
+@media(max-width:700px){.nav{padding:12px 20px;}.page-wrap{padding:32px 16px 60px;}.safety-table th,.safety-table td{padding:8px 12px;font-size:13px;}.github-box{flex-direction:column;align-items:flex-start;}}
   </style>
 </head>
 <body>
@@ -59,8 +73,6 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
     <span class="nav-beta">βプロトタイプ</span>
   </div>
   <div class="nav-right">
-    <a href="/about" class="nav-link">このツールについて</a>
-    <a href="/source" class="nav-link nav-link-active">安全性について</a>
     <a href="/#tool" class="nav-cta">今すぐ使う →</a>
   </div>
 </nav>
@@ -68,58 +80,139 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 <div class="page-wrap">
   <a href="/" class="page-back">← トップに戻る</a>
   <h1 class="page-title">安全性について</h1>
-  <p class="page-updated">ダウンロードされるスクリプトの動作について説明します。</p>
+  <p class="page-sub">ダウンロードされるスクリプトの動作と安全性の説明</p>
 
+  <!-- 安全性の概要 -->
   <div class="page-section">
-    <h2 class="page-h2">ダウンロードされるファイルの安全性</h2>
+    <h2 class="page-h2">安全性の概要</h2>
     <table class="safety-table">
-      <tr><th>項目</th><th>内容</th></tr>
-      <tr><td>生成場所</td><td>ブラウザ上で完結・サーバー不関与</td></tr>
-      <tr><td>実行コマンド</td><td>Rename-Item（Windows）/ mv（Mac/Linux）のみ</td></tr>
-      <tr><td>ネット通信</td><td>スクリプト実行中は一切なし</td></tr>
-      <tr><td>ファイル操作</td><td>ファイル名変更のみ・削除や上書きなし</td></tr>
+      <tr><th>スクリプト生成場所</th><td>ブラウザ上で完結・サーバー不関与</td></tr>
+      <tr><th>実行コマンド</th><td>Rename-Item（Windows）/ mv（Mac/Linux）のみ</td></tr>
+      <tr><th>スクリプト実行中のネット通信</th><td>一切なし</td></tr>
+      <tr><th>ファイル操作</th><td>ファイル名変更のみ・削除や上書きなし</td></tr>
+      <tr><th>動画ファイルへのアクセス</th><td>なし（ファイル名のテキストのみ処理）</td></tr>
     </table>
   </div>
 
+  <!-- 各ファイルのコード -->
   <div class="page-section">
-    <h2 class="page-h2">各ファイルの説明</h2>
-    <div class="file-cards">
-      <div class="file-card">
-        <div class="file-card-header">rename.ps1</div>
-        <div class="file-card-body">
-          PowerShellの <code>Rename-Item</code> コマンドでファイル名を変更するだけです。ネットワーク接続・ファイル削除・レジストリ操作などは一切行いません。
+    <h2 class="page-h2">各ファイルのコード</h2>
+    <div class="code-blocks">
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-filename">rename.ps1</span>
+          <span class="code-block-lang">PowerShell</span>
         </div>
+        <div class="code-block-body"><span class="cm"># DMM Renamer - リネームスクリプト (Windows)</span>
+<span class="var">$folder</span> = <span class="str">"C:\Users\...\Downloads"</span>
+
+<span class="fn">Rename-Item</span> -Path <span class="str">"$folder\ipx00500hhb.dcv"</span> -NewName <span class="str">"[IPX-500] 甘えたい夜に - 白石りな.dcv"</span> -ErrorAction SilentlyContinue
+<span class="cm"># ... 変換対象ファイル分だけ繰り返し ...</span>
+
+<span class="fn">Write-Host</span> <span class="str">"完了しました"</span> -ForegroundColor Green
+<span class="fn">Read-Host</span> <span class="str">"Enterキーで閉じる"</span></div>
       </div>
-      <div class="file-card">
-        <div class="file-card-header">実行する.bat</div>
-        <div class="file-card-body">
-          <code>powershell -ExecutionPolicy Bypass -File rename.ps1</code> を実行するだけです。rename.ps1を起動する以外の処理は何もしていません。
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-filename">実行する.bat</span>
+          <span class="code-block-lang">バッチファイル</span>
         </div>
+        <div class="code-block-body"><span class="kw">@echo off</span>
+<span class="fn">chcp</span> 65001 > nul
+<span class="fn">powershell</span> -ExecutionPolicy Bypass -File <span class="str">"%~dp0rename.ps1"</span></div>
       </div>
-      <div class="file-card">
-        <div class="file-card-header">実行する.sh</div>
-        <div class="file-card-body">
-          <code>mv</code> コマンドでファイル名を変更するだけです。削除・上書き・外部通信は行いません。
+
+      <div class="code-block">
+        <div class="code-block-header">
+          <span class="code-block-filename">実行する.sh</span>
+          <span class="code-block-lang">bash / Mac・Linux</span>
         </div>
+        <div class="code-block-body"><span class="cm">#!/bin/bash</span>
+<span class="cm"># DMM Renamer - リネームスクリプト (Mac/Linux)</span>
+<span class="var">FOLDER</span>=<span class="str">"/Users/.../Downloads"</span>
+
+<span class="fn">mv</span> <span class="str">"$FOLDER/ipx00500hhb.dcv"</span> <span class="str">"$FOLDER/[IPX-500] 甘えたい夜に - 白石りな.dcv"</span> 2>/dev/null
+<span class="cm"># ... 変換対象ファイル分だけ繰り返し ...</span>
+
+<span class="fn">echo</span> <span class="str">"完了しました"</span></div>
       </div>
+
     </div>
   </div>
 
+  <!-- よくある疑問 -->
   <div class="page-section">
     <h2 class="page-h2">よくある疑問</h2>
-    <div class="faq-list">
-      <div class="faq-item">
-        <div class="faq-q">Q: ウイルスじゃない？</div>
-        <div class="faq-a">A: スクリプトの内容はテキストファイルなのでメモ帳・テキストエディタで開いて確認できます。難読化・暗号化は一切行っておらず、書かれているコマンドがすべてです。</div>
+    <div class="accordion-list">
+
+      <div class="accordion" id="faq1">
+        <button class="accordion-btn" onclick="toggleFaq('faq1')">
+          <span class="accordion-q">ウイルスじゃないですか？</span>
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          実行されるコマンドは <code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">Rename-Item</code>（Windows）と
+          <code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">mv</code>（Mac/Linux）のみです。
+          このページで全コードを確認できます。難読化は一切行っていません。
+          メモ帳・テキストエディタでファイルを開けばすべての処理内容を確認できます。
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Q: ファイルが消えない？</div>
-        <div class="faq-a">A: 生成されるスクリプトはファイル名の変更（リネーム）のみを行います。削除・上書きは実行しません。念のため実行前に対象フォルダをバックアップしておくことをお勧めします。</div>
+
+      <div class="accordion" id="faq2">
+        <button class="accordion-btn" onclick="toggleFaq('faq2')">
+          <span class="accordion-q">ファイルが消えたり上書きされたりしませんか？</span>
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          スクリプトはファイル名の変更のみ行います。削除・上書き・移動は行いません。
+          <code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">-ErrorAction SilentlyContinue</code> により、
+          エラーが出ても他のファイルの処理は継続します。
+          念のため実行前に対象フォルダをバックアップしておくことをお勧めします。
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Q: 個人情報がどこかに送られない？</div>
-        <div class="faq-a">A: スクリプトはブラウザ内で生成され、実行中はインターネットへの接続を一切行いません。入力したファイル名もサーバーに永続保存されません。</div>
+
+      <div class="accordion" id="faq3">
+        <button class="accordion-btn" onclick="toggleFaq('faq3')">
+          <span class="accordion-q">個人情報がサーバーに送られませんか？</span>
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          スクリプトの実行中はインターネット通信を一切行いません。
+          変換時にFANZA公式APIへ品番（CID）を送信しますが、ファイル名の残り部分・動画内容は送信しません。
+          入力されたファイル名はサーバーに永続保存されません。
+        </div>
       </div>
+
+      <div class="accordion" id="faq4">
+        <button class="accordion-btn" onclick="toggleFaq('faq4')">
+          <span class="accordion-q">Windowsでセキュリティ警告が出ます</span>
+          <span class="accordion-chevron">▼</span>
+        </button>
+        <div class="accordion-body">
+          PowerShellスクリプト（.ps1）はWindowsのデフォルト設定で実行がブロックされます。<br><br>
+          「実行する.bat」をダブルクリックすると
+          <code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">-ExecutionPolicy Bypass</code>
+          フラグで自動的に回避されます。<br><br>
+          「WindowsによってPCが保護されました」と表示された場合は「詳細情報」→「実行」をクリックしてください。
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ソースコードの確認 -->
+  <div class="page-section">
+    <h2 class="page-h2">ソースコードの確認</h2>
+    <div class="github-box">
+      <p class="github-box-text">
+        コードはすべてGitHubで公開しており、誰でも確認できます。<br>
+        不審な点があればいつでも確認・報告してください。
+      </p>
+      <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank" rel="noopener" class="github-link">
+        GitHub で確認 →
+      </a>
     </div>
   </div>
 </div>
@@ -127,15 +220,19 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 <footer class="footer">
   <div>© 2024 DMM Renamer</div>
   <div class="footer-links">
-    <a href="/terms.html">利用規約</a>
-    <span>|</span>
-    <a href="/privacy.html">プライバシーポリシー</a>
-    <span>|</span>
-    <a href="/age-check.html">年齢確認</a>
-    <span>|</span>
+    <a href="/terms.html">利用規約</a><span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a><span>|</span>
+    <a href="/age-check.html">年齢確認</a><span>|</span>
     <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank">GitHub</a>
   </div>
   <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
 </footer>
+
+<script>
+function toggleFaq(id) {
+  const el = document.getElementById(id)
+  el.classList.toggle('open')
+}
+</script>
 </body>
 </html>

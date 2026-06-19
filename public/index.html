@@ -165,6 +165,10 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
 .share-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
 .share-menu-divider { height: 1px; background: #1e3a6e; margin: 4px 8px; }
 .share-overlay { position: fixed; inset: 0; z-index: 99; }
+.hero-sub-links { margin-top: 14px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+.hero-sub-link { font-size: 13px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+.hero-sub-link:hover { color: var(--text-primary); }
+.hero-sub-sep { color: var(--border); font-size: 12px; }
 .footer { padding: 32px 24px; text-align: center; background: var(--bg-primary); border-top: 1px solid var(--border); color: #3a4a5a; font-size: 13px; }
 .footer-links { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; font-size: 12px; }
 .footer-links a { color: #3a4a5a; text-decoration: none; transition: color 0.2s; }
@@ -195,8 +199,6 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
     <span class="nav-beta">βプロトタイプ</span>
   </div>
   <div class="nav-right">
-    <a href="/about" class="nav-link">このツールについて</a>
-    <a href="/source" class="nav-link">安全性について</a>
     <a href="#tool" class="nav-cta">今すぐ使う →</a>
   </div>
 </nav>
@@ -218,6 +220,11 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
       タイトル・女優名に自動でリネームします。
     </p>
     <a href="#tool" class="hero-btn">今すぐ無料で使う →</a>
+    <div class="hero-sub-links">
+      <a href="/about" class="hero-sub-link">🔍 このツールについて</a>
+      <span class="hero-sub-sep">|</span>
+      <a href="/source" class="hero-sub-link">🛡 安全性について</a>
+    </div>
 
     <div class="proto-notice" style="margin-top:28px">
       ⚡ 現在プロトタイプ版です。正常に動作しない場合や対応していないファイル名パターンがあれば、<a href="https://twitter.com/uminobozu125" target="_blank" rel="noopener">X（@uminobozu125）</a>にDMでお知らせください。

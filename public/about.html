@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>このツールについて - DMM Renamer</title>
+  <title>このツールについて | DMM Renamer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
@@ -12,36 +12,51 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6;}
+/* nav */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,13,26,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
 .nav-left{display:flex;align-items:center;gap:10px;}
 .nav-logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;text-decoration:none;}
 .nav-beta{font-size:11px;color:#e94560;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 7px;}
 .nav-right{display:flex;align-items:center;gap:16px;}
-.nav-link{font-size:13px;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;}
-.nav-link:hover{color:var(--text-primary);}
-.nav-link-active{color:var(--text-primary);}
 .nav-cta{padding:9px 22px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:14px;font-weight:500;transition:background 0.2s;}
 .nav-cta:hover{background:#c73652;}
-.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px;}
-.page-back{display:inline-block;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
+/* page */
+.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px 80px;}
+.page-back{display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
 .page-back:hover{color:var(--text-primary);}
-.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px;}
-.page-updated{font-size:13px;color:var(--text-secondary);margin-bottom:40px;}
-.page-section{margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--border);}
-.page-section:last-child{border-bottom:none;}
-.page-h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
-.page-p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:8px;}
-.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
-.check-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary);line-height:1.6;}
-.check-list li .icon{font-size:16px;margin-top:1px;min-width:20px;}
+.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:6px;}
+.page-sub{font-size:14px;color:var(--text-secondary);margin-bottom:48px;}
+.page-section{margin-bottom:48px;padding-bottom:48px;border-bottom:1px solid var(--border);}
+.page-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.page-h2{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:16px;}
+.page-p{font-size:14px;color:var(--text-secondary);line-height:1.9;margin-bottom:10px;}
+/* summary box */
 .summary-box{padding:20px 24px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-secondary);line-height:1.9;}
+/* step cards */
+.step-cards{display:flex;flex-direction:column;gap:12px;}
+.step-card{display:flex;gap:16px;padding:20px;background:var(--bg-card);border:1px solid var(--border);border-radius:10px;}
+.step-card-num{width:32px;height:32px;min-width:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;margin-top:2px;}
+.step-card-body{}
+.step-card-title{font-size:15px;font-weight:600;color:var(--text-primary);margin-bottom:6px;}
+.step-card-desc{font-size:13px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;}
+.step-card-code{display:inline-block;padding:6px 12px;background:var(--bg-primary);border:1px solid var(--border);border-radius:6px;font-family:'Consolas',monospace;font-size:12px;color:#4ecca3;word-break:break-all;}
+/* check list */
+.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.check-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text-secondary);line-height:1.6;padding:12px 16px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;}
+.check-list li .icon{font-size:15px;min-width:20px;margin-top:1px;}
+/* operator */
+.operator-box{padding:20px 24px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;display:flex;flex-direction:column;gap:8px;}
+.operator-row{font-size:14px;color:var(--text-secondary);}
+.operator-row a{color:#4ecca3;text-decoration:none;}
+.operator-row a:hover{text-decoration:underline;}
+/* footer */
 .footer{padding:32px 24px;text-align:center;background:var(--bg-primary);border-top:1px solid var(--border);color:#3a4a5a;font-size:13px;}
 .footer-links{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-size:12px;}
 .footer-links a{color:#3a4a5a;text-decoration:none;transition:color 0.2s;}
 .footer-links a:hover{color:var(--text-secondary);}
 .footer-links span{color:#2a3a4a;}
 .footer-age{margin-top:8px;font-size:12px;color:#3a4a5a;}
-@media(max-width:700px){.nav{padding:12px 20px;}.nav-link{display:none;}.page-wrap{padding:32px 16px;}}
+@media(max-width:700px){.nav{padding:12px 20px;}.page-wrap{padding:32px 16px 60px;}.step-card{flex-direction:column;gap:10px;}}
   </style>
 </head>
 <body>
@@ -51,8 +66,6 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
     <span class="nav-beta">βプロトタイプ</span>
   </div>
   <div class="nav-right">
-    <a href="/about" class="nav-link nav-link-active">このツールについて</a>
-    <a href="/source" class="nav-link">安全性について</a>
     <a href="/#tool" class="nav-cta">今すぐ使う →</a>
   </div>
 </nav>
@@ -60,57 +73,99 @@ body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-
 <div class="page-wrap">
   <a href="/" class="page-back">← トップに戻る</a>
   <h1 class="page-title">このツールについて</h1>
-  <p class="page-updated">DMM Renamer βプロトタイプ版</p>
+  <p class="page-sub">DMM Renamer βプロトタイプ版</p>
 
+  <!-- 概要 -->
   <div class="page-section">
     <h2 class="page-h2">概要</h2>
     <div class="summary-box">
-      DMMからダウンロードした動画ファイル（<code>.dcv</code> / <code>.wsdcf</code>）のファイル名を、
+      DMMからダウンロードした動画ファイル（<code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">.dcv</code> /
+      <code style="font-family:Consolas,monospace;font-size:12px;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;color:#4ecca3">.wsdcf</code>）のファイル名を、
       女優名・タイトルを含むわかりやすい名前に変換するWebツールです。<br><br>
       ブラウザ上で動作し、FANZA公式アフィリエイトAPI（v3）を使ってタイトル・女優名を取得します。
       変換後のリネームはダウンロードしたスクリプトをローカルで実行することで完結します。
     </div>
   </div>
 
+  <!-- 処理の流れ -->
+  <div class="page-section">
+    <h2 class="page-h2">処理の流れ</h2>
+    <div class="step-cards">
+      <div class="step-card">
+        <div class="step-card-num">1</div>
+        <div class="step-card-body">
+          <div class="step-card-title">ファイル名から品番（CID）を抽出</div>
+          <p class="step-card-desc">正規表現でファイル名を解析し、品番コードを取り出します。</p>
+          <code class="step-card-code">ipx00500hhb.dcv → CID: ipx00500 / ラベル: IPX-500</code>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">2</div>
+        <div class="step-card-body">
+          <div class="step-card-title">FANZA公式 Affiliate API v3 に問い合わせ</div>
+          <p class="step-card-desc">取得したCIDでFANZAの公式APIを呼び出し、タイトル・女優名を取得します。</p>
+          <code class="step-card-code">https://api.dmm.com/affiliate/v3/ItemList</code>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">3</div>
+        <div class="step-card-body">
+          <div class="step-card-title">新しいファイル名を構築</div>
+          <p class="step-card-desc">取得したタイトル・女優名を組み合わせて新しいファイル名を生成します。</p>
+          <code class="step-card-code">[IPX-500] 甘えたい夜に - 白石りな.dcv</code>
+        </div>
+      </div>
+      <div class="step-card">
+        <div class="step-card-num">4</div>
+        <div class="step-card-body">
+          <div class="step-card-title">リネームスクリプトをZIPでダウンロード</div>
+          <p class="step-card-desc">PowerShell（Windows）・bash（Mac/Linux）用スクリプトをブラウザ上で生成し、ZIPで提供します。サーバーは関与しません。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- やっていること -->
   <div class="page-section">
     <h2 class="page-h2">やっていること</h2>
     <ul class="check-list">
-      <li><span class="icon">✅</span>入力されたファイル名から品番（cid）を抽出する</li>
-      <li><span class="icon">✅</span>FANZA公式API（Affiliate API v3）でタイトル・女優名を取得する</li>
-      <li><span class="icon">✅</span>リネーム用スクリプト（.ps1 / .sh / .bat）を生成してダウンロードさせる</li>
-      <li><span class="icon">✅</span>すべての処理はブラウザとFANZA公式サーバーの間で完結する</li>
+      <li><span class="icon">✅</span>入力されたファイル名から品番（CID）を抽出</li>
+      <li><span class="icon">✅</span>FANZA公式API（Affiliate API v3）でタイトル・女優名を取得</li>
+      <li><span class="icon">✅</span>リネームスクリプト（.ps1 / .sh / .bat）をブラウザ上で生成</li>
+      <li><span class="icon">✅</span>すべての処理はブラウザとFANZA公式サーバーの間で完結</li>
     </ul>
   </div>
 
+  <!-- やっていないこと -->
   <div class="page-section">
     <h2 class="page-h2">やっていないこと</h2>
     <ul class="check-list">
-      <li><span class="icon">✖️</span>ファイル本体（動画）のアップロード・取得</li>
-      <li><span class="icon">✖️</span>入力されたファイル名のサーバーへの永続保存</li>
-      <li><span class="icon">✖️</span>個人情報・IPアドレスの収集・保存</li>
-      <li><span class="icon">✖️</span>Cookieの発行</li>
-      <li><span class="icon">✖️</span>第三者へのデータ提供</li>
-      <li><span class="icon">✖️</span>スマートフォン・タブレットへの対応</li>
+      <li><span class="icon">❌</span>ファイル本体（動画）のアップロード・取得</li>
+      <li><span class="icon">❌</span>入力されたファイル名のサーバーへの永続保存</li>
+      <li><span class="icon">❌</span>個人情報・IPアドレスの収集・保存</li>
+      <li><span class="icon">❌</span>Cookieの発行</li>
+      <li><span class="icon">❌</span>第三者へのデータ提供</li>
+      <li><span class="icon">❌</span>スマートフォン・タブレットへの対応</li>
     </ul>
   </div>
 
+  <!-- 運営情報 -->
   <div class="page-section">
-    <h2 class="page-h2">運営</h2>
-    <p class="page-p">運営: 海野坊頭</p>
-    <p class="page-p">X（Twitter）: <a href="https://twitter.com/uminobozu125" target="_blank" rel="noopener" style="color:#4ecca3;">@uminobozu125</a></p>
-    <p class="page-p" style="margin-top:12px;">不具合・対応していないファイル名パターン・ご要望はXのDMでお知らせください。</p>
+    <h2 class="page-h2">運営情報</h2>
+    <div class="operator-box">
+      <div class="operator-row">運営: 海野坊頭</div>
+      <div class="operator-row">X（旧Twitter）: <a href="https://x.com/uminobozu125" target="_blank" rel="noopener">@uminobozu125</a></div>
+      <div class="operator-row" style="margin-top:4px;font-size:13px;">不具合・未対応のファイル名パターンはXのDMでお知らせください。</div>
+    </div>
   </div>
 </div>
 
 <footer class="footer">
   <div>© 2024 DMM Renamer</div>
   <div class="footer-links">
-    <a href="/terms.html">利用規約</a>
-    <span>|</span>
-    <a href="/privacy.html">プライバシーポリシー</a>
-    <span>|</span>
-    <a href="/age-check.html">年齢確認</a>
-    <span>|</span>
+    <a href="/terms.html">利用規約</a><span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a><span>|</span>
+    <a href="/age-check.html">年齢確認</a><span>|</span>
     <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank">GitHub</a>
   </div>
   <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
