@@ -333,7 +333,7 @@ export default function Home() {
         </div>
         <div className="nav-right">
           <a href="/about" className="nav-link">このツールについて</a>
-          <a href="/source" className="nav-link">ソースコード</a>
+          <a href="/source" className="nav-link">安全性について</a>
           <a href="#tool" className="nav-cta">今すぐ使う →</a>
         </div>
       </nav>

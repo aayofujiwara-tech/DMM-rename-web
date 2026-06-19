@@ -61,19 +61,19 @@ export default function About() {
               <li>
                 <code>rename.ps1</code> —
                 PowerShellスクリプト。Windows/Macで実行できます。
-                <Link href="/source#ps1"> 中身を見る →</Link>
+                <Link href="/source#ps1"> 安全性を確認する →</Link>
               </li>
               <li>
                 <code>実行する.bat</code> —
                 Windowsで.ps1を実行するためのバッチファイル。
                 ダブルクリックで動きます。
-                <Link href="/source#bat"> 中身を見る →</Link>
+                <Link href="/source#bat"> 安全性を確認する →</Link>
               </li>
               <li>
                 <code>実行する.sh</code> —
                 Mac/Linux用のシェルスクリプト。
                 ターミナルから実行できます。
-                <Link href="/source#sh"> 中身を見る →</Link>
+                <Link href="/source#sh"> 安全性を確認する →</Link>
               </li>
               <li>
                 <code>README.txt</code> —
