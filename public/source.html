@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>安全性について - DMM Renamer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root{--bg-primary:#0d0d1a;--bg-secondary:#16213e;--bg-card:#1a2444;--border:#1e3a6e;--text-primary:#f0f0f0;--text-secondary:#8892a4;--accent:#e94560;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,13,26,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.nav-logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;text-decoration:none;}
+.nav-beta{font-size:11px;color:#e94560;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 7px;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-link{font-size:13px;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;}
+.nav-link:hover{color:var(--text-primary);}
+.nav-link-active{color:var(--text-primary);}
+.nav-cta{padding:9px 22px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:14px;font-weight:500;transition:background 0.2s;}
+.nav-cta:hover{background:#c73652;}
+.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px;}
+.page-back{display:inline-block;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
+.page-back:hover{color:var(--text-primary);}
+.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px;}
+.page-updated{font-size:13px;color:var(--text-secondary);margin-bottom:40px;}
+.page-section{margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--border);}
+.page-section:last-child{border-bottom:none;}
+.page-h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
+.page-p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:8px;}
+.safety-table{width:100%;border-collapse:collapse;font-size:14px;}
+.safety-table th,.safety-table td{padding:12px 16px;border:1px solid var(--border);text-align:left;}
+.safety-table th{background:var(--bg-secondary);color:var(--text-secondary);font-weight:600;width:40%;}
+.safety-table td{background:var(--bg-primary);color:var(--text-primary);}
+.file-cards{display:flex;flex-direction:column;gap:12px;}
+.file-card{border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.file-card-header{padding:10px 16px;background:var(--bg-secondary);border-bottom:1px solid var(--border);font-family:'Consolas',monospace;font-size:13px;color:#4ecca3;}
+.file-card-body{padding:12px 16px;background:var(--bg-primary);font-size:13px;color:var(--text-secondary);line-height:1.6;}
+.faq-list{display:flex;flex-direction:column;gap:16px;}
+.faq-item{padding:16px 20px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;}
+.faq-q{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:8px;}
+.faq-a{font-size:13px;color:var(--text-secondary);line-height:1.7;}
+.footer{padding:32px 24px;text-align:center;background:var(--bg-primary);border-top:1px solid var(--border);color:#3a4a5a;font-size:13px;}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-size:12px;}
+.footer-links a{color:#3a4a5a;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--text-secondary);}
+.footer-links span{color:#2a3a4a;}
+.footer-age{margin-top:8px;font-size:12px;color:#3a4a5a;}
+@media(max-width:700px){.nav{padding:12px 20px;}.nav-link{display:none;}.page-wrap{padding:32px 16px;}.safety-table th,.safety-table td{padding:8px 12px;font-size:13px;}}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/" class="nav-logo">DMM Renamer</a>
+    <span class="nav-beta">βプロトタイプ</span>
+  </div>
+  <div class="nav-right">
+    <a href="/about" class="nav-link">このツールについて</a>
+    <a href="/source" class="nav-link nav-link-active">安全性について</a>
+    <a href="/#tool" class="nav-cta">今すぐ使う →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <a href="/" class="page-back">← トップに戻る</a>
+  <h1 class="page-title">安全性について</h1>
+  <p class="page-updated">ダウンロードされるスクリプトの動作について説明します。</p>
+
+  <div class="page-section">
+    <h2 class="page-h2">ダウンロードされるファイルの安全性</h2>
+    <table class="safety-table">
+      <tr><th>項目</th><th>内容</th></tr>
+      <tr><td>生成場所</td><td>ブラウザ上で完結・サーバー不関与</td></tr>
+      <tr><td>実行コマンド</td><td>Rename-Item（Windows）/ mv（Mac/Linux）のみ</td></tr>
+      <tr><td>ネット通信</td><td>スクリプト実行中は一切なし</td></tr>
+      <tr><td>ファイル操作</td><td>ファイル名変更のみ・削除や上書きなし</td></tr>
+    </table>
+  </div>
+
+  <div class="page-section">
+    <h2 class="page-h2">各ファイルの説明</h2>
+    <div class="file-cards">
+      <div class="file-card">
+        <div class="file-card-header">rename.ps1</div>
+        <div class="file-card-body">
+          PowerShellの <code>Rename-Item</code> コマンドでファイル名を変更するだけです。ネットワーク接続・ファイル削除・レジストリ操作などは一切行いません。
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-card-header">実行する.bat</div>
+        <div class="file-card-body">
+          <code>powershell -ExecutionPolicy Bypass -File rename.ps1</code> を実行するだけです。rename.ps1を起動する以外の処理は何もしていません。
+        </div>
+      </div>
+      <div class="file-card">
+        <div class="file-card-header">実行する.sh</div>
+        <div class="file-card-body">
+          <code>mv</code> コマンドでファイル名を変更するだけです。削除・上書き・外部通信は行いません。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-section">
+    <h2 class="page-h2">よくある疑問</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q">Q: ウイルスじゃない？</div>
+        <div class="faq-a">A: スクリプトの内容はテキストファイルなのでメモ帳・テキストエディタで開いて確認できます。難読化・暗号化は一切行っておらず、書かれているコマンドがすべてです。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q: ファイルが消えない？</div>
+        <div class="faq-a">A: 生成されるスクリプトはファイル名の変更（リネーム）のみを行います。削除・上書きは実行しません。念のため実行前に対象フォルダをバックアップしておくことをお勧めします。</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Q: 個人情報がどこかに送られない？</div>
+        <div class="faq-a">A: スクリプトはブラウザ内で生成され、実行中はインターネットへの接続を一切行いません。入力したファイル名もサーバーに永続保存されません。</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div>© 2024 DMM Renamer</div>
+  <div class="footer-links">
+    <a href="/terms.html">利用規約</a>
+    <span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span>|</span>
+    <a href="/age-check.html">年齢確認</a>
+    <span>|</span>
+    <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
+</footer>
+</body>
+</html>

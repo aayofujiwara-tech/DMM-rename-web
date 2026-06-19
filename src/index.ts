@@ -5,6 +5,7 @@ import { fetchFanzaItem, isValidApiKeys } from './fanzaApi'
 type Bindings = {
   FANZA_API_ID: string
   FANZA_AFFILIATE_ID: string
+  ASSETS: Fetcher
 }
 
 interface FileItem {
@@ -115,6 +116,18 @@ async function processFile(
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+app.get('/about', async (c) => {
+  const url = new URL(c.req.url)
+  url.pathname = '/about.html'
+  return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
+})
+
+app.get('/source', async (c) => {
+  const url = new URL(c.req.url)
+  url.pathname = '/source.html'
+  return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
+})
 
 app.post('/api/rename', async (c) => {
   let body: { filenames?: unknown; nameFormat?: unknown; showLabel?: unknown }

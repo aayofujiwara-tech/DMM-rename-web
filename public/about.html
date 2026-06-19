@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>このツールについて - DMM Renamer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root{--bg-primary:#0d0d1a;--bg-secondary:#16213e;--bg-card:#1a2444;--border:#1e3a6e;--text-primary:#f0f0f0;--text-secondary:#8892a4;--accent:#e94560;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;line-height:1.6;}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:rgba(13,13,26,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;}
+.nav-left{display:flex;align-items:center;gap:10px;}
+.nav-logo{font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;text-decoration:none;}
+.nav-beta{font-size:11px;color:#e94560;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.3);border-radius:4px;padding:2px 7px;}
+.nav-right{display:flex;align-items:center;gap:16px;}
+.nav-link{font-size:13px;color:var(--text-secondary);text-decoration:none;transition:color 0.2s;}
+.nav-link:hover{color:var(--text-primary);}
+.nav-link-active{color:var(--text-primary);}
+.nav-cta{padding:9px 22px;background:var(--accent);color:#fff;border-radius:6px;text-decoration:none;font-size:14px;font-weight:500;transition:background 0.2s;}
+.nav-cta:hover{background:#c73652;}
+.page-wrap{max-width:720px;margin:0 auto;padding:56px 24px;}
+.page-back{display:inline-block;color:var(--text-secondary);text-decoration:none;font-size:14px;margin-bottom:32px;transition:color 0.2s;}
+.page-back:hover{color:var(--text-primary);}
+.page-title{font-family:var(--font-display);font-size:32px;font-weight:800;margin-bottom:8px;}
+.page-updated{font-size:13px;color:var(--text-secondary);margin-bottom:40px;}
+.page-section{margin-bottom:40px;padding-bottom:40px;border-bottom:1px solid var(--border);}
+.page-section:last-child{border-bottom:none;}
+.page-h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--text-primary);}
+.page-p{font-size:14px;color:var(--text-secondary);line-height:1.8;margin-bottom:8px;}
+.check-list{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.check-list li{display:flex;align-items:flex-start;gap:10px;font-size:14px;color:var(--text-secondary);line-height:1.6;}
+.check-list li .icon{font-size:16px;margin-top:1px;min-width:20px;}
+.summary-box{padding:20px 24px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:10px;font-size:14px;color:var(--text-secondary);line-height:1.9;}
+.footer{padding:32px 24px;text-align:center;background:var(--bg-primary);border-top:1px solid var(--border);color:#3a4a5a;font-size:13px;}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;font-size:12px;}
+.footer-links a{color:#3a4a5a;text-decoration:none;transition:color 0.2s;}
+.footer-links a:hover{color:var(--text-secondary);}
+.footer-links span{color:#2a3a4a;}
+.footer-age{margin-top:8px;font-size:12px;color:#3a4a5a;}
+@media(max-width:700px){.nav{padding:12px 20px;}.nav-link{display:none;}.page-wrap{padding:32px 16px;}}
+  </style>
+</head>
+<body>
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/" class="nav-logo">DMM Renamer</a>
+    <span class="nav-beta">βプロトタイプ</span>
+  </div>
+  <div class="nav-right">
+    <a href="/about" class="nav-link nav-link-active">このツールについて</a>
+    <a href="/source" class="nav-link">安全性について</a>
+    <a href="/#tool" class="nav-cta">今すぐ使う →</a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <a href="/" class="page-back">← トップに戻る</a>
+  <h1 class="page-title">このツールについて</h1>
+  <p class="page-updated">DMM Renamer βプロトタイプ版</p>
+
+  <div class="page-section">
+    <h2 class="page-h2">概要</h2>
+    <div class="summary-box">
+      DMMからダウンロードした動画ファイル（<code>.dcv</code> / <code>.wsdcf</code>）のファイル名を、
+      女優名・タイトルを含むわかりやすい名前に変換するWebツールです。<br><br>
+      ブラウザ上で動作し、FANZA公式アフィリエイトAPI（v3）を使ってタイトル・女優名を取得します。
+      変換後のリネームはダウンロードしたスクリプトをローカルで実行することで完結します。
+    </div>
+  </div>
+
+  <div class="page-section">
+    <h2 class="page-h2">やっていること</h2>
+    <ul class="check-list">
+      <li><span class="icon">✅</span>入力されたファイル名から品番（cid）を抽出する</li>
+      <li><span class="icon">✅</span>FANZA公式API（Affiliate API v3）でタイトル・女優名を取得する</li>
+      <li><span class="icon">✅</span>リネーム用スクリプト（.ps1 / .sh / .bat）を生成してダウンロードさせる</li>
+      <li><span class="icon">✅</span>すべての処理はブラウザとFANZA公式サーバーの間で完結する</li>
+    </ul>
+  </div>
+
+  <div class="page-section">
+    <h2 class="page-h2">やっていないこと</h2>
+    <ul class="check-list">
+      <li><span class="icon">✖️</span>ファイル本体（動画）のアップロード・取得</li>
+      <li><span class="icon">✖️</span>入力されたファイル名のサーバーへの永続保存</li>
+      <li><span class="icon">✖️</span>個人情報・IPアドレスの収集・保存</li>
+      <li><span class="icon">✖️</span>Cookieの発行</li>
+      <li><span class="icon">✖️</span>第三者へのデータ提供</li>
+      <li><span class="icon">✖️</span>スマートフォン・タブレットへの対応</li>
+    </ul>
+  </div>
+
+  <div class="page-section">
+    <h2 class="page-h2">運営</h2>
+    <p class="page-p">運営: 海野坊頭</p>
+    <p class="page-p">X（Twitter）: <a href="https://twitter.com/uminobozu125" target="_blank" rel="noopener" style="color:#4ecca3;">@uminobozu125</a></p>
+    <p class="page-p" style="margin-top:12px;">不具合・対応していないファイル名パターン・ご要望はXのDMでお知らせください。</p>
+  </div>
+</div>
+
+<footer class="footer">
+  <div>© 2024 DMM Renamer</div>
+  <div class="footer-links">
+    <a href="/terms.html">利用規約</a>
+    <span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span>|</span>
+    <a href="/age-check.html">年齢確認</a>
+    <span>|</span>
+    <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
+</footer>
+</body>
+</html>
