@@ -1506,6 +1506,40 @@ code {
 
 .source-contact a { color: #4ecca3; }
 
+/* ヒーロー情報リンク */
+.hero-info-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.hero-info-link {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color 0.2s;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: rgba(255,255,255,0.03);
+}
+
+.hero-info-link:hover {
+  color: var(--text-primary);
+  border-color: #4ecca3;
+  background: rgba(78, 204, 163, 0.06);
+}
+
+.hero-info-divider {
+  color: var(--border);
+  font-size: 12px;
+}
+
 .source-code {
   padding: 20px;
   font-family: 'Consolas', monospace;

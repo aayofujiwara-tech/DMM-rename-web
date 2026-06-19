@@ -331,11 +331,7 @@ export default function Home() {
           <span className="nav-logo">DMM Renamer</span>
           <span className="nav-beta">β プロトタイプ</span>
         </div>
-        <div className="nav-right">
-          <a href="/about" className="nav-link">このツールについて</a>
-          <a href="/source" className="nav-link">安全性について</a>
-          <a href="#tool" className="nav-cta">今すぐ使う →</a>
-        </div>
+        <a href="#tool" className="nav-cta">今すぐ使う →</a>
       </nav>
 
       {/* ヒーロー */}
@@ -370,6 +366,25 @@ export default function Home() {
             </div>
           </div>
           <a href="#tool" className="hero-btn">今すぐ無料で使う →</a>
+
+          {/* ツール情報リンク */}
+          <div className="hero-info-links">
+            <a href="/about" className="hero-info-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+              このツールについて
+            </a>
+            <span className="hero-info-divider">|</span>
+            <a href="/source" className="hero-info-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="14" height="14">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+              安全性について
+            </a>
+          </div>
 
           <div className="proto-notice">
             🚧 現在プロトタイプ版です。正常に動作しない場合や
