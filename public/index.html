@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DMM Renamer</title>
+  <meta name="description" content=".dcvファイルをタイトル・女優名に自動リネーム。FANZA公式APIを使用。">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+:root {
+  --bg-primary: #0d0d1a;
+  --bg-secondary: #16213e;
+  --bg-card: #1a2444;
+  --border: #1e3a6e;
+  --border-hover: #e94560;
+  --text-primary: #f0f0f0;
+  --text-secondary: #8892a4;
+  --accent: #e94560;
+  --accent-dark: #c73652;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-body); background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+.nav { display: flex; align-items: center; justify-content: space-between; padding: 16px 48px; background: rgba(13,13,26,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.nav-left { display: flex; align-items: center; gap: 10px; }
+.nav-logo { font-family: var(--font-display); font-size: 20px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+.nav-beta { font-size: 11px; color: #e8b840; background: rgba(232,184,64,0.1); border: 1px solid rgba(232,184,64,0.25); border-radius: 4px; padding: 2px 7px; }
+.nav-right { display: flex; align-items: center; gap: 16px; }
+.nav-link { font-size: 13px; color: var(--text-secondary); text-decoration: none; transition: color 0.2s; }
+.nav-link:hover { color: var(--text-primary); }
+.nav-cta { padding: 9px 22px; background: var(--accent); color: #fff; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; transition: background 0.2s, transform 0.1s; }
+.nav-cta:hover { background: var(--accent-dark); transform: translateY(-1px); }
+.hero { padding: 100px 24px 80px; text-align: center; background: radial-gradient(ellipse 80% 60% at 50% 0%, #1e2d5a 0%, transparent 70%), var(--bg-primary); position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle, #ffffff08 1px, transparent 1px); background-size: 32px 32px; pointer-events: none; }
+.hero-inner { max-width: 680px; margin: 0 auto; position: relative; }
+.hero-title { font-family: var(--font-display); font-size: clamp(32px,5vw,52px); font-weight: 800; line-height: 1.15; margin-bottom: 20px; letter-spacing: -1px; }
+.accent { color: var(--accent); }
+.hero-sub { font-size: 16px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 36px; }
+.hero-btn { display: inline-block; padding: 14px 36px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: 500; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 24px rgba(233,69,96,0.35); }
+.hero-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(233,69,96,0.45); }
+.hero-badges { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 24px; }
+.os-badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); border-radius: 20px; font-size: 12px; color: var(--text-secondary); }
+.os-badge-pc { background: rgba(78,204,163,0.1); border-color: rgba(78,204,163,0.2); color: #4ecca3; }
+.rename-demo { margin-top: 48px; padding: 20px 28px; background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; text-align: left; font-family: 'Consolas', monospace; font-size: 13px; max-width: 520px; margin-left: auto; margin-right: auto; }
+.rename-demo-label { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 11px; color: var(--text-secondary); font-family: var(--font-body); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+.rename-before { color: var(--text-secondary); margin-bottom: 6px; }
+.rename-arrow { color: var(--border); margin-bottom: 6px; }
+.rename-after { color: #4ecca3; }
+@keyframes slideIn { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+.rename-after { color: #4ecca3; animation: slideIn 0.4s ease forwards; }
+.section-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+.section-title { font-family: var(--font-display); font-size: 28px; font-weight: 800; text-align: center; margin-bottom: 48px; letter-spacing: -0.5px; }
+.how { padding: 88px 0; background: var(--bg-secondary); }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.step { padding: 28px 24px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; position: relative; overflow: hidden; }
+.step-num { font-family: var(--font-display); font-size: 72px; font-weight: 800; color: rgba(255,255,255,0.04); position: absolute; top: -10px; right: 16px; line-height: 1; pointer-events: none; }
+.step-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
+.step-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.features { padding: 88px 0; background: var(--bg-primary); }
+.feature-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+.feature-card { padding: 28px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s, transform 0.2s; }
+.feature-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+.feature-icon { font-size: 28px; margin-bottom: 14px; }
+.feature-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.feature-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
+.tool-section { padding: 88px 0; background: var(--bg-secondary); }
+.input-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+.method-label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+.btn-folder { padding: 10px 24px; background: transparent; border: 1px solid var(--border); border-radius: 6px; color: var(--text-primary); cursor: pointer; font-size: 14px; font-family: var(--font-body); transition: border-color 0.2s, background 0.2s; }
+.btn-folder:hover { border-color: var(--accent); background: rgba(233,69,96,0.08); }
+.method-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 12px; }
+.subfolder-option { margin-top: 20px; padding: 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; }
+.checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; color: var(--text-primary); margin-bottom: 8px; }
+.checkbox-label input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.subfolder-note { font-size: 12px; color: var(--text-secondary); line-height: 1.6; padding-left: 26px; }
+.divider { text-align: center; color: var(--border); font-size: 12px; margin: 24px 0; position: relative; text-transform: uppercase; letter-spacing: 2px; }
+.divider::before, .divider::after { content: ''; position: absolute; top: 50%; width: 44%; height: 1px; background: var(--border); }
+.divider::before { left: 0; }
+.divider::after { right: 0; }
+textarea { width: 100%; padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; font-family: 'Consolas', monospace; resize: vertical; line-height: 1.7; transition: border-color 0.2s; }
+textarea:focus { outline: none; border-color: var(--accent); }
+textarea::placeholder { color: #3a4a5a; }
+.error { color: var(--accent); font-size: 13px; margin-top: 12px; }
+.format-selector { margin-bottom: 20px; }
+.radio-group { display: flex; flex-direction: column; gap: 10px; }
+.radio-label { display: flex; align-items: center; gap: 10px; cursor: pointer; font-size: 13px; color: var(--text-secondary); font-family: 'Consolas', monospace; margin-bottom: 0; }
+.radio-label input[type="radio"] { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+.radio-label:hover { color: var(--text-primary); }
+.btn-primary { margin-top: 20px; width: 100%; padding: 13px; background: linear-gradient(135deg,#e94560,#c73652); border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 16px rgba(233,69,96,0.3); }
+.btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.35; cursor: default; transform: none; }
+.progress-section { margin-top: 20px; padding: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; }
+.progress-header { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-secondary); margin-bottom: 10px; }
+.progress-bar-wrap { width: 100%; height: 6px; background: var(--bg-primary); border-radius: 3px; overflow: hidden; margin-bottom: 16px; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg,#e94560,#ff6b6b); border-radius: 3px; transition: width 0.3s ease; }
+.progress-items { display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
+.progress-item { font-size: 12px; color: var(--text-secondary); font-family: 'Consolas', monospace; display: flex; flex-direction: column; gap: 2px; }
+.progress-item.ok { color: #4ecca3; }
+.progress-item.not_found { color: #555; }
+.progress-item.error { color: var(--accent); }
+.progress-item-new { font-size: 11px; color: var(--text-secondary); padding-left: 16px; }
+.result-section { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 32px; }
+.result-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.result-header h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; }
+.btn-copy { padding: 8px 18px; background: transparent; border: 1px solid #4ecca3; border-radius: 6px; color: #4ecca3; cursor: pointer; font-size: 13px; font-family: var(--font-body); transition: background 0.2s; }
+.btn-copy:hover { background: rgba(78,204,163,0.1); }
+.result-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.result-item { padding: 12px 16px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; gap: 5px; }
+.result-item.not_found, .result-item.error { opacity: 0.4; }
+.old-name { font-size: 12px; color: var(--text-secondary); font-family: 'Consolas', monospace; }
+.new-name { font-size: 13px; color: #4ecca3; font-family: 'Consolas', monospace; }
+.no-match { font-size: 12px; color: #555; font-style: italic; }
+.folder-path-input { margin-top: 24px; margin-bottom: 16px; }
+.path-input { width: 100%; padding: 10px 14px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; font-family: 'Consolas', monospace; margin-bottom: 6px; transition: border-color 0.2s; }
+.path-input:focus { outline: none; border-color: var(--accent); }
+.path-hint { font-size: 12px; color: var(--text-secondary); line-height: 1.8; }
+.label-required { color: #e94560 !important; }
+.label-ok { color: #4ecca3 !important; }
+.path-input-empty { border-color: #e94560 !important; background: rgba(233,69,96,0.06) !important; }
+.path-input-ok { border-color: #4ecca3 !important; background: rgba(78,204,163,0.06) !important; }
+.btn-download { width: 100%; margin-top: 8px; margin-bottom: 32px; padding: 13px; background: linear-gradient(135deg,#2ecc71,#27ae60); border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 16px rgba(46,204,113,0.3); }
+.btn-download:hover { opacity: 0.9; transform: translateY(-1px); }
+.howto { margin-top: 8px; padding: 28px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; }
+.howto-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary); }
+.howto-steps { list-style: none; display: flex; flex-direction: column; gap: 0; }
+.howto-step { display: flex; gap: 16px; padding: 20px 0; border-bottom: 1px solid var(--border); }
+.howto-step:last-child { border-bottom: none; }
+.howto-num { width: 28px; height: 28px; min-width: 28px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; margin-top: 2px; }
+.howto-content strong { display: block; font-size: 15px; margin-bottom: 8px; color: var(--text-primary); }
+.howto-content p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; }
+.howto-code { display: flex; align-items: center; gap: 10px; margin: 10px 0; padding: 10px 14px; background: #0a0a14; border: 1px solid var(--border); border-radius: 6px; font-family: 'Consolas', monospace; font-size: 12px; color: #4ecca3; word-break: break-all; }
+.howto-code code { flex: 1; }
+.btn-copy-code { padding: 4px 10px; background: transparent; border: 1px solid var(--border); border-radius: 4px; color: var(--text-secondary); cursor: pointer; font-size: 11px; font-family: var(--font-body); white-space: nowrap; transition: border-color 0.2s, color 0.2s; }
+.btn-copy-code:hover { border-color: #4ecca3; color: #4ecca3; }
+code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 4px; color: #4ecca3; }
+.howto-note { margin-top: 10px; padding: 8px 12px; background: rgba(233,69,96,0.08); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; font-size: 12px; color: var(--text-secondary); line-height: 1.6; }
+.howto-os-section { margin-bottom: 24px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.howto-os-section:last-of-type { margin-bottom: 0; }
+.howto-os-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; background: rgba(255,255,255,0.04); border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text-secondary); }
+.howto-os-section .howto-steps { padding: 16px; }
+.howto-os-section .howto-step { border-bottom: 1px solid rgba(255,255,255,0.04); padding: 16px 0; }
+.howto-os-section .howto-step:last-child { border-bottom: none; padding-bottom: 0; }
+.feedback-section { margin-top: 24px; padding: 20px; background: rgba(78,204,163,0.06); border: 1px solid rgba(78,204,163,0.2); border-radius: 8px; }
+.feedback-title { font-size: 14px; font-weight: 600; color: #4ecca3; margin-bottom: 8px; }
+.feedback-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 14px; }
+.btn-feedback { display: inline-block; padding: 10px 20px; background: #1a4a3a; border: 1px solid #4ecca3; border-radius: 6px; color: #4ecca3; font-size: 13px; text-decoration: none; transition: background 0.2s; }
+.btn-feedback:hover { background: #255040; }
+.mobile-warning { margin: 24px auto; max-width: 760px; padding: 28px; background: rgba(233,69,96,0.06); border: 1px solid rgba(233,69,96,0.2); border-radius: 12px; text-align: center; display: none; }
+.mobile-warning-icon { font-size: 40px; margin-bottom: 12px; }
+.mobile-warning h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+.mobile-warning p { font-size: 13px; color: var(--text-secondary); line-height: 1.7; margin-bottom: 8px; }
+.share-container { position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.share-main-btn { width: 48px; height: 48px; border-radius: 50%; background: #1a1a2e; border: 1px solid #0f3460; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: background 0.2s, border-color 0.2s, transform 0.2s; font-size: 20px; }
+.share-main-btn:hover { background: #0f3460; border-color: #1e4a8a; transform: scale(1.05); }
+.share-main-btn-open { background: #0f3460; border-color: var(--accent); }
+.share-menu { background: #16213e; border: 1px solid #1e3a6e; border-radius: 12px; padding: 8px; min-width: 200px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); animation: shareMenuIn 0.15s ease; }
+@keyframes shareMenuIn { from { opacity: 0; transform: translateY(8px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.share-menu-label { font-size: 11px; color: #3a4a5a; text-transform: uppercase; letter-spacing: 1.5px; padding: 4px 12px 8px; margin: 0; display: block; }
+.share-menu-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border-radius: 8px; color: var(--text-secondary); font-size: 13px; font-family: var(--font-body); text-decoration: none; background: transparent; border: none; cursor: pointer; transition: background 0.15s, color 0.15s; text-align: left; }
+.share-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
+.share-menu-divider { height: 1px; background: #1e3a6e; margin: 4px 8px; }
+.share-overlay { position: fixed; inset: 0; z-index: 99; }
+.footer { padding: 32px 24px; text-align: center; background: var(--bg-primary); border-top: 1px solid var(--border); color: #3a4a5a; font-size: 13px; }
+.footer-links { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 8px; font-size: 12px; }
+.footer-links a { color: #3a4a5a; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: var(--text-secondary); }
+.footer-links span { color: #2a3a4a; }
+.footer-age { margin-top: 8px; font-size: 12px; color: #3a4a5a; }
+.footer-operator { margin-top: 4px; font-size: 11px; color: #2a3a4a; }
+.proto-notice { margin-top: 16px; padding: 10px 16px; background: rgba(255,200,0,0.07); border: 1px solid rgba(255,200,0,0.25); border-radius: 8px; font-size: 13px; color: #c0a060; line-height: 1.6; }
+@media (max-width: 700px) {
+  .nav { padding: 12px 20px; }
+  .nav-link { display: none; }
+  .hero { padding: 72px 20px 60px; }
+  .steps { grid-template-columns: 1fr; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .section-inner { padding: 0 16px; }
+  .share-container { bottom: 20px; right: 20px; }
+  .share-main-btn { width: 44px; height: 44px; }
+  .share-menu { min-width: 180px; }
+}
+  </style>
+</head>
+<body>
+
+<!-- ナビゲーション -->
+<nav class="nav">
+  <div class="nav-left">
+    <a href="/" class="nav-logo">DMM Renamer</a>
+    <span class="nav-beta">BETA</span>
+  </div>
+  <div class="nav-right">
+    <a href="#how" class="nav-link">使い方</a>
+    <a href="#tool" class="nav-cta">ツールを使う</a>
+  </div>
+</nav>
+
+<!-- ヒーロー -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badges">
+      <span class="os-badge os-badge-pc">Windows / Mac 対応</span>
+      <span class="os-badge">FANZA公式API使用</span>
+    </div>
+    <h1 class="hero-title">
+      .dcvファイルを<br><span class="accent">自動リネーム</span>
+    </h1>
+    <p class="hero-sub">
+      ファイル名に含まれるCIDからFANZA公式APIで情報を取得。<br>
+      タイトル・女優名に自動でリネームします。
+    </p>
+    <a href="#tool" class="hero-btn">無料で試す</a>
+
+    <div class="rename-demo">
+      <div class="rename-demo-label">
+        <span>変換例</span>
+        <span id="demoCounter" style="color:#3a4a5a;font-size:10px"></span>
+      </div>
+      <div class="rename-before" id="demoBefore">miaa00629mhb.dcv</div>
+      <div class="rename-arrow">↓</div>
+      <div class="rename-after" id="demoAfter">[MIAA-629] タイトル - 女優名.dcv</div>
+    </div>
+  </div>
+</section>
+
+<!-- 使い方 -->
+<section class="how" id="how">
+  <div class="section-inner">
+    <h2 class="section-title">使い方</h2>
+    <div class="steps">
+      <div class="step">
+        <span class="step-num">1</span>
+        <div class="step-title">ファイルを選択</div>
+        <p class="step-desc">フォルダを選択するか、.dcvファイル名をテキストエリアに貼り付けます。</p>
+      </div>
+      <div class="step">
+        <span class="step-num">2</span>
+        <div class="step-title">変換する</div>
+        <p class="step-desc">「変換する」ボタンをクリック。FANZA公式APIから情報を自動取得します。</p>
+      </div>
+      <div class="step">
+        <span class="step-num">3</span>
+        <div class="step-title">スクリプト実行</div>
+        <p class="step-desc">リネームスクリプトをダウンロードして実行。ファイルが自動でリネームされます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 特徴 -->
+<section class="features">
+  <div class="section-inner">
+    <h2 class="section-title">特徴</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🔑</div>
+        <div class="feature-title">公式API使用</div>
+        <p class="feature-desc">FANZA公式アフィリエイトAPIを使用。スクレイピング不要で安定して動作します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">高速処理</div>
+        <p class="feature-desc">最大5件を並列処理。大量のファイルも素早くリネームできます。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🛡️</div>
+        <div class="feature-title">安全設計</div>
+        <p class="feature-desc">ファイルの削除・移動は一切行いません。スクリプトをダウンロードして手動実行します。</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💻</div>
+        <div class="feature-title">Windows / Mac 対応</div>
+        <p class="feature-desc">PowerShell（Windows）とbash（Mac/Linux）両対応のスクリプトを生成します。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- メインツール -->
+<section class="tool-section" id="tool">
+  <div class="section-inner">
+    <h2 class="section-title">リネームツール</h2>
+
+    <!-- モバイル警告 -->
+    <div class="mobile-warning" id="mobileWarning">
+      <div class="mobile-warning-icon">💻</div>
+      <h3>PCからご利用ください</h3>
+      <p>このツールはPCでの使用を前提としています。</p>
+      <p>スクリプトのダウンロード・実行にはPC環境が必要です。</p>
+    </div>
+
+    <div class="input-section">
+      <!-- フォルダ選択 -->
+      <div>
+        <label class="method-label">① フォルダを選択</label>
+        <p class="method-desc">.dcvファイルが入ったフォルダを選択してください。</p>
+        <input type="file" id="folderInput" multiple style="display:none">
+        <button class="btn-folder" id="folderBtn">フォルダを選択</button>
+        <div id="folderNameDisplay" style="margin-top:10px;font-size:13px;color:#4ecca3;display:none"></div>
+        <div class="subfolder-option">
+          <label class="checkbox-label">
+            <input type="checkbox" id="includeSubfolders">
+            サブフォルダも含める
+          </label>
+          <p class="subfolder-note">チェックを入れると、選択したフォルダ内のサブフォルダのファイルも対象にします。</p>
+        </div>
+      </div>
+
+      <div class="divider">または</div>
+
+      <!-- テキスト入力 -->
+      <div>
+        <label class="method-label">② ファイル名を貼り付け</label>
+        <textarea id="textInput" rows="6" placeholder="miaa00629mhb.dcv
+pred00248hhb.dcv
+dass00076hhb.dcv"></textarea>
+      </div>
+
+      <!-- フォーマット選択 -->
+      <div class="format-selector" style="margin-top:20px">
+        <label class="method-label">ファイル名形式</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="nameFormat" value="title_actress" checked>
+            [LABEL] タイトル - 女優名.dcv
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="nameFormat" value="actress_title">
+            [LABEL] 女優名 - タイトル.dcv
+          </label>
+        </div>
+      </div>
+
+      <!-- 品番表示 -->
+      <div style="margin-top:16px">
+        <label class="checkbox-label">
+          <input type="checkbox" id="showLabel" checked>
+          ファイル名に品番を含める（例: [MIAA-629]）
+        </label>
+      </div>
+
+      <div id="errorMsg" class="error" style="display:none"></div>
+
+      <button class="btn-primary" id="submitBtn">変換する</button>
+    </div>
+
+    <!-- 進捗 -->
+    <div class="progress-section" id="progressSection" style="display:none">
+      <div class="progress-header">
+        <span>処理中...</span>
+        <span id="progressText">0 / 0</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progressBarFill" style="width:0%"></div>
+      </div>
+      <div class="progress-items" id="progressItems"></div>
+    </div>
+
+    <!-- 結果 -->
+    <div class="result-section" id="resultSection" style="display:none">
+      <div class="result-header">
+        <h2>変換結果 <span id="okCount" style="font-size:14px;color:#4ecca3"></span></h2>
+        <button class="btn-copy" id="copyBtn">コピー</button>
+      </div>
+      <ul class="result-list" id="resultList"></ul>
+
+      <!-- フォルダパス入力 -->
+      <div class="folder-path-input" id="folderPathSection">
+        <label class="method-label" id="folderPathLabel">
+          <span class="label-required">※必須</span> リネーム対象フォルダのパスを入力
+        </label>
+        <input type="text" class="path-input" id="folderPathInput"
+          placeholder="C:\Users\username\Videos\DMM">
+        <p class="path-hint" id="pathHint">
+          Windowsの場合: エクスプローラーのアドレスバーからパスをコピーして貼り付けてください。<br>
+          Macの場合: FinderでフォルダをTerminalにドラッグするとパスが入力されます。
+        </p>
+      </div>
+
+      <!-- ダウンロードボタン -->
+      <button class="btn-download" id="downloadBtn">リネームスクリプトをダウンロード (.zip)</button>
+
+      <!-- 使い方 -->
+      <div class="howto">
+        <div class="howto-title">スクリプトの実行方法</div>
+        <div class="howto-os-section">
+          <div class="howto-os-header">🪟 Windows</div>
+          <ul class="howto-steps">
+            <li class="howto-step">
+              <div class="howto-num">1</div>
+              <div class="howto-content">
+                <strong>ZIPを展開してフォルダを開く</strong>
+                <p>ダウンロードしたZIPファイルを右クリック → 「すべて展開」</p>
+              </div>
+            </li>
+            <li class="howto-step">
+              <div class="howto-num">2</div>
+              <div class="howto-content">
+                <strong>実行する.batをダブルクリック</strong>
+                <p>展開したフォルダ内の「実行する.bat」をダブルクリックして実行します。</p>
+                <div class="howto-note">「WindowsによってPCが保護されました」と表示された場合は「詳細情報」→「実行」をクリックしてください。</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="howto-os-section" style="margin-top:12px">
+          <div class="howto-os-header">🍎 Mac</div>
+          <ul class="howto-steps">
+            <li class="howto-step">
+              <div class="howto-num">1</div>
+              <div class="howto-content">
+                <strong>ZIPを展開してフォルダを開く</strong>
+                <p>ダウンロードしたZIPファイルをダブルクリックして展開します。</p>
+              </div>
+            </li>
+            <li class="howto-step">
+              <div class="howto-num">2</div>
+              <div class="howto-content">
+                <strong>ターミナルでスクリプトを実行</strong>
+                <div class="howto-code">
+                  <code id="macCmd">bash /path/to/実行する.sh</code>
+                  <button class="btn-copy-code" onclick="copyMacCmd()">コピー</button>
+                </div>
+                <p>展開したフォルダを開き、「実行する.sh」をターミナルにドラッグ&ドロップして実行します。</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- フィードバック -->
+      <div class="feedback-section">
+        <div class="feedback-title">フィードバック</div>
+        <p class="feedback-desc">正しくリネームされない・エラーが多いなどの問題があればお知らせください。</p>
+        <a href="https://github.com/aayofujiwara-tech/DMM-rename-web/issues" target="_blank" class="btn-feedback">
+          GitHub Issues で報告
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- シェアボタン -->
+<div class="share-container" id="shareContainer">
+  <div class="share-menu" id="shareMenu" style="display:none">
+    <p class="share-menu-label">シェア</p>
+    <a class="share-menu-item" id="shareTwitter" href="#" target="_blank" rel="noopener">
+      🐦 X (Twitter)
+    </a>
+    <a class="share-menu-item" id="shareLine" href="#" target="_blank" rel="noopener">
+      💬 LINE
+    </a>
+    <div class="share-menu-divider"></div>
+    <button class="share-menu-item" id="shareCopyLink">
+      🔗 <span id="shareCopyText">リンクをコピー</span>
+    </button>
+  </div>
+  <button class="share-main-btn" id="shareMainBtn" title="シェア">
+    ↑
+  </button>
+</div>
+<div class="share-overlay" id="shareOverlay" style="display:none" onclick="closeShare()"></div>
+
+<!-- フッター -->
+<footer class="footer">
+  <div>© 2024 DMM Renamer</div>
+  <div class="footer-links">
+    <a href="/terms.html">利用規約</a>
+    <span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span>|</span>
+    <a href="/age-check.html">年齢確認</a>
+    <span>|</span>
+    <a href="https://github.com/aayofujiwara-tech/DMM-rename-web" target="_blank">GitHub</a>
+  </div>
+  <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
+  <div class="footer-operator">運営: aayofujiwara-tech</div>
+</footer>
+
+<script>
+// ===== デモアニメーション =====
+const DEMO_ITEMS = [
+  { before: 'miaa00629mhb.dcv', after: '[MIAA-629] タイトル名 - 女優名.dcv' },
+  { before: '1dandy00812a2d_v1_drm_a_4k.dcv', after: '[DANDY-812] タイトル名.dcv' },
+  { before: 'ssis00100hhb.dcv', after: '[SSIS-100] タイトル名 - 女優名.dcv' },
+  { before: 'pred00248hhb.dcv', after: '[PRED-248] タイトル名 - 女優名.dcv' },
+  { before: 'dass00076hhb.dcv', after: '[DASS-76] タイトル名 - 女優名.dcv' },
+  { before: 'masm00001hhb.dcv', after: '[MASM-1] タイトル名 - 女優名.dcv' },
+  { before: '13dsvr01059vrv1uhqe1.wsdcf', after: '[DSVR-1059] VRタイトル - 女優名.dcv' },
+]
+let demoIndex = 0
+const demoBefore = document.getElementById('demoBefore')
+const demoAfter = document.getElementById('demoAfter')
+setInterval(() => {
+  demoIndex = (demoIndex + 1) % DEMO_ITEMS.length
+  demoBefore.textContent = DEMO_ITEMS[demoIndex].before
+  demoAfter.style.animation = 'none'
+  void demoAfter.offsetWidth
+  demoAfter.textContent = DEMO_ITEMS[demoIndex].after
+  demoAfter.style.animation = 'slideIn 0.4s ease forwards'
+}, 3000)
+
+// ===== モバイル警告 =====
+function checkMobile() {
+  const warn = document.getElementById('mobileWarning')
+  warn.style.display = window.innerWidth < 768 ? 'block' : 'none'
+}
+checkMobile()
+window.addEventListener('resize', checkMobile)
+
+// ===== フォルダ選択 =====
+const folderInput = document.getElementById('folderInput')
+folderInput.setAttribute('webkitdirectory', '')
+folderInput.setAttribute('directory', '')
+
+document.getElementById('folderBtn').addEventListener('click', () => {
+  folderInput.click()
+})
+
+folderInput.addEventListener('change', (e) => {
+  const files = [...e.target.files]
+  const includeSubfolders = document.getElementById('includeSubfolders').checked
+  const dcvFiles = files.filter(f => {
+    if (!f.name.match(/\.(dcv|wsdcf)$/i)) return false
+    if (!includeSubfolders) {
+      const parts = f.webkitRelativePath.split('/')
+      return parts.length <= 2
+    }
+    return true
+  })
+  const names = dcvFiles.map(f => f.name)
+  document.getElementById('textInput').value = names.join('\n')
+
+  if (files.length > 0 && files[0].webkitRelativePath) {
+    const folderName = files[0].webkitRelativePath.split('/')[0]
+    const display = document.getElementById('folderNameDisplay')
+    display.textContent = `📁 ${folderName} (${dcvFiles.length}件)`
+    display.style.display = 'block'
+    // パス入力のプレースホルダー更新
+    document.getElementById('folderPathInput').placeholder = `フォルダのフルパスを入力（例: C:\\Users\\...\\${folderName}）`
+  }
+  clearResults()
+})
+
+// ===== 状態 =====
+let results = []
+let loading = false
+
+function clearResults() {
+  results = []
+  document.getElementById('progressSection').style.display = 'none'
+  document.getElementById('resultSection').style.display = 'none'
+  document.getElementById('errorMsg').style.display = 'none'
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg')
+  el.textContent = msg
+  el.style.display = msg ? 'block' : 'none'
+}
+
+// ===== 変換実行 =====
+document.getElementById('submitBtn').addEventListener('click', handleSubmit)
+
+async function handleSubmit() {
+  if (loading) return
+  showError('')
+  clearResults()
+
+  const rawInput = document.getElementById('textInput').value
+  const filenames = rawInput.split('\n').map(l => l.trim()).filter(l => l.length > 0)
+
+  if (filenames.length === 0) {
+    showError('ファイル名を入力してください')
+    return
+  }
+  if (filenames.length > 50) {
+    showError('一度に処理できるのは50件までです')
+    return
+  }
+
+  const nameFormat = document.querySelector('input[name="nameFormat"]:checked').value
+  const showLabel = document.getElementById('showLabel').checked
+
+  loading = true
+  setSubmitLoading(true)
+
+  const progSection = document.getElementById('progressSection')
+  progSection.style.display = 'block'
+  updateProgress(0, filenames.length)
+
+  try {
+    const response = await fetch('/api/rename', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filenames, nameFormat, showLabel }),
+    })
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ error: 'サーバーエラー' }))
+      throw new Error(err.error || 'サーバーエラー')
+    }
+
+    const reader = response.body.getReader()
+    const decoder = new TextDecoder()
+    let buffer = ''
+
+    while (true) {
+      const { done, value } = await reader.read()
+      if (done) break
+      buffer += decoder.decode(value, { stream: true })
+      const lines = buffer.split('\n')
+      buffer = lines.pop()
+      for (const line of lines) {
+        if (!line.startsWith('data: ')) continue
+        try {
+          const event = JSON.parse(line.slice(6))
+          if (event.type === 'progress') {
+            results.push(event.result)
+            updateProgress(event.current, event.total)
+            addProgressItem(event.result)
+          } else if (event.type === 'done') {
+            results = event.results
+          } else if (event.type === 'error') {
+            throw new Error(event.error)
+          }
+        } catch (parseErr) {
+          if (parseErr.message && !parseErr.message.includes('JSON')) throw parseErr
+        }
+      }
+    }
+  } catch (e) {
+    showError('エラー: ' + e.message)
+  } finally {
+    loading = false
+    setSubmitLoading(false)
+    showResults()
+  }
+}
+
+function setSubmitLoading(isLoading) {
+  const btn = document.getElementById('submitBtn')
+  btn.disabled = isLoading
+  btn.textContent = isLoading ? '取得中...' : '変換する'
+}
+
+function updateProgress(current, total) {
+  document.getElementById('progressText').textContent = `${current} / ${total}`
+  const pct = total > 0 ? Math.round((current / total) * 100) : 0
+  document.getElementById('progressBarFill').style.width = pct + '%'
+}
+
+function addProgressItem(result) {
+  const div = document.createElement('div')
+  div.className = 'progress-item ' + result.status
+  const name = document.createElement('span')
+  name.textContent = result.filename
+  div.appendChild(name)
+  if (result.status === 'ok' && result.newName) {
+    const sub = document.createElement('span')
+    sub.className = 'progress-item-new'
+    sub.textContent = '→ ' + result.newName
+    div.appendChild(sub)
+  }
+  const container = document.getElementById('progressItems')
+  container.appendChild(div)
+  container.scrollTop = container.scrollHeight
+}
+
+function showResults() {
+  document.getElementById('progressSection').style.display = 'none'
+
+  if (results.length === 0) return
+
+  const okItems = results.filter(r => r.status === 'ok')
+  document.getElementById('okCount').textContent = okItems.length > 0 ? `(${okItems.length}件成功)` : ''
+
+  const list = document.getElementById('resultList')
+  list.innerHTML = ''
+  for (const r of results) {
+    const li = document.createElement('li')
+    li.className = 'result-item ' + r.status
+    const old = document.createElement('span')
+    old.className = 'old-name'
+    old.textContent = r.filename
+    li.appendChild(old)
+    if (r.status === 'ok') {
+      const newEl = document.createElement('span')
+      newEl.className = 'new-name'
+      newEl.textContent = '→ ' + r.newName
+      li.appendChild(newEl)
+    } else {
+      const skip = document.createElement('span')
+      skip.className = 'no-match'
+      skip.textContent = r.status === 'not_found' ? 'ヒットなし・スキップ' : 'エラー: ' + r.error
+      li.appendChild(skip)
+    }
+    list.appendChild(li)
+  }
+
+  updateFolderPathUI()
+  document.getElementById('resultSection').style.display = 'block'
+}
+
+// ===== コピー =====
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const text = results.filter(r => r.status === 'ok').map(r => r.newName).join('\n')
+  navigator.clipboard.writeText(text).catch(() => {})
+  const btn = document.getElementById('copyBtn')
+  btn.textContent = '✓ コピーしました'
+  setTimeout(() => { btn.textContent = 'コピー' }, 2000)
+})
+
+// ===== フォルダパス =====
+function updateFolderPathUI() {
+  const pathInput = document.getElementById('folderPathInput')
+  const label = document.getElementById('folderPathLabel')
+  const hint = document.getElementById('pathHint')
+
+  function refresh() {
+    const val = pathInput.value.trim()
+    if (!val) {
+      pathInput.className = 'path-input path-input-empty'
+      label.innerHTML = '<span class="label-required">※必須</span> リネーム対象フォルダのパスを入力'
+    } else {
+      pathInput.className = 'path-input path-input-ok'
+      label.innerHTML = '<span class="label-ok">✓</span> リネーム対象フォルダのパス'
+    }
+  }
+
+  pathInput.addEventListener('input', refresh)
+  refresh()
+}
+
+// ===== ダウンロード =====
+document.getElementById('downloadBtn').addEventListener('click', handleDownload)
+
+async function handleDownload() {
+  const folderPath = document.getElementById('folderPathInput').value.trim()
+  const okResults = results.filter(r => r.status === 'ok')
+
+  if (okResults.length === 0) {
+    alert('リネーム対象のファイルがありません')
+    return
+  }
+  if (!folderPath) {
+    document.getElementById('folderPathInput').focus()
+    alert('フォルダのパスを入力してください')
+    return
+  }
+
+  const btn = document.getElementById('downloadBtn')
+  btn.disabled = true
+  btn.textContent = 'ZIPを生成中...'
+
+  try {
+    const zip = new JSZip()
+
+    // PowerShell スクリプト (Windows)
+    const psLines = ['# DMM Renamer - リネームスクリプト (Windows PowerShell)', `$folder = "${folderPath}"`, '']
+    for (const r of okResults) {
+      const from = r.filename.replace(/'/g, "''")
+      const to = r.newName.replace(/'/g, "''")
+      psLines.push(`Rename-Item -Path "$folder\\${from}" -NewName "${to}" -ErrorAction SilentlyContinue`)
+    }
+    psLines.push('', 'Write-Host "完了しました" -ForegroundColor Green', 'Read-Host "Enterキーで閉じる"')
+    zip.file('rename.ps1', psLines.join('\r\n'))
+
+    // Bash スクリプト (Mac/Linux)
+    const shLines = ['#!/bin/bash', '# DMM Renamer - リネームスクリプト (Mac/Linux)', `FOLDER="${folderPath}"`, '']
+    for (const r of okResults) {
+      const from = r.filename.replace(/'/g, "'\\''")
+      const to = r.newName.replace(/'/g, "'\\''")
+      shLines.push(`mv "$FOLDER/${from}" "$FOLDER/${to}" 2>/dev/null`)
+    }
+    shLines.push('', 'echo "完了しました"')
+    zip.file('実行する.sh', shLines.join('\n'))
+
+    // バッチファイル (Windows用ランチャー)
+    const batContent = [
+      '@echo off',
+      'chcp 65001 > nul',
+      'powershell -ExecutionPolicy Bypass -File "%~dp0rename.ps1"',
+    ].join('\r\n')
+    zip.file('実行する.bat', batContent)
+
+    // README
+    const readme = [
+      'DMM Renamer - リネームスクリプト',
+      '================================',
+      '',
+      '【Windows の場合】',
+      '1. 「実行する.bat」をダブルクリック',
+      '2. セキュリティ警告が出たら「詳細情報」→「実行」',
+      '',
+      '【Mac の場合】',
+      '1. ターミナルを開く',
+      '2. 「bash 」と入力後、「実行する.sh」をドラッグ&ドロップ',
+      '3. Enterキーで実行',
+      '',
+      `対象フォルダ: ${folderPath}`,
+      `リネーム件数: ${okResults.length}件`,
+    ].join('\n')
+    zip.file('README.txt', readme)
+
+    const content = await zip.generateAsync({ type: 'blob' })
+    const url = URL.createObjectURL(content)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'dmm-rename-scripts.zip'
+    a.click()
+    URL.revokeObjectURL(url)
+  } catch (e) {
+    alert('ZIPの生成に失敗しました: ' + e.message)
+  } finally {
+    btn.disabled = false
+    btn.textContent = 'リネームスクリプトをダウンロード (.zip)'
+  }
+}
+
+// ===== コマンドコピー =====
+function copyMacCmd() {
+  const text = document.getElementById('macCmd').textContent
+  navigator.clipboard.writeText(text).catch(() => {})
+}
+
+// ===== シェアメニュー =====
+const shareUrl = encodeURIComponent(location.href)
+const shareText = encodeURIComponent('.dcvファイルを自動リネーム！ FANZA公式APIで女優名・タイトルに変換')
+document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`
+document.getElementById('shareLine').href = `https://line.me/R/msg/text/?${shareText}%20${shareUrl}`
+
+let shareOpen = false
+document.getElementById('shareMainBtn').addEventListener('click', (e) => {
+  e.stopPropagation()
+  shareOpen = !shareOpen
+  document.getElementById('shareMenu').style.display = shareOpen ? 'block' : 'none'
+  document.getElementById('shareOverlay').style.display = shareOpen ? 'block' : 'none'
+  document.getElementById('shareMainBtn').classList.toggle('share-main-btn-open', shareOpen)
+})
+
+function closeShare() {
+  shareOpen = false
+  document.getElementById('shareMenu').style.display = 'none'
+  document.getElementById('shareOverlay').style.display = 'none'
+  document.getElementById('shareMainBtn').classList.remove('share-main-btn-open')
+}
+
+document.getElementById('shareCopyLink').addEventListener('click', () => {
+  navigator.clipboard.writeText(location.href).catch(() => {})
+  const el = document.getElementById('shareCopyText')
+  el.textContent = '✓ コピーしました'
+  setTimeout(() => { el.textContent = 'リンクをコピー' }, 2000)
+  closeShare()
+})
+</script>
+</body>
+</html>

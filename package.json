@@ -3,23 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "cf:build": "opennextjs-cloudflare build",
-    "cf:deploy": "opennextjs-cloudflare deploy",
-    "preview": "npm run cf:build && wrangler dev"
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
   },
   "dependencies": {
-    "@vercel/analytics": "^2.0.1",
-    "jszip": "^3.10.1",
-    "next": "^15.5.19",
-    "react": "^18",
-    "react-dom": "^18"
+    "hono": "^4.0.0"
   },
   "devDependencies": {
-    "@opennextjs/cloudflare": "1.19.11",
-    "sharp": "^0.35.1",
-    "wrangler": "^4.102.0"
+    "@cloudflare/workers-types": "^4.0.0",
+    "typescript": "^5.0.0",
+    "wrangler": "^4.0.0"
   }
 }

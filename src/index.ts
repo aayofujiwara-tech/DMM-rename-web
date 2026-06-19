@@ -1,13 +1,40 @@
-import { extractCid } from '../../../lib/cidExtractor'
-import { fetchFanzaItem, isValidApiKeys } from '../../../lib/fanzaApi'
+import { Hono } from 'hono'
+import { extractCid } from './cidExtractor'
+import { fetchFanzaItem, isValidApiKeys } from './fanzaApi'
 
-const sleep = (ms) => new Promise(r => setTimeout(r, ms))
+type Bindings = {
+  FANZA_API_ID: string
+  FANZA_AFFILIATE_ID: string
+}
+
+interface FileItem {
+  filename: string
+  cid: string
+  label: string
+  partNumber: number | null
+}
+
+interface RenameResult {
+  filename: string
+  cid: string
+  label: string
+  status: 'ok' | 'not_found' | 'error'
+  title?: string
+  actresses?: string[]
+  newName?: string
+  error?: string
+}
+
+const sleep = (ms: number) => new Promise<void>(r => setTimeout(r, ms))
 
 const CONCURRENCY = 5
 const DELAY_BETWEEN_BATCHES = 200
 const VALID_FORMATS = new Set(['title_actress', 'actress_title'])
 
-function buildNewName(label, title, actresses, fmt, partNumber, showLabel) {
+function buildNewName(
+  label: string, title: string, actresses: string[],
+  fmt: string, partNumber: number | null, showLabel: boolean
+): string {
   const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
   const safeActresses = actresses
     .map(a => a.replace(/[\\/:*?"<>|]/g, '').replace(/\.+$/, '').trim())
@@ -27,11 +54,13 @@ function buildNewName(label, title, actresses, fmt, partNumber, showLabel) {
     : `${labelPart}${safeTitle}${part}.dcv`
 }
 
-function getFallbackCids(cid) {
-  const seen = new Set()
-  const fallbacks = []
+function getFallbackCids(cid: string): string[] {
+  const seen = new Set<string>()
+  const fallbacks: string[] = []
 
-  const add = (v) => { if (v !== cid && !seen.has(v)) { seen.add(v); fallbacks.push(v) } }
+  const add = (v: string) => {
+    if (v !== cid && !seen.has(v)) { seen.add(v); fallbacks.push(v) }
+  }
 
   const m = cid.match(/^(\d*[a-z_]+)(0{2,})(\d+)$/i)
   if (m) {
@@ -54,7 +83,10 @@ function getFallbackCids(cid) {
   return fallbacks
 }
 
-async function processFile(file, apiId, affiliateId, nameFormat, showLabel) {
+async function processFile(
+  file: FileItem, apiId: string, affiliateId: string,
+  nameFormat: string, showLabel: boolean
+): Promise<RenameResult> {
   const { filename, cid, label, partNumber } = file
 
   if (!cid || !/^[a-z0-9_]{2,50}$/.test(cid)) {
@@ -78,87 +110,60 @@ async function processFile(file, apiId, affiliateId, nameFormat, showLabel) {
     }
     return { filename, cid, label, status: 'not_found' }
   } catch (e) {
-    return { filename, cid, label, status: 'error', error: e.message }
+    return { filename, cid, label, status: 'error', error: (e as Error).message }
   }
 }
 
-export async function POST(request) {
-  const body = await request.json().catch(() => null)
-  if (!body) {
-    return new Response(JSON.stringify({ error: 'リクエストが不正です' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+const app = new Hono<{ Bindings: Bindings }>()
+
+app.post('/api/rename', async (c) => {
+  let body: { filenames?: unknown; nameFormat?: unknown; showLabel?: unknown }
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'リクエストが不正です' }, 400)
   }
 
   const { filenames, showLabel = true } = body
-  const nameFormat = VALID_FORMATS.has(body.nameFormat) ? body.nameFormat : 'title_actress'
-  const apiId = process.env.FANZA_API_ID
-  const affiliateId = process.env.FANZA_AFFILIATE_ID
+  const nameFormat = VALID_FORMATS.has(String(body.nameFormat)) ? String(body.nameFormat) : 'title_actress'
+  const apiId = c.env.FANZA_API_ID
+  const affiliateId = c.env.FANZA_AFFILIATE_ID
 
   if (!Array.isArray(filenames) || filenames.length === 0) {
-    return new Response(JSON.stringify({ error: 'filenamesが必要です' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return c.json({ error: 'filenamesが必要です' }, 400)
   }
   if (filenames.length > 50) {
-    return new Response(JSON.stringify({ error: '一度に処理できるのは50件までです' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return c.json({ error: '一度に処理できるのは50件までです' }, 400)
   }
   if (filenames.some(f => typeof f !== 'string' || f.length > 500)) {
-    return new Response(JSON.stringify({ error: 'ファイル名が無効です' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return c.json({ error: 'ファイル名が無効です' }, 400)
   }
   if (!apiId || !affiliateId || !isValidApiKeys(apiId, affiliateId)) {
-    return new Response(JSON.stringify({ error: 'サーバーのAPIキーが未設定です' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return c.json({ error: 'サーバーのAPIキーが未設定です' }, 500)
   }
 
-  const files = filenames
+  const files: FileItem[] = (filenames as string[])
     .map(f => f.trim())
     .filter(f => f.length > 0)
     .map(filename => ({ filename, ...extractCid(filename) }))
 
-  const { readable, writable } = new TransformStream()
+  const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>()
   const writer = writable.getWriter()
   const encoder = new TextEncoder()
 
-  const sendEvent = async (data) => {
+  const sendEvent = async (data: unknown) => {
     await writer.write(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
   }
 
   ;(async () => {
-    const results = []
+    const results: RenameResult[] = []
     let completed = 0
-    let rateLimitHit = false
 
     for (let i = 0; i < files.length; i += CONCURRENCY) {
       const batch = files.slice(i, i + CONCURRENCY)
 
-      if (rateLimitHit) {
-        for (const file of batch) {
-          const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
-          results.push(result)
-          completed++
-          await sendEvent({ type: 'progress', current: completed, total: files.length, result })
-          await sleep(1000)
-        }
-        continue
-      }
-
       const batchResults = await Promise.all(
-        batch.map(async (file) => {
-          const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
-          if (result.status === 'rate_limit') rateLimitHit = true
-          return result
-        })
+        batch.map(file => processFile(file, apiId, affiliateId, nameFormat, Boolean(showLabel)))
       )
 
       for (const result of batchResults) {
@@ -172,16 +177,16 @@ export async function POST(request) {
       }
     }
 
-    const nameCount = {}
+    const nameCount: Record<string, RenameResult[]> = {}
     for (const result of results) {
-      if (result.status !== 'ok') continue
+      if (result.status !== 'ok' || !result.newName) continue
       if (!nameCount[result.newName]) nameCount[result.newName] = []
       nameCount[result.newName].push(result)
     }
-    for (const [, items] of Object.entries(nameCount)) {
+    for (const items of Object.values(nameCount)) {
       if (items.length <= 1) continue
       items.forEach((item, index) => {
-        item.newName = item.newName.replace(/\.dcv$/, ` (${index + 1}).dcv`)
+        item.newName = item.newName!.replace(/\.dcv$/, ` (${index + 1}).dcv`)
       })
     }
 
@@ -189,7 +194,7 @@ export async function POST(request) {
     await writer.close()
   })().catch(async (err) => {
     try {
-      await sendEvent({ type: 'error', error: err.message })
+      await sendEvent({ type: 'error', error: (err as Error).message })
       await writer.close()
     } catch {
       await writer.abort(err)
@@ -204,4 +209,6 @@ export async function POST(request) {
       'X-Accel-Buffering': 'no',
     },
   })
-}
+})
+
+export default app

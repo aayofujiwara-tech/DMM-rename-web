@@ -1,16 +1,21 @@
-const API_ID_RE = /^[a-zA-Z0-9_\-\.]+$/
-const AFFILIATE_ID_RE = /^[a-zA-Z0-9_\-\.@]+$/
+const API_ID_RE = /^[a-zA-Z0-9_\-.]+$/
+const AFFILIATE_ID_RE = /^[a-zA-Z0-9_\-.@]+$/
 
-export function isValidApiKeys(apiId, affiliateId) {
+export function isValidApiKeys(apiId: string, affiliateId: string): boolean {
   return (
     typeof apiId === 'string' && apiId.length > 0 && apiId.length <= 200 && API_ID_RE.test(apiId) &&
     typeof affiliateId === 'string' && affiliateId.length > 0 && affiliateId.length <= 200 && AFFILIATE_ID_RE.test(affiliateId)
   )
 }
 
-const cache = new Map()
+export interface FanzaItem {
+  title: string
+  actresses: string[]
+}
 
-async function fetchFromApi(params) {
+const cache = new Map<string, FanzaItem | null>()
+
+async function fetchFromApi(params: Record<string, string>): Promise<FanzaItem | null> {
   const url = new URL('https://api.dmm.com/affiliate/v3/ItemList')
   for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v)
 
@@ -26,18 +31,19 @@ async function fetchFromApi(params) {
 
     if (!res.ok) return null
 
-    const json = await res.json()
-    const items = json?.result?.items
+    const json = await res.json() as Record<string, unknown>
+    const result = (json as Record<string, Record<string, unknown>>)?.result
+    const items = result?.items as Array<Record<string, unknown>> | undefined
     if (!Array.isArray(items) || items.length === 0) return null
 
     const item = items[0]
-    const title = item.title || null
+    const title = item.title as string | undefined
     if (!title) return null
 
-    const actresses = [...new Set([
-      ...(item.iteminfo?.actress ?? []).map(a => a.name).filter(Boolean),
-      ...(item.iteminfo?.actor ?? []).map(a => a.name).filter(Boolean),
-    ])]
+    const iteminfo = item.iteminfo as Record<string, Array<{ name?: string }>> | undefined
+    const actressNames = (iteminfo?.actress ?? []).map(a => a.name).filter(Boolean) as string[]
+    const actorNames = (iteminfo?.actor ?? []).map(a => a.name).filter(Boolean) as string[]
+    const actresses = [...new Set([...actressNames, ...actorNames])]
 
     return { title, actresses }
   } catch {
@@ -45,14 +51,9 @@ async function fetchFromApi(params) {
   }
 }
 
-/**
- * FANZA affiliate API v3 でcidから商品情報を取得
- * videoa → videoc の順でフロアを試す
- * @returns {{ title: string, actresses: string[] } | null}
- */
-export async function fetchFanzaItem(cid, apiId, affiliateId) {
+export async function fetchFanzaItem(cid: string, apiId: string, affiliateId: string): Promise<FanzaItem | null> {
   const cacheKey = `${cid}:${apiId}`
-  if (cache.has(cacheKey)) return cache.get(cacheKey)
+  if (cache.has(cacheKey)) return cache.get(cacheKey) ?? null
 
   const floors = ['videoa', 'videoc']
 
