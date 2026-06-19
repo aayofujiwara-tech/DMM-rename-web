@@ -6,9 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "cf:build": "opennextjs-cloudflare build && node -e \"require('fs').copyFileSync('.open-next/worker.js','.open-next/assets/_worker.js')\"",
-    "preview": "npm run cf:build && wrangler pages dev .open-next/assets",
-    "deploy": "npm run cf:build && wrangler pages deploy .open-next/assets"
+    "cf:build": "opennextjs-cloudflare build",
+    "cf:deploy": "opennextjs-cloudflare deploy",
+    "preview": "npm run cf:build && wrangler dev"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
