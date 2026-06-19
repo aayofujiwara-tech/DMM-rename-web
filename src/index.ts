@@ -155,10 +155,17 @@ app.get('/api/ranking', async (c) => {
     const result = items.map(item => ({
       title: item.title as string,
       affiliateUrl: (item.affiliateURL as string) ?? '',
-      imageUrl: ((item.imageURL as Record<string, string>)?.small) ?? '',
+      imageUrl:
+        (item.imageURL as Record<string, string>)?.small ||
+        (item.imageURL as Record<string, string>)?.list ||
+        (item.imageURL as Record<string, string>)?.large ||
+        '',
       price: ((item.prices as Record<string, string>)?.price) ?? '',
     }))
 
+    if (items.length > 0) {
+      console.log('[ranking] first item imageURL:', JSON.stringify(items[0].imageURL))
+    }
     return c.json({ items: result })
   } catch {
     return c.json({ items: [] })
