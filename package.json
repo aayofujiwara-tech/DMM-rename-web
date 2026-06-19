@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "preview": "opennextjs-cloudflare build && wrangler pages dev",
+    "deploy": "opennextjs-cloudflare build && wrangler pages deploy"
   },
   "dependencies": {
     "@vercel/analytics": "^2.0.1",
@@ -16,6 +18,8 @@
     "react-dom": "^18"
   },
   "devDependencies": {
-    "sharp": "^0.35.1"
+    "@opennextjs/cloudflare": "^1.19.11",
+    "sharp": "^0.35.1",
+    "wrangler": "^4.102.0"
   }
 }
