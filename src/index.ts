@@ -78,7 +78,6 @@ function getFallbackCids(cid: string): string[] {
     for (let z = zeros.length - 1; z >= 0; z--) {
       add(alpha + '0'.repeat(z) + num)
     }
-    add(alpha + num)
   }
 
   return fallbacks
@@ -90,7 +89,7 @@ async function processFile(
 ): Promise<RenameResult> {
   const { filename, cid, label, partNumber } = file
 
-  if (!cid || !/^[a-z0-9_]{2,50}$/.test(cid)) {
+  if (!cid || !/^[a-z0-9]{2,50}$/.test(cid)) {
     return { filename, cid, label, status: 'not_found' }
   }
 
@@ -117,6 +116,13 @@ async function processFile(
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+app.use('*', async (c, next) => {
+  await next()
+  c.res.headers.set('X-Content-Type-Options', 'nosniff')
+  c.res.headers.set('X-Frame-Options', 'DENY')
+  c.res.headers.set('Referrer-Policy', 'no-referrer')
+})
+
 app.get('/about', async (c) => {
   const url = new URL(c.req.url)
   url.pathname = '/about.html'
@@ -131,7 +137,9 @@ app.get('/source', async (c) => {
 
 app.get('/api/ranking', async (c) => {
   const type = c.req.query('type') ?? 'rank'
-  const floor = c.req.query('floor') ?? 'videoa'
+  const VALID_FLOORS = new Set(['videoa', 'videoc', 'anime', 'doujin', 'pcgame'])
+  const floorParam = c.req.query('floor') ?? 'videoa'
+  const floor = VALID_FLOORS.has(floorParam) ? floorParam : 'videoa'
   const hits = Math.min(Number(c.req.query('hits') ?? '5'), 10)
   const sort = type === 'date' ? 'date' : 'rank'
 
@@ -165,13 +173,6 @@ app.get('/api/ranking', async (c) => {
       price: ((item.prices as Record<string, string>)?.price) ?? '',
     }))
 
-    if (items.length > 0) {
-      console.log('[ranking debug]', JSON.stringify({
-        imageURL: items[0].imageURL,
-        sampleURL: items[0].sampleImageURL,
-        prices: items[0].prices,
-      }))
-    }
     return c.json({ items: result })
   } catch {
     return c.json({ items: [] })

@@ -21,9 +21,7 @@ export function extractCid(filename: string): CidResult {
   } else {
     s = s.replace(/_(v\d+_)?drm_[a-z0-9_]+$/i, '')
 
-    const partMatch = s.match(/(hhb|mhb|a2d|dmb?)(\d+)$/i)
-    partNumber = partMatch ? parseInt(partMatch[2], 10) : null
-
+    // 末尾の数字(hhb1, mhb2等)はエンコーダーIDでありディスク番号ではない
     s = s.replace(/(hhb\d*|mhb\d*|a2d\d*|dmb?\d*)$/i, '')
     s = s.replace(/2ds?$/i, '')
 

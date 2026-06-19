@@ -13,7 +13,25 @@ export interface FanzaItem {
   actresses: string[]
 }
 
-const cache = new Map<string, FanzaItem | null>()
+interface CacheEntry { value: FanzaItem; expiresAt: number }
+const cache = new Map<string, CacheEntry>()
+const CACHE_TTL_MS = 10 * 60 * 1000
+const CACHE_MAX = 500
+
+function cacheGet(cid: string): FanzaItem | undefined {
+  const entry = cache.get(cid)
+  if (!entry) return undefined
+  if (Date.now() > entry.expiresAt) { cache.delete(cid); return undefined }
+  return entry.value
+}
+
+function cacheSet(cid: string, value: FanzaItem) {
+  if (cache.size >= CACHE_MAX) {
+    const firstKey = cache.keys().next().value
+    if (firstKey !== undefined) cache.delete(firstKey)
+  }
+  cache.set(cid, { value, expiresAt: Date.now() + CACHE_TTL_MS })
+}
 
 async function fetchFromApi(params: Record<string, string>): Promise<FanzaItem | null> {
   const url = new URL('https://api.dmm.com/affiliate/v3/ItemList')
@@ -52,8 +70,8 @@ async function fetchFromApi(params: Record<string, string>): Promise<FanzaItem |
 }
 
 export async function fetchFanzaItem(cid: string, apiId: string, affiliateId: string): Promise<FanzaItem | null> {
-  const cacheKey = `${cid}:${apiId}`
-  if (cache.has(cacheKey)) return cache.get(cacheKey) ?? null
+  const cached = cacheGet(cid)
+  if (cached !== undefined) return cached
 
   const floors = ['videoa', 'videoc']
 
@@ -69,11 +87,11 @@ export async function fetchFanzaItem(cid: string, apiId: string, affiliateId: st
       output: 'json',
     })
     if (result) {
-      cache.set(cacheKey, result)
+      cacheSet(cid, result)
       return result
     }
   }
 
-  cache.set(cacheKey, null)
+  // null は非キャッシュ: 次回リクエストで再試行可能
   return null
 }

@@ -818,10 +818,10 @@ function updateFolderPathUI() {
     const val = pathInput.value.trim()
     if (!val) {
       pathInput.className = 'path-input path-input-empty'
-      label.innerHTML = '<span class="label-required">※必須</span> リネーム対象フォルダのパスを入力'
+      const req = document.createElement('span'); req.className = 'label-required'; req.textContent = '※必須'; label.textContent = ''; label.appendChild(req); label.appendChild(document.createTextNode(' リネーム対象フォルダのパスを入力'))
     } else {
       pathInput.className = 'path-input path-input-ok'
-      label.innerHTML = '<span class="label-ok">✓</span> リネーム対象フォルダのパス'
+      const ok = document.createElement('span'); ok.className = 'label-ok'; ok.textContent = '✓'; label.textContent = ''; label.appendChild(ok); label.appendChild(document.createTextNode(' リネーム対象フォルダのパス'))
     }
   }
 
@@ -853,21 +853,24 @@ async function handleDownload() {
   try {
     const zip = new JSZip()
 
-    // PowerShell スクリプト (Windows)
-    const psLines = ['# DMM Renamer - リネームスクリプト (Windows PowerShell)', `$folder = "${folderPath}"`, '']
+    // PowerShell スクリプト (Windows) — シングルクォート文字列で $ () ` の展開を防止
+    const psFolder = folderPath.replace(/'/g, "''")
+    const psLines = ['# DMM Renamer - リネームスクリプト (Windows PowerShell)', `$folder = '${psFolder}'`, '']
     for (const r of okResults) {
       const from = r.filename.replace(/'/g, "''")
       const to = r.newName.replace(/'/g, "''")
-      psLines.push(`Rename-Item -Path "$folder\\${from}" -NewName "${to}" -ErrorAction SilentlyContinue`)
+      psLines.push(`Rename-Item -LiteralPath ($folder + '\\${from}') -NewName '${to}' -ErrorAction SilentlyContinue`)
     }
     psLines.push('', 'Write-Host "完了しました" -ForegroundColor Green', 'Read-Host "Enterキーで閉じる"')
     zip.file('rename.ps1', psLines.join('\r\n'))
 
-    // Bash スクリプト (Mac/Linux)
-    const shLines = ['#!/bin/bash', '# DMM Renamer - リネームスクリプト (Mac/Linux)', `FOLDER="${folderPath}"`, '']
+    // Bash スクリプト (Mac/Linux) — メタキャラクターをダブルクォート内でエスケープ
+    function shEscape(s) { return s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\$/g, '\\$').replace(/`/g, '\\`') }
+    const shFolder = shEscape(folderPath)
+    const shLines = ['#!/bin/bash', '# DMM Renamer - リネームスクリプト (Mac/Linux)', `FOLDER="${shFolder}"`, '']
     for (const r of okResults) {
-      const from = r.filename.replace(/'/g, "'\\''")
-      const to = r.newName.replace(/'/g, "'\\''")
+      const from = shEscape(r.filename)
+      const to = shEscape(r.newName)
       shLines.push(`mv "$FOLDER/${from}" "$FOLDER/${to}" 2>/dev/null`)
     }
     shLines.push('', 'echo "完了しました"')
@@ -987,7 +990,7 @@ function renderRankItem(item, index) {
   img.loading = 'lazy'
   img.addEventListener('error', () => {
     const placeholder = document.createElement('div')
-    placeholder.style.cssText = `width:${img.width}px;height:${img.height}px;background:var(--bg-card);border-radius:3px;flex-shrink:0;`
+    placeholder.className = 'rank-thumb'
     img.replaceWith(placeholder)
   })
 
