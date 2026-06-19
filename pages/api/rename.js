@@ -1,5 +1,9 @@
 import { fetchFanzaItem, isValidApiKeys } from '../../lib/fanzaApi'
 
+export const config = {
+  runtime: 'edge',
+}
+
 const sleep = (ms) => new Promise(r => setTimeout(r, ms))
 
 const CONCURRENCY = 5
@@ -52,7 +56,7 @@ function getFallbackCids(cid) {
   const m2 = cid.match(/^(\d+)([a-z_]+)(0*)(\d+)$/i)
   if (m2) {
     const [, , alpha, zeros, num] = m2
-    add(alpha + zeros + num)  // プレフィックス除去・ゼロ保持（例: 84rmild00421 → rmild00421）
+    add(alpha + zeros + num)
     for (let z = zeros.length - 1; z >= 0; z--) {
       add(alpha + '0'.repeat(z) + num)
     }
@@ -72,7 +76,6 @@ async function processFile(file, apiId, affiliateId, nameFormat, showLabel) {
   try {
     let data = await fetchFanzaItem(cid, apiId, affiliateId)
 
-    // ヒットしなかった場合、ゼロパディングを変えて再検索（1つずつ減らして全パターン試す）
     if (!data) {
       for (const fallbackCid of getFallbackCids(cid)) {
         data = await fetchFanzaItem(fallbackCid, apiId, affiliateId)
@@ -91,28 +94,52 @@ async function processFile(file, apiId, affiliateId, nameFormat, showLabel) {
   }
 }
 
-export default async function handler(req, res) {
+export default async function handler(req) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' })
+    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+      status: 405,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
-  const { filenames, showLabel = true } = req.body
-  const nameFormat = VALID_FORMATS.has(req.body.nameFormat) ? req.body.nameFormat : 'title_actress'
+  let body
+  try {
+    body = await req.json()
+  } catch {
+    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
 
+  const { filenames, showLabel = true } = body
+  const nameFormat = VALID_FORMATS.has(body.nameFormat) ? body.nameFormat : 'title_actress'
   const apiId = process.env.FANZA_API_ID
   const affiliateId = process.env.FANZA_AFFILIATE_ID
 
   if (!Array.isArray(filenames) || filenames.length === 0) {
-    return res.status(400).json({ error: 'filenamesが必要です' })
+    return new Response(JSON.stringify({ error: 'filenamesが必要です' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
   if (filenames.length > 50) {
-    return res.status(400).json({ error: '一度に処理できるのは50件までです' })
+    return new Response(JSON.stringify({ error: '一度に処理できるのは50件までです' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
   if (filenames.some(f => typeof f !== 'string' || f.length > 500)) {
-    return res.status(400).json({ error: 'ファイル名が無効です' })
+    return new Response(JSON.stringify({ error: 'ファイル名が無効です' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
   if (!apiId || !affiliateId || !isValidApiKeys(apiId, affiliateId)) {
-    return res.status(500).json({ error: 'サーバーのAPIキーが未設定です' })
+    return new Response(JSON.stringify({ error: 'サーバーのAPIキーが未設定です' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
   }
 
   const { extractCid } = await import('../../lib/cidExtractor.js')
@@ -121,72 +148,75 @@ export default async function handler(req, res) {
     .filter(f => f.length > 0)
     .map(filename => ({ filename, ...extractCid(filename) }))
 
-  res.setHeader('Content-Type', 'text/event-stream')
-  res.setHeader('Cache-Control', 'no-cache')
-  res.setHeader('Connection', 'keep-alive')
-  res.setHeader('X-Accel-Buffering', 'no') // nginx/Vercelのバッファリング抑制
+  const encoder = new TextEncoder()
 
-  // ヘッダーをすぐに送信してSSE接続を確立する（バッファリング防止）
-  res.socket?.setNoDelay(true)
-  res.flushHeaders()
-
-  const sendEvent = (data) => {
-    res.write(`data: ${JSON.stringify(data)}\n\n`)
-    // compression middlewareがflushを追加している場合はすぐに送出する
-    if (typeof res.flush === 'function') res.flush()
-  }
-
-  const results = []
-  let completed = 0
-  let rateLimitHit = false
-
-  for (let i = 0; i < files.length; i += CONCURRENCY) {
-    const batch = files.slice(i, i + CONCURRENCY)
-
-    if (rateLimitHit) {
-      for (const file of batch) {
-        const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
-        results.push(result)
-        completed++
-        sendEvent({ type: 'progress', current: completed, total: files.length, result })
-        await sleep(1000)
+  const stream = new ReadableStream({
+    async start(controller) {
+      const sendEvent = (data) => {
+        controller.enqueue(encoder.encode(`data: ${JSON.stringify(data)}\n\n`))
       }
-      continue
-    }
 
-    const batchResults = await Promise.all(
-      batch.map(async (file) => {
-        const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
-        if (result.status === 'rate_limit') rateLimitHit = true
-        return result
-      })
-    )
+      const results = []
+      let completed = 0
+      let rateLimitHit = false
 
-    for (const result of batchResults) {
-      results.push(result)
-      completed++
-      sendEvent({ type: 'progress', current: completed, total: files.length, result })
-    }
+      for (let i = 0; i < files.length; i += CONCURRENCY) {
+        const batch = files.slice(i, i + CONCURRENCY)
 
-    if (i + CONCURRENCY < files.length) {
-      await sleep(DELAY_BETWEEN_BATCHES)
-    }
-  }
+        if (rateLimitHit) {
+          for (const file of batch) {
+            const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
+            results.push(result)
+            completed++
+            sendEvent({ type: 'progress', current: completed, total: files.length, result })
+            await sleep(1000)
+          }
+          continue
+        }
 
-  // 同一newNameの連番処理
-  const nameCount = {}
-  for (const result of results) {
-    if (result.status !== 'ok') continue
-    if (!nameCount[result.newName]) nameCount[result.newName] = []
-    nameCount[result.newName].push(result)
-  }
-  for (const [newName, items] of Object.entries(nameCount)) {
-    if (items.length <= 1) continue
-    items.forEach((item, index) => {
-      item.newName = newName.replace(/\.dcv$/, ` (${index + 1}).dcv`)
-    })
-  }
+        const batchResults = await Promise.all(
+          batch.map(async (file) => {
+            const result = await processFile(file, apiId, affiliateId, nameFormat, showLabel)
+            if (result.status === 'rate_limit') rateLimitHit = true
+            return result
+          })
+        )
 
-  sendEvent({ type: 'done', results })
-  res.end()
+        for (const result of batchResults) {
+          results.push(result)
+          completed++
+          sendEvent({ type: 'progress', current: completed, total: files.length, result })
+        }
+
+        if (i + CONCURRENCY < files.length) {
+          await sleep(DELAY_BETWEEN_BATCHES)
+        }
+      }
+
+      // 同一newNameの連番処理
+      const nameCount = {}
+      for (const result of results) {
+        if (result.status !== 'ok') continue
+        if (!nameCount[result.newName]) nameCount[result.newName] = []
+        nameCount[result.newName].push(result)
+      }
+      for (const [newName, items] of Object.entries(nameCount)) {
+        if (items.length <= 1) continue
+        items.forEach((item, index) => {
+          item.newName = newName.replace(/\.dcv$/, ` (${index + 1}).dcv`)
+        })
+      }
+
+      sendEvent({ type: 'done', results })
+      controller.close()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
+  })
 }
