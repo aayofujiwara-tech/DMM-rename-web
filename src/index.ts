@@ -129,6 +129,42 @@ app.get('/source', async (c) => {
   return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
 })
 
+app.get('/api/ranking', async (c) => {
+  const type = c.req.query('type') ?? 'rank'
+  const floor = c.req.query('floor') ?? 'videoa'
+  const hits = Math.min(Number(c.req.query('hits') ?? '5'), 10)
+  const sort = type === 'date' ? 'date' : 'rank'
+
+  const url = new URL('https://api.dmm.com/affiliate/v3/ItemList')
+  url.searchParams.set('api_id', c.env.FANZA_API_ID)
+  url.searchParams.set('affiliate_id', c.env.FANZA_AFFILIATE_ID)
+  url.searchParams.set('site', 'FANZA')
+  url.searchParams.set('service', 'digital')
+  url.searchParams.set('floor', floor)
+  url.searchParams.set('hits', String(hits))
+  url.searchParams.set('sort', sort)
+  url.searchParams.set('output', 'json')
+
+  try {
+    const res = await fetch(url.toString(), { headers: { 'Accept': 'application/json' } })
+    if (!res.ok) return c.json({ items: [] })
+
+    const json = await res.json() as Record<string, unknown>
+    const items = ((json as Record<string, Record<string, unknown>>)?.result?.items ?? []) as Array<Record<string, unknown>>
+
+    const result = items.map(item => ({
+      title: item.title as string,
+      affiliateUrl: (item.affiliateURL as string) ?? '',
+      imageUrl: ((item.imageURL as Record<string, string>)?.small) ?? '',
+      price: ((item.prices as Record<string, string>)?.price) ?? '',
+    }))
+
+    return c.json({ items: result })
+  } catch {
+    return c.json({ items: [] })
+  }
+})
+
 app.post('/api/rename', async (c) => {
   let body: { filenames?: unknown; nameFormat?: unknown; showLabel?: unknown }
   try {

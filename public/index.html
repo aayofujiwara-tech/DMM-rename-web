@@ -188,6 +188,32 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
   .share-main-btn { width: 44px; height: 44px; }
   .share-menu { min-width: 180px; }
 }
+.page-layout { display: flex; gap: 0; align-items: flex-start; max-width: 1400px; margin: 0 auto; }
+.sidebar { width: 160px; flex-shrink: 0; padding: 20px 8px; position: sticky; top: 60px; }
+.main-content { flex: 1; min-width: 0; }
+@media (max-width: 900px) { .sidebar { display: none; } }
+.widget-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.widget-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+.widget-title { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; text-transform: uppercase; }
+.widget-pr { font-size: 9px; background: rgba(233,69,96,0.15); color: var(--accent); border-radius: 3px; padding: 1px 5px; }
+.widget-footer { font-size: 9px; color: var(--text-secondary); text-align: center; padding: 6px; border-top: 1px solid var(--border); opacity: 0.5; }
+.widget-loading { font-size: 11px; color: var(--text-secondary); text-align: center; padding: 16px; }
+.rank-item { display: flex; gap: 8px; padding: 8px 10px; border-bottom: 1px solid rgba(30,58,110,0.5); align-items: center; text-decoration: none; transition: background 0.15s; }
+.rank-item:last-child { border-bottom: none; }
+.rank-item:hover { background: rgba(255,255,255,0.03); }
+.rank-num { font-size: 11px; color: var(--text-secondary); width: 14px; flex-shrink: 0; font-weight: 500; }
+.rank-num.top3 { color: var(--accent); }
+.rank-thumb { width: 34px; height: 48px; object-fit: cover; border-radius: 3px; flex-shrink: 0; background: var(--bg-card); }
+.rank-info { flex: 1; min-width: 0; }
+.rank-title { font-size: 10px; color: var(--text-secondary); line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.rank-price { font-size: 9px; color: var(--accent); margin-top: 3px; }
+.pickup-widget { background: var(--bg-secondary); padding: 0 0 4px; }
+.pickup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px; }
+.pickup-item { display: block; text-decoration: none; background: var(--bg-card); border-radius: 6px; overflow: hidden; transition: transform 0.15s; }
+.pickup-item:hover { transform: translateY(-2px); }
+.pickup-thumb { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+.pickup-title { font-size: 10px; color: var(--text-secondary); padding: 5px; line-height: 1.3; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.affiliate-label { font-size: 10px; color: var(--text-secondary); text-align: center; margin-top: 6px; opacity: 0.4; }
   </style>
 </head>
 <body>
@@ -202,6 +228,24 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
     <a href="#tool" class="nav-cta">今すぐ使う →</a>
   </div>
 </nav>
+
+<div class="page-layout">
+
+  <aside class="sidebar sidebar-left" id="sidebar-left">
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">売上ランキング</span>
+        <span class="widget-pr">PR</span>
+      </div>
+      <div id="ranking-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
+      <div class="widget-footer">FANZA</div>
+    </div>
+    <p class="affiliate-label">広告 / Affiliate</p>
+  </aside>
+
+  <main class="main-content">
 
 <!-- ヒーロー -->
 <section class="hero">
@@ -459,6 +503,36 @@ dass00076hhb.dcv"></textarea>
   </div>
 </section>
 
+    <div class="pickup-widget" id="pickup-widget" style="display:none;">
+      <div class="widget-box">
+        <div class="widget-header">
+          <span class="widget-title">新着ピックアップ</span>
+          <span class="widget-pr">PR</span>
+        </div>
+        <div class="pickup-grid" id="pickup-grid"></div>
+        <div class="widget-footer">FANZA — クリックでFANZAへ</div>
+      </div>
+      <p class="affiliate-label">広告 / Affiliate</p>
+    </div>
+
+  </main>
+
+  <aside class="sidebar sidebar-right" id="sidebar-right">
+    <div class="widget-box">
+      <div class="widget-header">
+        <span class="widget-title">新着作品</span>
+        <span class="widget-pr">PR</span>
+      </div>
+      <div id="newrelease-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
+      <div class="widget-footer">FANZA</div>
+    </div>
+    <p class="affiliate-label">広告 / Affiliate</p>
+  </aside>
+
+</div>
+
 <!-- シェアボタン -->
 <div class="share-container" id="shareContainer">
   <div class="share-menu" id="shareMenu" style="display:none">
@@ -638,6 +712,8 @@ async function handleSubmit() {
             addProgressItem(event.result)
           } else if (event.type === 'done') {
             results = event.results
+            document.getElementById('pickup-widget').style.display = 'block'
+            loadWidget('/api/ranking?type=date&hits=3', 'pickup-grid', renderPickupItem)
           } else if (event.type === 'error') {
             throw new Error(event.error)
           }
@@ -870,6 +946,41 @@ document.getElementById('shareCopyLink').addEventListener('click', () => {
   setTimeout(() => { el.textContent = 'リンクをコピー' }, 2000)
   closeShare()
 })
+
+// ===== ウィジェット =====
+async function loadWidget(endpoint, containerId, renderFn) {
+  try {
+    const res = await fetch(endpoint)
+    const { items } = await res.json()
+    const container = document.getElementById(containerId)
+    if (!container || !items.length) return
+    container.innerHTML = items.map(renderFn).join('')
+  } catch (e) {
+    console.warn('widget load failed', e)
+  }
+}
+
+function renderRankItem(item, index) {
+  const numClass = index < 3 ? 'rank-num top3' : 'rank-num'
+  const price = item.price ? `<div class="rank-price">¥${item.price}</div>` : ''
+  const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return `<a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer sponsored" class="rank-item">
+    <span class="${numClass}">${index + 1}</span>
+    <img class="rank-thumb" src="${item.imageUrl}" alt="" loading="lazy" onerror="this.style.display='none'">
+    <div class="rank-info"><div class="rank-title">${safeTitle}</div>${price}</div>
+  </a>`
+}
+
+function renderPickupItem(item) {
+  const safeTitle = item.title.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  return `<a href="${item.affiliateUrl}" target="_blank" rel="noopener noreferrer sponsored" class="pickup-item">
+    <img class="pickup-thumb" src="${item.imageUrl}" alt="${safeTitle}" loading="lazy" onerror="this.style.display='none'">
+    <div class="pickup-title">${safeTitle}</div>
+  </a>`
+}
+
+loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', (item, i) => renderRankItem(item, i))
+loadWidget('/api/ranking?type=date&hits=4', 'newrelease-list', (item, i) => renderRankItem(item, i))
 </script>
 </body>
 </html>
