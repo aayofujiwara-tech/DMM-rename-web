@@ -182,18 +182,22 @@ app.get('/api/ranking', async (c) => {
     const json = await res.json() as Record<string, unknown>
     const items = ((json as Record<string, Record<string, unknown>>)?.result?.items ?? []) as Array<Record<string, unknown>>
 
-    const result = items.map(item => ({
-      title: item.title as string,
-      affiliateUrl: (item.affiliateURL as string) ?? '',
-      imageUrl:
-        (item.imageURL as Record<string, string>)?.small ||
-        (item.imageURL as Record<string, string>)?.list ||
-        (item.imageURL as Record<string, string>)?.large ||
-        ((item.sampleImageURL as Record<string, string[]>)?.sample_s?.[0]) ||
-        ((item.sampleImageURL as Record<string, string[]>)?.sample_l?.[0]) ||
-        '',
-      price: ((item.prices as Record<string, string>)?.price) ?? '',
-    }))
+    const result = items.map(item => {
+      const cidFromUrl = ((item.affiliateURL as string) ?? '').match(/cid=([a-z0-9_]+)/)?.[1] ?? ''
+      return {
+        title: item.title as string,
+        affiliateUrl: (item.affiliateURL as string) ?? '',
+        imageUrl:
+          (item.imageURL as Record<string, string>)?.small ||
+          (item.imageURL as Record<string, string>)?.list ||
+          (item.imageURL as Record<string, string>)?.large ||
+          ((item.sampleImageURL as Record<string, string[]>)?.sample_s?.[0]) ||
+          ((item.sampleImageURL as Record<string, string[]>)?.sample_l?.[0]) ||
+          '',
+        price: ((item.prices as Record<string, string>)?.price) ?? '',
+        cid: cidFromUrl,
+      }
+    })
 
     return c.json({ items: result })
   } catch {

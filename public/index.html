@@ -579,26 +579,59 @@ if (!localStorage.getItem('ageVerified')) {
 }
 
 // ===== デモアニメーション =====
-const DEMO_ITEMS = [
-  { before: 'miaa00629mhb.dcv', after: '[MIAA-629] タイトル名 - 女優名.dcv' },
-  { before: '1dandy00812a2d_v1_drm_a_4k.dcv', after: '[DANDY-812] タイトル名.dcv' },
-  { before: 'ssis00100hhb.dcv', after: '[SSIS-100] タイトル名 - 女優名.dcv' },
-  { before: 'pred00248hhb.dcv', after: '[PRED-248] タイトル名 - 女優名.dcv' },
-  { before: 'dass00076hhb.dcv', after: '[DASS-76] タイトル名 - 女優名.dcv' },
-  { before: 'masm00001hhb.dcv', after: '[MASM-1] タイトル名 - 女優名.dcv' },
-  { before: '13dsvr01059vrv1uhqe1.wsdcf', after: '[DSVR-1059] VRタイトル - 女優名.dcv' },
+let DEMO_ITEMS = [
+  { before: 'miaa00001hhb.dcv', after: '[MIAA-1] タイトル名 - 女優名.dcv' },
 ]
 let demoIndex = 0
+let demoTimer = null
 const demoBefore = document.getElementById('demoBefore')
 const demoAfter = document.getElementById('demoAfter')
-setInterval(() => {
-  demoIndex = (demoIndex + 1) % DEMO_ITEMS.length
-  demoBefore.textContent = DEMO_ITEMS[demoIndex].before
-  demoAfter.style.animation = 'none'
-  void demoAfter.offsetWidth
-  demoAfter.textContent = DEMO_ITEMS[demoIndex].after
-  demoAfter.style.animation = 'slideIn 0.4s ease forwards'
-}, 3000)
+
+function startDemoTimer() {
+  if (demoTimer) clearInterval(demoTimer)
+  demoTimer = setInterval(() => {
+    if (DEMO_ITEMS.length === 0) return
+    demoIndex = (demoIndex + 1) % DEMO_ITEMS.length
+    const item = DEMO_ITEMS[demoIndex]
+    demoBefore.textContent = item.before
+    demoAfter.style.animation = 'none'
+    void demoAfter.offsetWidth
+    demoAfter.textContent = item.after
+    demoAfter.style.animation = 'slideIn 0.4s ease forwards'
+  }, 3000)
+}
+
+async function loadDemoFromRanking() {
+  try {
+    const res = await fetch('/api/ranking?type=rank&floor=videoa&hits=10')
+    const { items } = await res.json()
+    if (!items || items.length === 0) return
+
+    const demoItems = items
+      .map(item => {
+        const cid = item.cid
+        if (!cid) return null
+        const labelMatch = cid.match(/^([a-z]+)0*(\d+)/)
+        if (!labelMatch) return null
+        const label = `[${labelMatch[1].toUpperCase()}-${parseInt(labelMatch[2])}]`
+        const title = item.title.length > 30 ? item.title.slice(0, 30) + '…' : item.title
+        return { before: `${cid}hhb.dcv`, after: `${label} ${title}.dcv` }
+      })
+      .filter(Boolean)
+
+    if (demoItems.length > 0) {
+      DEMO_ITEMS = demoItems
+      demoIndex = 0
+      demoBefore.textContent = DEMO_ITEMS[0].before
+      demoAfter.textContent = DEMO_ITEMS[0].after
+    }
+  } catch (e) {
+    console.warn('demo load failed', e)
+  }
+}
+
+loadDemoFromRanking()
+startDemoTimer()
 
 // ===== モバイル警告 =====
 function checkMobile() {
