@@ -613,9 +613,9 @@ async function loadDemoFromRanking() {
         const labelMatch = cid.match(/^([a-z]+)0*(\d+)/)
         if (!labelMatch) return null
         const label = `[${labelMatch[1].toUpperCase()}-${parseInt(labelMatch[2])}]`
-        const title = item.title.length > 18 ? item.title.slice(0, 18) + '…' : item.title
+        const title = item.title.length > 15 ? item.title.slice(0, 15) + '…' : item.title
         const actressStr = item.actresses && item.actresses.length > 0
-          ? ` - ${item.actresses.join('_')}`
+          ? ` - ${item.actresses[0].length > 10 ? item.actresses[0].slice(0, 10) + '…' : item.actresses[0]}`
           : ''
         return { before: `${cid}hhb.dcv`, after: `${label} ${title}${actressStr}.dcv` }
       }).filter(Boolean)
