@@ -184,6 +184,8 @@ app.get('/api/ranking', async (c) => {
 
     const result = items.map(item => {
       const cidFromUrl = ((item.affiliateURL as string) ?? '').match(/cid=([a-z0-9_]+)/)?.[1] ?? ''
+      const actressNames = (item.iteminfo as Record<string, Array<{name?: string}>>)
+        ?.actress?.map((a: {name?: string}) => a.name).filter(Boolean) as string[] ?? []
       return {
         title: item.title as string,
         affiliateUrl: (item.affiliateURL as string) ?? '',
@@ -196,6 +198,7 @@ app.get('/api/ranking', async (c) => {
           '',
         price: ((item.prices as Record<string, string>)?.price) ?? '',
         cid: cidFromUrl,
+        actresses: actressNames.slice(0, 2),
       }
     })
 

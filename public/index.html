@@ -607,17 +607,18 @@ async function loadDemoFromRanking() {
     const { items } = await res.json()
     if (!items || items.length === 0) return
 
-    const demoItems = items
-      .map(item => {
-        const cid = item.cid
+    const demoItems = items.map(item => {
+        const cid = item.cid || ''
         if (!cid) return null
         const labelMatch = cid.match(/^([a-z]+)0*(\d+)/)
         if (!labelMatch) return null
         const label = `[${labelMatch[1].toUpperCase()}-${parseInt(labelMatch[2])}]`
-        const title = item.title.length > 30 ? item.title.slice(0, 30) + '…' : item.title
-        return { before: `${cid}hhb.dcv`, after: `${label} ${title}.dcv` }
-      })
-      .filter(Boolean)
+        const title = item.title.length > 25 ? item.title.slice(0, 25) + '…' : item.title
+        const actressStr = item.actresses && item.actresses.length > 0
+          ? ` - ${item.actresses.join('_')}`
+          : ''
+        return { before: `${cid}hhb.dcv`, after: `${label} ${title}${actressStr}.dcv` }
+      }).filter(Boolean)
 
     if (demoItems.length > 0) {
       DEMO_ITEMS = demoItems
