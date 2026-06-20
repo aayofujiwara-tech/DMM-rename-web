@@ -23,6 +23,7 @@ interface RenameResult {
   title?: string
   actresses?: string[]
   newName?: string
+  imageUrl?: string
   error?: string
 }
 
@@ -104,9 +105,9 @@ async function processFile(
     }
 
     if (data) {
-      const { title, actresses } = data
+      const { title, actresses, imageUrl } = data
       const newName = buildNewName(label, title, actresses, nameFormat, partNumber, showLabel)
-      return { filename, cid, label, status: 'ok', title, actresses, newName }
+      return { filename, cid, label, status: 'ok', title, actresses, newName, imageUrl }
     }
     return { filename, cid, label, status: 'not_found' }
   } catch (e) {

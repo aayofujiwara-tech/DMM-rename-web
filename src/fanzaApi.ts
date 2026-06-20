@@ -11,6 +11,7 @@ export function isValidApiKeys(apiId: string, affiliateId: string): boolean {
 export interface FanzaItem {
   title: string
   actresses: string[]
+  imageUrl: string
 }
 
 interface CacheEntry { value: FanzaItem; expiresAt: number }
@@ -63,7 +64,12 @@ async function fetchFromApi(params: Record<string, string>): Promise<FanzaItem |
     const actorNames = (iteminfo?.actor ?? []).map(a => a.name).filter(Boolean) as string[]
     const actresses = [...new Set([...actressNames, ...actorNames])]
 
-    return { title, actresses }
+    const imageUrl =
+      (item.imageURL as Record<string, string>)?.small ||
+      (item.imageURL as Record<string, string>)?.list ||
+      ''
+
+    return { title, actresses, imageUrl }
   } catch {
     return null
   }
