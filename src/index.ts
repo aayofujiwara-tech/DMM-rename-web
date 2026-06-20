@@ -142,6 +142,7 @@ app.get('/api/ranking', async (c) => {
   const floor = VALID_FLOORS.has(floorParam) ? floorParam : 'videoa'
   const hits = Math.min(Number(c.req.query('hits') ?? '5'), 10)
   const sort = type === 'date' ? 'date' : 'rank'
+  const keyword = c.req.query('keyword') ?? ''
 
   const url = new URL('https://api.dmm.com/affiliate/v3/ItemList')
   url.searchParams.set('api_id', c.env.FANZA_API_ID)
@@ -151,6 +152,9 @@ app.get('/api/ranking', async (c) => {
   url.searchParams.set('floor', floor)
   url.searchParams.set('hits', String(hits))
   url.searchParams.set('sort', sort)
+  if (keyword.length > 0 && keyword.length <= 50) {
+    url.searchParams.set('keyword', keyword)
+  }
   url.searchParams.set('output', 'json')
 
   try {
@@ -173,16 +177,6 @@ app.get('/api/ranking', async (c) => {
       price: ((item.prices as Record<string, string>)?.price) ?? '',
     }))
 
-    if (type === 'date' && items.length > 0) {
-      items.slice(0, 3).forEach((item, i) => {
-        console.log(`[ranking date item${i}]`, JSON.stringify({
-          title: item.title,
-          imageURL: item.imageURL,
-          sampleImageURL: item.sampleImageURL,
-          package_images: item.package_images,
-        }))
-      })
-    }
     return c.json({ items: result })
   } catch {
     return c.json({ items: [] })
