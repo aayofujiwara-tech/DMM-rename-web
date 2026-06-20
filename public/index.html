@@ -142,7 +142,8 @@ textarea::placeholder { color: #3a4a5a; }
 .label-ok { color: #4ecca3 !important; }
 .path-input-empty { border-color: #e94560 !important; background: rgba(233,69,96,0.06) !important; }
 .path-input-ok { border-color: #4ecca3 !important; background: rgba(78,204,163,0.06) !important; }
-#downloadBtn { display: block; width: fit-content; min-width: 320px; margin: 8px auto 8px; padding: 13px 32px; background: linear-gradient(135deg,#2ecc71,#27ae60); border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 16px rgba(46,204,113,0.3); }
+#downloadArea { min-height: 120px; display: flex; align-items: center; justify-content: center; }
+#downloadBtn { display: block; width: fit-content; min-width: 320px; margin: 0; padding: 13px 32px; background: linear-gradient(135deg,#2ecc71,#27ae60); border: none; border-radius: 8px; color: #fff; font-size: 15px; font-weight: 500; font-family: var(--font-body); cursor: pointer; transition: opacity 0.2s, transform 0.1s; box-shadow: 0 4px 16px rgba(46,204,113,0.3); }
 #downloadBtn:hover { opacity: 0.9; transform: translateY(-1px); }
 .howto { margin-top: 8px; padding: 28px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; }
 .howto-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 24px; color: var(--text-primary); }
@@ -532,7 +533,9 @@ dass00076hhb.dcv"></textarea>
 </section>
 
     <!-- ダウンロードボタン（ピックアップ直前） -->
-    <button id="downloadBtn" style="display:none">リネームスクリプトをダウンロード (.zip)</button>
+    <div id="downloadArea" style="display:none">
+      <button id="downloadBtn">リネームスクリプトをダウンロード (.zip)</button>
+    </div>
 
     <div class="pickup-widget" id="pickup-widget" style="display:none;">
       <div class="widget-box">
@@ -711,7 +714,7 @@ function clearResults() {
   results = []
   document.getElementById('progressSection').style.display = 'none'
   document.getElementById('resultSection').style.display = 'none'
-  document.getElementById('downloadBtn').style.display = 'none'
+  document.getElementById('downloadArea').style.display = 'none'
   document.getElementById('downloadHint').style.display = 'none'
   document.getElementById('errorMsg').style.display = 'none'
 }
@@ -867,7 +870,7 @@ function showResults() {
   document.getElementById('resultSection').style.display = 'block'
   const okCount2 = results.filter(r => r.status === 'ok').length
   const hasOk = okCount2 > 0
-  document.getElementById('downloadBtn').style.display = hasOk ? 'block' : 'none'
+  document.getElementById('downloadArea').style.display = hasOk ? 'flex' : 'none'
   document.getElementById('downloadHint').style.display = hasOk ? 'block' : 'none'
 }
 
