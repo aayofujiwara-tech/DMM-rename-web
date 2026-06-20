@@ -183,7 +183,16 @@ app.get('/api/ranking', async (c) => {
     const items = ((json as Record<string, Record<string, unknown>>)?.result?.items ?? []) as Array<Record<string, unknown>>
 
     const result = items.map(item => {
-      const cidFromUrl = ((item.affiliateURL as string) ?? '').match(/cid=([a-z0-9_]+)/)?.[1] ?? ''
+      const affiliateUrl = (item.affiliateURL as string) ?? ''
+      let cidFromUrl = ''
+      try {
+        const decoded = decodeURIComponent(affiliateUrl)
+        const m = decoded.match(/[?&](?:cid|id)=([a-z0-9_]+)/i)
+        if (m) cidFromUrl = m[1]
+      } catch {
+        const m = affiliateUrl.match(/(?:cid|id)(?:%3D|=)([a-z0-9_]+)/i)
+        if (m) cidFromUrl = m[1]
+      }
       const actressNames = (item.iteminfo as Record<string, Array<{name?: string}>>)
         ?.actress?.map((a: {name?: string}) => a.name).filter(Boolean) as string[] ?? []
       return {
