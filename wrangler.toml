@@ -2,6 +2,3 @@ name = "dmm-rename-web"
 main = "src/index.ts"
 compatibility_date = "2025-04-01"
 assets = { directory = "./public", binding = "ASSETS" }
-
-[limits]
-cpu_ms = 50
