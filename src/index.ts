@@ -159,7 +159,7 @@ app.get('/api/ranking', async (c) => {
   const floorParam = c.req.query('floor') ?? 'videoa'
   const floor = VALID_FLOORS.has(floorParam) ? floorParam : 'videoa'
   const hits = Math.min(Number(c.req.query('hits') ?? '5'), 10)
-  const sort = type === 'date' ? 'date' : 'rank'
+  const sort = type === 'date' ? 'date' : type === 'review' ? 'review' : 'rank'
   const keyword = c.req.query('keyword') ?? ''
 
   const url = new URL('https://api.dmm.com/affiliate/v3/ItemList')
