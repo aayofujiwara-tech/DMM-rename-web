@@ -135,6 +135,24 @@ app.get('/source', async (c) => {
   return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
 })
 
+app.get('/terms', async (c) => {
+  const url = new URL(c.req.url)
+  url.pathname = '/terms.html'
+  return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
+})
+
+app.get('/privacy', async (c) => {
+  const url = new URL(c.req.url)
+  url.pathname = '/privacy.html'
+  return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
+})
+
+app.get('/age-check', async (c) => {
+  const url = new URL(c.req.url)
+  url.pathname = '/age-check.html'
+  return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
+})
+
 app.get('/api/ranking', async (c) => {
   const type = c.req.query('type') ?? 'rank'
   const VALID_FLOORS = new Set(['videoa', 'videoc', 'anime', 'doujin', 'pcgame'])

@@ -569,10 +569,15 @@ dass00076hhb.dcv"></textarea>
     <a href="/age-check.html">年齢確認</a>
   </div>
   <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
-  <div class="footer-operator">運営: aayofujiwara-tech</div>
+  <div class="footer-operator">運営: 海野坊頭</div>
 </footer>
 
 <script>
+// 年齢確認ガード
+if (!localStorage.getItem('ageVerified')) {
+  location.href = '/age-check.html'
+}
+
 // ===== デモアニメーション =====
 const DEMO_ITEMS = [
   { before: 'miaa00629mhb.dcv', after: '[MIAA-629] タイトル名 - 女優名.dcv' },

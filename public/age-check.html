@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>年齢確認 | DMM Renamer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+:root{--bg-primary:#0d0d1a;--bg-secondary:#16213e;--bg-card:#1a2444;--border:#1e3a6e;--text-primary:#f0f0f0;--text-secondary:#8892a4;--accent:#e94560;--accent-dark:#c73652;--font-display:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:var(--font-body);background:var(--bg-primary);color:var(--text-primary);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+.age-card{width:100%;max-width:440px;background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;padding:48px 40px;text-align:center;}
+.age-logo{font-family:var(--font-display);font-size:22px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;margin-bottom:32px;}
+.age-icon{font-size:48px;margin-bottom:20px;}
+.age-notice{font-size:14px;color:var(--text-secondary);line-height:1.7;margin-bottom:8px;}
+.age-question{font-family:var(--font-display);font-size:22px;font-weight:700;margin-bottom:32px;color:var(--text-primary);}
+.age-buttons{display:flex;flex-direction:column;gap:12px;}
+.btn-yes{padding:14px;background:linear-gradient(135deg,#e94560,#c73652);border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:500;font-family:var(--font-body);cursor:pointer;transition:opacity 0.2s,transform 0.1s;box-shadow:0 4px 16px rgba(233,69,96,0.3);}
+.btn-yes:hover{opacity:0.9;transform:translateY(-1px);}
+.btn-no{padding:14px;background:transparent;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:15px;font-family:var(--font-body);cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+.btn-no:hover{border-color:var(--text-secondary);color:var(--text-primary);}
+.age-footer{margin-top:24px;font-size:12px;color:#3a4a5a;line-height:1.6;}
+.age-footer a{color:#3a4a5a;text-decoration:none;}
+.age-footer a:hover{color:var(--text-secondary);}
+  </style>
+</head>
+<body>
+<div class="age-card">
+  <div class="age-logo">DMM Renamer</div>
+  <div class="age-icon">🔞</div>
+  <p class="age-notice">本サービスは成人向けコンテンツを取り扱います</p>
+  <h1 class="age-question">あなたは18歳以上ですか？</h1>
+  <div class="age-buttons">
+    <button class="btn-yes" id="btnYes">はい、18歳以上です</button>
+    <button class="btn-no" id="btnNo">いいえ</button>
+  </div>
+  <p class="age-footer">
+    続行することで<a href="/terms.html">利用規約</a>および<a href="/privacy.html">プライバシーポリシー</a>に同意したものとみなします。
+  </p>
+</div>
+
+<script>
+if (localStorage.getItem('ageVerified') === 'true') {
+  location.href = '/'
+}
+
+document.getElementById('btnYes').addEventListener('click', function() {
+  localStorage.setItem('ageVerified', 'true')
+  location.href = '/'
+})
+
+document.getElementById('btnNo').addEventListener('click', function() {
+  location.href = 'https://www.google.com'
+})
+</script>
+</body>
+</html>
