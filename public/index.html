@@ -281,7 +281,7 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
     <div class="rename-demo">
       <div class="rename-demo-label">
         <span>変換イメージ</span>
-        <span style="color:#3a4a5a;font-size:10px">※タイトル・女優名はすべて架空のサンプルです</span>
+        <span style="color:#3a4a5a;font-size:10px">※実際の売上ランキング上位作品</span>
       </div>
       <div class="rename-before" id="demoBefore">miaa00629mhb.dcv</div>
       <div class="rename-arrow">↓</div>
@@ -613,7 +613,7 @@ async function loadDemoFromRanking() {
         const labelMatch = cid.match(/^([a-z]+)0*(\d+)/)
         if (!labelMatch) return null
         const label = `[${labelMatch[1].toUpperCase()}-${parseInt(labelMatch[2])}]`
-        const title = item.title.length > 25 ? item.title.slice(0, 25) + '…' : item.title
+        const title = item.title.length > 18 ? item.title.slice(0, 18) + '…' : item.title
         const actressStr = item.actresses && item.actresses.length > 0
           ? ` - ${item.actresses.join('_')}`
           : ''
