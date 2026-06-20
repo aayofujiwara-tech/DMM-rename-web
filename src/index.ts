@@ -173,6 +173,16 @@ app.get('/api/ranking', async (c) => {
       price: ((item.prices as Record<string, string>)?.price) ?? '',
     }))
 
+    if (type === 'date' && items.length > 0) {
+      items.slice(0, 3).forEach((item, i) => {
+        console.log(`[ranking date item${i}]`, JSON.stringify({
+          title: item.title,
+          imageURL: item.imageURL,
+          sampleImageURL: item.sampleImageURL,
+          package_images: item.package_images,
+        }))
+      })
+    }
     return c.json({ items: result })
   } catch {
     return c.json({ items: [] })

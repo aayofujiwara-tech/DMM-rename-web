@@ -53,16 +53,16 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .rename-after { color: #4ecca3; }
 @keyframes slideIn { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
 .rename-after { color: #4ecca3; animation: slideIn 0.4s ease forwards; }
-.section-inner { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+.section-inner { max-width: 1000px; margin: 0 auto; padding: 0 48px; }
 .section-title { font-family: var(--font-display); font-size: 28px; font-weight: 800; text-align: center; margin-bottom: 48px; letter-spacing: -0.5px; }
 .how { padding: 88px 0; background: var(--bg-secondary); }
-.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; }
+.steps { display: grid; grid-template-columns: repeat(3,1fr); gap: 28px; }
 .step { padding: 28px 24px; background: var(--bg-primary); border: 1px solid var(--border); border-radius: 12px; position: relative; overflow: hidden; }
 .step-num { font-family: var(--font-display); font-size: 72px; font-weight: 800; color: rgba(255,255,255,0.04); position: absolute; top: -10px; right: 16px; line-height: 1; pointer-events: none; }
 .step-title { font-family: var(--font-display); font-size: 16px; font-weight: 700; margin-bottom: 10px; color: var(--text-primary); }
 .step-desc { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
 .features { padding: 88px 0; background: var(--bg-primary); }
-.feature-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; }
+.feature-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 24px; }
 .feature-card { padding: 28px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; transition: border-color 0.2s, transform 0.2s; }
 .feature-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
 .feature-icon { font-size: 28px; margin-bottom: 14px; }
@@ -194,7 +194,7 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
 @media (max-width: 1600px) { .sidebar { width: 220px; } }
 @media (max-width: 1400px) { .sidebar { width: 190px; } }
 @media (max-width: 1100px) { .sidebar-right { display: none; } }
-@media (max-width: 900px) { .sidebar { display: none; } }
+@media (max-width: 900px) { .sidebar { display: none; } .section-inner { max-width: 860px; padding: 0 24px; } }
 .widget-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
 .widget-header { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-bottom: 1px solid var(--border); }
 .widget-title { font-size: 13px; font-weight: 600; color: var(--text-secondary); letter-spacing: 0.5px; text-transform: uppercase; }
@@ -524,7 +524,7 @@ dass00076hhb.dcv"></textarea>
   <aside class="sidebar sidebar-right" id="sidebar-right">
     <div class="widget-box">
       <div class="widget-header">
-        <span class="widget-title">新着作品</span>
+        <span class="widget-title">VRランキング</span>
         <span class="widget-pr">PR</span>
       </div>
       <div id="newrelease-list">
@@ -1039,7 +1039,7 @@ function renderPickupItem(item) {
 }
 
 loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', renderRankItem)
-loadWidget('/api/ranking?type=date&floor=videoa&hits=5', 'newrelease-list', renderRankItem)
+loadWidget('/api/ranking?type=rank&floor=videoc&hits=5', 'newrelease-list', renderRankItem)
 </script>
 </body>
 </html>
