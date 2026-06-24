@@ -2,6 +2,7 @@ export interface CidResult {
   cid: string
   label: string
   partNumber: number | null
+  isWsdcf: boolean
 }
 
 export function extractCid(filename: string): CidResult {
@@ -33,5 +34,5 @@ export function extractCid(filename: string): CidResult {
     ? `${match[1].toUpperCase()}-${parseInt(match[2], 10)}`
     : cid.toUpperCase()
 
-  return { cid, label, partNumber }
+  return { cid, label, partNumber, isWsdcf }
 }

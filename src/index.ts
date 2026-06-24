@@ -13,6 +13,7 @@ interface FileItem {
   cid: string
   label: string
   partNumber: number | null
+  isWsdcf: boolean
 }
 
 interface RenameResult {
@@ -35,8 +36,10 @@ const VALID_FORMATS = new Set(['title_actress', 'actress_title'])
 
 function buildNewName(
   label: string, title: string, actresses: string[],
-  fmt: string, partNumber: number | null, showLabel: boolean
+  fmt: string, partNumber: number | null, showLabel: boolean,
+  isWsdcf: boolean
 ): string {
+  const ext = isWsdcf ? '.wsdcf' : '.dcv'
   const safeTitle = title.replace(/[\\/:*?"<>|]/g, '').trim()
   const safeActresses = actresses
     .map(a => a.replace(/[\\/:*?"<>|]/g, '').replace(/\.+$/, '').trim())
@@ -48,12 +51,12 @@ function buildNewName(
 
   if (fmt === 'actress_title') {
     return safeActresses
-      ? `${labelPart}${safeActresses} - ${safeTitle}${part}.dcv`
-      : `${labelPart}${safeTitle}${part}.dcv`
+      ? `${labelPart}${safeActresses} - ${safeTitle}${part}${ext}`
+      : `${labelPart}${safeTitle}${part}${ext}`
   }
   return safeActresses
-    ? `${labelPart}${safeTitle} - ${safeActresses}${part}.dcv`
-    : `${labelPart}${safeTitle}${part}.dcv`
+    ? `${labelPart}${safeTitle} - ${safeActresses}${part}${ext}`
+    : `${labelPart}${safeTitle}${part}${ext}`
 }
 
 function getFallbackCids(cid: string): string[] {
@@ -90,7 +93,7 @@ async function processFile(
 ): Promise<RenameResult> {
   const { filename, cid, label, partNumber } = file
 
-  if (!cid || !/^[a-z0-9]{2,50}$/.test(cid)) {
+  if (!cid || !/^[a-z0-9_]{2,50}$/.test(cid)) {
     return { filename, cid, label, status: 'not_found' }
   }
 
@@ -106,7 +109,7 @@ async function processFile(
 
     if (data) {
       const { title, actresses, imageUrl } = data
-      const newName = buildNewName(label, title, actresses, nameFormat, partNumber, showLabel)
+      const newName = buildNewName(label, title, actresses, nameFormat, partNumber, showLabel, file.isWsdcf)
       return { filename, cid, label, status: 'ok', title, actresses, newName, imageUrl }
     }
     return { filename, cid, label, status: 'not_found' }
@@ -122,6 +125,7 @@ app.use('*', async (c, next) => {
   c.res.headers.set('X-Content-Type-Options', 'nosniff')
   c.res.headers.set('X-Frame-Options', 'DENY')
   c.res.headers.set('Referrer-Policy', 'no-referrer')
+  c.res.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src fonts.gstatic.com; img-src * data:; connect-src 'self' api.dmm.com fonts.googleapis.com fonts.gstatic.com")
 })
 
 app.get('/about', async (c) => {
@@ -154,12 +158,19 @@ app.get('/age-check', async (c) => {
   return c.env.ASSETS.fetch(new Request(url.toString(), c.req.raw))
 })
 
+app.get('/guide', (c) => c.env.ASSETS.fetch(c.req.raw))
+app.get('/guide/what-is-dcv', (c) => c.env.ASSETS.fetch(c.req.raw))
+app.get('/guide/dcv-vs-wsdcf', (c) => c.env.ASSETS.fetch(c.req.raw))
+app.get('/guide/file-management', (c) => c.env.ASSETS.fetch(c.req.raw))
+app.get('/guide/how-to-use', (c) => c.env.ASSETS.fetch(c.req.raw))
+
 app.get('/api/ranking', async (c) => {
   const type = c.req.query('type') ?? 'rank'
   const VALID_FLOORS = new Set(['videoa', 'videoc', 'anime', 'doujin', 'pcgame'])
   const floorParam = c.req.query('floor') ?? 'videoa'
   const floor = VALID_FLOORS.has(floorParam) ? floorParam : 'videoa'
-  const hits = Math.min(Number(c.req.query('hits') ?? '5'), 10)
+  const hitsRaw = Number(c.req.query('hits') ?? '5')
+  const hits = Math.min(Number.isFinite(hitsRaw) && hitsRaw > 0 ? Math.floor(hitsRaw) : 5, 10)
   const sort = type === 'date' ? 'date' : type === 'review' ? 'review' : 'rank'
   const keyword = c.req.query('keyword') ?? ''
 
@@ -288,7 +299,8 @@ app.post('/api/rename', async (c) => {
     for (const items of Object.values(nameCount)) {
       if (items.length <= 1) continue
       items.forEach((item, index) => {
-        item.newName = item.newName!.replace(/\.dcv$/, ` (${index + 1}).dcv`)
+        const ext = item.filename.toLowerCase().endsWith('.wsdcf') ? '.wsdcf' : '.dcv'
+        item.newName = item.newName!.replace(/\.(dcv|wsdcf)$/, ` (${index + 1})${ext}`)
       })
     }
 
