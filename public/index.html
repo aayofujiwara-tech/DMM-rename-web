@@ -241,6 +241,23 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
 .pickup-thumb { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
 .pickup-title { font-size: 11px; color: var(--text-secondary); padding: 6px; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .affiliate-label { font-size: 10px; color: var(--text-secondary); text-align: center; margin-top: 6px; opacity: 0.4; }
+.guide-links-widget { margin-top: 16px; }
+.guide-links-title { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.guide-link { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid rgba(30,58,110,0.3); text-decoration: none; transition: color 0.2s; }
+.guide-link:last-child { border-bottom: none; }
+.guide-link:hover .guide-link-tag { color: var(--accent); }
+.guide-link-tag { font-size: 9px; color: var(--accent); letter-spacing: 1px; }
+.guide-link > span:last-child { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
+.guide-link:hover > span:last-child { color: var(--text-primary); }
+.guide-section { padding: 88px 0; }
+.guide-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 48px; }
+.guide-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; text-decoration: none; display: flex; flex-direction: column; gap: 10px; transition: border-color 0.2s, transform 0.2s; }
+.guide-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+.guide-card-tag { font-size: 10px; color: var(--accent); letter-spacing: 1.5px; font-weight: 500; }
+.guide-card-title { font-size: 15px; font-weight: 500; color: var(--text-primary); line-height: 1.5; }
+.guide-card-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.7; flex: 1; }
+.guide-card-meta { font-size: 11px; color: var(--text-secondary); opacity: 0.6; }
+@media (max-width: 900px) { .guide-grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -252,6 +269,7 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
     <span class="nav-beta">βプロトタイプ</span>
   </div>
   <div class="nav-right">
+    <a href="/guide" class="nav-link">ガイド</a>
     <a href="#tool" class="nav-cta">今すぐ使う →</a>
   </div>
 </nav>
@@ -270,6 +288,25 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
       <div class="widget-footer">FANZA</div>
     </div>
     <p class="affiliate-label">広告 / Affiliate</p>
+    <div class="guide-links-widget">
+      <div class="guide-links-title">ガイド記事</div>
+      <a href="/guide/what-is-dcv" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>DCVファイルとは？基礎知識</span>
+      </a>
+      <a href="/guide/dcv-vs-wsdcf" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>.dcvと.wsdcfの違い</span>
+      </a>
+      <a href="/guide/file-management" class="guide-link">
+        <span class="guide-link-tag">MANAGE</span>
+        <span>ファイルの整理方法</span>
+      </a>
+      <a href="/guide/how-to-use" class="guide-link">
+        <span class="guide-link-tag">HOW-TO</span>
+        <span>DMM Renamer使い方</span>
+      </a>
+    </div>
   </aside>
 
   <main class="main-content">
@@ -333,6 +370,39 @@ code { font-family: 'Consolas', monospace; font-size: 12px; background: rgba(255
         <div class="step-title">スクリプト実行</div>
         <p class="step-desc">変換結果をコピーするか、PowerShellスクリプトをダウンロード。実行するだけでファイルが自動リネームされます。</p>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ガイド記事 -->
+<section class="guide-section">
+  <div class="section-inner">
+    <h2 class="section-title">ガイド記事</h2>
+    <div class="guide-grid">
+      <a href="/guide/what-is-dcv" class="guide-card">
+        <span class="guide-card-tag">BASIC</span>
+        <h3 class="guide-card-title">DCVファイルとは？DMMダウンロード動画の基礎知識【2026年版】</h3>
+        <p class="guide-card-desc">DMMでダウンロードした動画が .dcv になる理由と仕組み、再生方法を解説。</p>
+        <span class="guide-card-meta">2026.06.24 · 約5分</span>
+      </a>
+      <a href="/guide/dcv-vs-wsdcf" class="guide-card">
+        <span class="guide-card-tag">BASIC</span>
+        <h3 class="guide-card-title">.dcvと.wsdcfの違いを解説｜2D動画とVR動画を見分ける方法</h3>
+        <p class="guide-card-desc">2種類の拡張子の意味と再生環境、DMM Renamerでの対応状況を説明。</p>
+        <span class="guide-card-meta">2026.06.24 · 約4分</span>
+      </a>
+      <a href="/guide/file-management" class="guide-card">
+        <span class="guide-card-tag">MANAGE</span>
+        <h3 class="guide-card-title">DMMダウンロードファイルの整理方法｜フォルダ構成とリネームのすすめ</h3>
+        <p class="guide-card-desc">大量のDCVファイルを快適に管理するためのフォルダ構成とリネーム活用術。</p>
+        <span class="guide-card-meta">2026.06.24 · 約5分</span>
+      </a>
+      <a href="/guide/how-to-use" class="guide-card">
+        <span class="guide-card-tag">HOW-TO</span>
+        <h3 class="guide-card-title">DMM Renamerの使い方完全ガイド｜ファイル名を女優名・タイトルに自動変換</h3>
+        <p class="guide-card-desc">貼り付け→変換→スクリプト実行の全手順をわかりやすく解説。</p>
+        <span class="guide-card-meta">2026.06.24 · 約6分</span>
+      </a>
     </div>
   </div>
 </section>
