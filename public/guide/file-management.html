@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DMMダウンロードファイルの整理方法｜フォルダ構成とリネームのすすめ - DMM Renamer</title>
-  <meta name="description" content="大量のDCVファイルを快適に管理するためのフォルダ構成とリネーム活用術を解説します。">
+  <meta name="description" content="大量のDCVファイルを快適に管理するためのフォルダ構成とリネーム活用術を解説。">
   <meta property="og:title" content="DMMダウンロードファイルの整理方法｜フォルダ構成とリネームのすすめ">
+  <meta property="og:description" content="大量のDCVファイルを快適に管理するためのフォルダ構成とリネーム活用術を解説。">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://dmm-rename-web.aa-yo-fujiwara.workers.dev/guide/file-management">
   <meta property="og:site_name" content="DMM Renamer">
@@ -14,10 +15,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
 :root {
-  --bg-primary: #0d0d1a; --bg-secondary: #16213e; --bg-card: #1a2444;
-  --border: #1e3a6e; --text-primary: #f0f0f0; --text-secondary: #8892a4;
-  --accent: #e94560; --accent-dark: #c73652;
-  --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
+  --bg-primary: #0d0d1a;
+  --bg-secondary: #16213e;
+  --bg-card: #1a2444;
+  --border: #1e3a6e;
+  --border-hover: #e94560;
+  --text-primary: #f0f0f0;
+  --text-secondary: #8892a4;
+  --accent: #e94560;
+  --accent-dark: #c73652;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -38,7 +46,7 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .footer-links span { color: #2a3a4a; }
 .footer-age { margin-top: 8px; font-size: 12px; color: #3a4a5a; }
 .footer-operator { margin-top: 4px; font-size: 11px; color: #2a3a4a; }
-.page-layout { display: flex; align-items: flex-start; width: 100%; max-width: 1920px; margin: 0 auto; }
+.page-layout { display: flex; gap: 0; align-items: flex-start; width: 100%; max-width: 1920px; margin: 0 auto; }
 .sidebar { width: 300px; flex-shrink: 0; padding: 24px 12px; position: sticky; top: 60px; max-height: calc(100vh - 80px); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
 .main-content { flex: 1; min-width: 0; }
 @media (max-width: 1600px) { .sidebar { width: 220px; } }
@@ -64,13 +72,14 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .affiliate-label { font-size: 10px; color: var(--text-secondary); text-align: center; margin-top: 6px; opacity: 0.4; }
 .guide-links-widget { margin-top: 16px; }
 .guide-links-title { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
-.guide-link { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid rgba(30,58,110,0.3); text-decoration: none; }
+.guide-link { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid rgba(30,58,110,0.3); text-decoration: none; transition: color 0.2s; }
 .guide-link:last-child { border-bottom: none; }
+.guide-link:hover .guide-link-tag { color: var(--accent); }
 .guide-link-tag { font-size: 9px; color: var(--accent); letter-spacing: 1px; }
 .guide-link > span:last-child { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
 .guide-link:hover > span:last-child { color: var(--text-primary); }
 .share-container { position: fixed; bottom: 32px; right: 32px; z-index: 100; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-.share-main-btn { width: 56px; height: 56px; border-radius: 50%; background: rgba(233,69,96,0.2); border: 2px solid var(--accent); color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: background 0.2s, transform 0.2s; }
+.share-main-btn { width: 56px; height: 56px; border-radius: 50%; background: rgba(233,69,96,0.2); border: 2px solid var(--accent); color: var(--accent); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(0,0,0,0.4); transition: background 0.2s, transform 0.2s; font-size: 22px; }
 .share-main-btn:hover { background: rgba(233,69,96,0.35); transform: scale(1.1); }
 .share-main-btn-open { background: #0f3460; }
 .share-menu { background: #16213e; border: 1px solid #1e3a6e; border-radius: 12px; padding: 8px; min-width: 200px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); animation: shareMenuIn 0.15s ease; }
@@ -80,21 +89,24 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .share-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
 .share-menu-divider { height: 1px; background: #1e3a6e; margin: 4px 8px; }
 .share-overlay { position: fixed; inset: 0; z-index: 99; }
-@media (max-width: 700px) { .nav { padding: 12px 20px; } .nav-link { display: none; } .share-container { bottom: 20px; right: 20px; } .share-main-btn { width: 48px; height: 48px; } }
+@media (max-width: 700px) { .nav { padding: 12px 20px; } .nav-link { display: none; } .share-container { bottom: 20px; right: 20px; } .share-main-btn { width: 48px; height: 48px; } .share-menu { min-width: 180px; } }
 .article-container { max-width: 800px; margin: 0 auto; padding: 48px 24px; }
 .article-breadcrumb { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
 .article-breadcrumb a { color: var(--text-secondary); text-decoration: none; }
 .article-breadcrumb a:hover { color: var(--accent); }
 .article-tag { font-size: 11px; color: var(--accent); letter-spacing: 1.5px; margin-bottom: 12px; }
-.article-title { font-family: var(--font-display); font-size: clamp(22px, 3vw, 32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
+.article-title { font-family: var(--font-display); font-size: clamp(22px,3vw,32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
 .article-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 .article-body h2 { font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 40px 0 16px; padding-left: 12px; border-left: 3px solid var(--accent); }
 .article-body h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 28px 0 12px; }
 .article-body p { font-size: 15px; color: var(--text-secondary); line-height: 1.9; margin-bottom: 20px; }
 .article-body ul, .article-body ol { margin: 0 0 20px 24px; color: var(--text-secondary); font-size: 15px; line-height: 1.9; }
 .article-body pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; font-family: monospace; font-size: 13px; color: #4ecca3; overflow-x: auto; margin-bottom: 20px; line-height: 1.6; }
-.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); transition: transform 0.2s, box-shadow 0.2s; }
-.article-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(233,69,96,0.45); }
+.article-body table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
+.article-body th { background: var(--bg-card); color: var(--text-primary); padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
+.article-body td { color: var(--text-secondary); padding: 10px 14px; border: 1px solid var(--border); }
+.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); }
+.article-warning { background: rgba(233,69,96,0.08); border: 1px solid rgba(233,69,96,0.3); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
   </style>
 </head>
 <body>
@@ -118,16 +130,30 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
         <span class="widget-title">売上ランキング</span>
         <span class="widget-pr">PR</span>
       </div>
-      <div id="ranking-list"><div class="widget-loading">読み込み中...</div></div>
+      <div id="ranking-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
       <div class="widget-footer">FANZA</div>
     </div>
     <p class="affiliate-label">広告 / Affiliate</p>
     <div class="guide-links-widget">
       <div class="guide-links-title">ガイド記事</div>
-      <a href="/guide/what-is-dcv" class="guide-link"><span class="guide-link-tag">BASIC</span><span>DCVファイルとは？基礎知識</span></a>
-      <a href="/guide/dcv-vs-wsdcf" class="guide-link"><span class="guide-link-tag">BASIC</span><span>.dcvと.wsdcfの違い</span></a>
-      <a href="/guide/file-management" class="guide-link"><span class="guide-link-tag">MANAGE</span><span>ファイルの整理方法</span></a>
-      <a href="/guide/how-to-use" class="guide-link"><span class="guide-link-tag">HOW-TO</span><span>DMM Renamer使い方</span></a>
+      <a href="/guide/what-is-dcv" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>DCVファイルとは？基礎知識</span>
+      </a>
+      <a href="/guide/dcv-vs-wsdcf" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>.dcvと.wsdcfの違い</span>
+      </a>
+      <a href="/guide/file-management" class="guide-link">
+        <span class="guide-link-tag">MANAGE</span>
+        <span>ファイルの整理方法</span>
+      </a>
+      <a href="/guide/how-to-use" class="guide-link">
+        <span class="guide-link-tag">HOW-TO</span>
+        <span>DMM Renamer使い方</span>
+      </a>
     </div>
   </aside>
 
@@ -138,14 +164,14 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
       </div>
       <div class="article-tag">MANAGE</div>
       <h1 class="article-title">DMMダウンロードファイルの整理方法｜フォルダ構成とリネームのすすめ</h1>
-      <div class="article-meta">2026年6月24日 · 読了時間 約5分</div>
+      <div class="article-meta">公開日: 2026年6月24日 · カテゴリ: MANAGE · 読了時間: 約5分</div>
 
       <div class="article-body">
         <p>DMMで動画を購入し続けると、ダウンロードフォルダがこんな状態になりがちです。</p>
-        <pre>miaa00629hhb.dcv
-1dandy00812a2d_v1_drm_a_4k.dcv
-ssis00100hhb.dcv
+        <pre>C:\Users\username\Downloads\ の中に
+miaa00629hhb.dcv
 pred00248hhb.dcv
+dass00076hhb.dcv
 ...（100ファイル以上）</pre>
         <p>どれがどの作品かまったくわからない状態です。この記事では、DMMダウンロードファイルをすっきり整理するための方法を解説します。</p>
 
@@ -154,26 +180,30 @@ pred00248hhb.dcv
         <p>DMM Renamerを使えば、ファイル名をコピペするだけでFANZA公式APIからタイトル・女優名を取得し、自動でリネームしてくれます。</p>
         <pre>変換前: miaa00629hhb.dcv
 変換後: [MIAA-629] 放課後に遊び半分で… - 松本いちか.dcv</pre>
+        <p>リネーム後はWindowsのエクスプローラーで名前順にソートするだけで、作品名がアルファベット順に並ぶため一覧性が大幅に向上します。</p>
 
         <h2>おすすめのフォルダ構成</h2>
+        <p>リネームが完了したら、用途に合わせてフォルダに分類します。以下の3パターンが使いやすいです。</p>
 
         <h3>パターンA: 女優名別</h3>
-        <pre>DMM動画/
-├── 松本いちか/
-└── 古川いおり/</pre>
+        <pre>DMM動画\
+  松本いちか\
+    [MIAA-629]…
+  古川いおり\
+    [DSVR-1059]…</pre>
         <p>好きな女優の作品をまとめて管理したい場合に最適です。</p>
 
         <h3>パターンB: ジャンル別</h3>
-        <pre>DMM動画/
-├── 2D/
-└── VR/</pre>
-        <p>2DとVRを分けて管理したい場合に便利です。VRはファイルサイズが大きいので別ドライブに移す際にも整理しやすくなります。</p>
+        <pre>DMM動画\
+  2D\
+  VR\</pre>
+        <p>2DとVRを分けて管理したい場合に便利です。ファイルサイズが大きいVRを別ドライブに移す際にも整理しやすくなります。</p>
 
         <h3>パターンC: 年別</h3>
-        <pre>DMM動画/
-├── 2024/
-├── 2025/
-└── 2026/</pre>
+        <pre>DMM動画\
+  2024\
+  2025\
+  2026\</pre>
         <p>購入年ごとに整理するシンプルな方法です。バックアップ管理にも向いています。</p>
 
         <h2>ストレージ管理のポイント</h2>
@@ -186,7 +216,7 @@ pred00248hhb.dcv
           <li>大容量になったら外付けHDDへの移動も検討</li>
         </ul>
 
-        <a href="/" class="article-cta">DMM Renamerを試す →</a>
+        <a href="/" class="article-cta">👉 DMM Renamerを使ってみる</a>
       </div>
     </div>
   </main>
@@ -197,7 +227,9 @@ pred00248hhb.dcv
         <span class="widget-title">VRランキング</span>
         <span class="widget-pr">PR</span>
       </div>
-      <div id="newrelease-list"><div class="widget-loading">読み込み中...</div></div>
+      <div id="newrelease-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
       <div class="widget-footer">FANZA</div>
     </div>
     <p class="affiliate-label">広告 / Affiliate</p>
@@ -222,8 +254,10 @@ pred00248hhb.dcv
 <footer class="footer">
   <div>© 2026 DMM Renamer</div>
   <div class="footer-links">
-    <a href="/terms.html">利用規約</a><span>|</span>
-    <a href="/privacy.html">プライバシーポリシー</a><span>|</span>
+    <a href="/terms.html">利用規約</a>
+    <span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span>|</span>
     <a href="/age-check.html">年齢確認</a>
   </div>
   <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
@@ -232,13 +266,16 @@ pred00248hhb.dcv
 
 <script>
 if (!localStorage.getItem('ageVerified')) { location.href = '/age-check.html' }
+
 const shareUrl = encodeURIComponent(location.href)
 const shareText = encodeURIComponent('DMMダウンロードファイルの整理方法｜フォルダ構成とリネームのすすめ - DMM Renamer')
 document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`
 document.getElementById('shareLine').href = `https://line.me/R/msg/text/?${shareText}%20${shareUrl}`
+
 let shareOpen = false
 document.getElementById('shareMainBtn').addEventListener('click', (e) => {
-  e.stopPropagation(); shareOpen = !shareOpen
+  e.stopPropagation()
+  shareOpen = !shareOpen
   document.getElementById('shareMenu').style.display = shareOpen ? 'block' : 'none'
   document.getElementById('shareOverlay').style.display = shareOpen ? 'block' : 'none'
   document.getElementById('shareMainBtn').classList.toggle('share-main-btn-open', shareOpen)
@@ -256,7 +293,10 @@ document.getElementById('shareCopyLink').addEventListener('click', () => {
   setTimeout(() => { el.textContent = 'リンクをコピー' }, 2000)
   closeShare()
 })
-function safeUrl(url) { return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#' }
+
+function safeUrl(url) {
+  return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#'
+}
 async function loadWidget(endpoint, containerId, renderFn) {
   try {
     const res = await fetch(endpoint)
@@ -269,14 +309,28 @@ async function loadWidget(endpoint, containerId, renderFn) {
 }
 function renderRankItem(item, index) {
   const a = document.createElement('a')
-  a.href = safeUrl(item.affiliateUrl); a.target = '_blank'; a.rel = 'noopener noreferrer sponsored'; a.className = 'rank-item'
-  const num = document.createElement('span'); num.className = index < 3 ? 'rank-num top3' : 'rank-num'; num.textContent = String(index + 1)
-  const img = document.createElement('img'); img.className = 'rank-thumb'; img.src = safeUrl(item.imageUrl); img.alt = ''; img.loading = 'lazy'
+  a.href = safeUrl(item.affiliateUrl)
+  a.target = '_blank'
+  a.rel = 'noopener noreferrer sponsored'
+  a.className = 'rank-item'
+  const num = document.createElement('span')
+  num.className = index < 3 ? 'rank-num top3' : 'rank-num'
+  num.textContent = String(index + 1)
+  const img = document.createElement('img')
+  img.className = 'rank-thumb'
+  img.src = safeUrl(item.imageUrl)
+  img.alt = ''
+  img.loading = 'lazy'
   img.addEventListener('error', () => { const ph = document.createElement('div'); ph.className = 'rank-thumb'; img.replaceWith(ph) })
-  const info = document.createElement('div'); info.className = 'rank-info'
-  const titleEl = document.createElement('div'); titleEl.className = 'rank-title'; titleEl.textContent = item.title ?? ''; info.appendChild(titleEl)
+  const info = document.createElement('div')
+  info.className = 'rank-info'
+  const titleEl = document.createElement('div')
+  titleEl.className = 'rank-title'
+  titleEl.textContent = item.title ?? ''
+  info.appendChild(titleEl)
   if (item.price) { const p = document.createElement('div'); p.className = 'rank-price'; p.textContent = `¥${item.price}`; info.appendChild(p) }
-  a.appendChild(num); a.appendChild(img); a.appendChild(info); return a
+  a.appendChild(num); a.appendChild(img); a.appendChild(info)
+  return a
 }
 loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', renderRankItem)
 loadWidget('/api/ranking?type=rank&floor=videoa&keyword=VR&hits=5', 'newrelease-list', renderRankItem)

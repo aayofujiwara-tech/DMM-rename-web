@@ -22,7 +22,6 @@
   --border-hover: #e94560;
   --text-primary: #f0f0f0;
   --text-secondary: #8892a4;
-  --text-tertiary: #5a6478;
   --accent: #e94560;
   --accent-dark: #c73652;
   --font-display: 'Syne', sans-serif;
@@ -96,7 +95,7 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .article-breadcrumb a { color: var(--text-secondary); text-decoration: none; }
 .article-breadcrumb a:hover { color: var(--accent); }
 .article-tag { font-size: 11px; color: var(--accent); letter-spacing: 1.5px; margin-bottom: 12px; }
-.article-title { font-family: var(--font-display); font-size: clamp(22px, 3vw, 32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
+.article-title { font-family: var(--font-display); font-size: clamp(22px,3vw,32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
 .article-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 .article-body h2 { font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 40px 0 16px; padding-left: 12px; border-left: 3px solid var(--accent); }
 .article-body h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 28px 0 12px; }
@@ -106,8 +105,8 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
 .article-body th { background: var(--bg-card); color: var(--text-primary); padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
 .article-body td { color: var(--text-secondary); padding: 10px 14px; border: 1px solid var(--border); }
-.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); transition: transform 0.2s, box-shadow 0.2s; }
-.article-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(233,69,96,0.45); }
+.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); }
+.article-warning { background: rgba(233,69,96,0.08); border: 1px solid rgba(233,69,96,0.3); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
   </style>
 </head>
 <body>
@@ -165,7 +164,7 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
       </div>
       <div class="article-tag">BASIC</div>
       <h1 class="article-title">DCVファイルとは？DMMダウンロード動画の基礎知識【2026年版】</h1>
-      <div class="article-meta">2026年6月24日 · 読了時間 約5分</div>
+      <div class="article-meta">公開日: 2026年6月24日 · カテゴリ: BASIC · 読了時間: 約6分</div>
 
       <div class="article-body">
         <p>DMMで動画を購入してダウンロードすると、こんなファイル名のファイルが保存されます。</p>
@@ -182,29 +181,41 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
         <p>理由は単純で、DCVファイルの映像・音声データはGoogle製の暗号化技術「Widevine DRM」とDMM独自の処理によって暗号化されているためです。暗号を解除するための「鍵」はDMM Playerだけが持っており、正規の方法でのみ復号・再生できます。</p>
 
         <h2>再生するには DMM Player v2 を使う</h2>
-        <p>DCVファイルを再生するには、DMMが提供する公式プレイヤー「DMM Player v2」が必要です。</p>
+
+        <h3>PCでの再生</h3>
+        <p>DCVファイルをPCで再生するには、DMMが提供する公式プレイヤー「DMM Player v2」が必要です。</p>
         <ol>
           <li>DMMまたはFANZAにログインする</li>
           <li>購入済みの動画ページを開く</li>
           <li>ダウンロードボタンからプレイヤーも一緒にインストールする</li>
         </ol>
-        <p>対応OSはWindows・Macです。スマートフォンやタブレットには対応していません。</p>
+        <p>対応OSはWindows・Macです。</p>
+
+        <h3>スマートフォン・タブレットでの再生</h3>
+        <p>スマートフォン・タブレットでの再生には「DMM動画プレイヤー」アプリが必要です。ただし、2026年6月時点で以下の状況になっています。</p>
+        <p><strong>Androidの場合</strong> → Google PlayでDMM動画プレイヤーが配信中です。DMMアカウントでログインすれば、購入済み動画のダウンロード・オフライン再生が可能です。</p>
+        <p><strong>iPhoneの場合（⚠️ 重要）</strong></p>
+        <div class="article-warning">
+          2025年4月21日より、諸事情によりDMM動画プレイヤーアプリのApp Storeからの配信を停止しています。現在インストール済みのアプリはインストールされている端末でのみ引き続き利用できますが、アンインストールすると二度と再インストールはできなくなります。iPhoneにアプリが入っている方は絶対にアンインストールしないことをおすすめします。
+        </div>
+        <p>FANZAは新しい視聴アプリの提供を検討しているとしていますが、2026年6月現在も公式発表はありません。iPhoneでFANZA動画を視聴するには、SafariなどWebブラウザからストリーミング再生するのが現状唯一の方法です。ただしブラウザ経由ではオフライン再生には対応していません。</p>
 
         <h2>なぜファイル名が謎の文字列なのか</h2>
-        <p>ダウンロードしたDCVファイルのファイル名は「miaa00629hhb.dcv」のような形式になっています。この文字列はCID（コンテンツID）と呼ばれる、FANZAのデータベース上の商品識別コードです。人間が読んでもすぐには作品名がわからないため、大量にダウンロードすると管理が非常に困難になります。</p>
-        <p>DMM Renamerはこのタイトルと女優名を取得して自動的にリネームするツールです。</p>
-        <pre>miaa00629hhb.dcv
-→ [MIAA-629] 放課後に遊び半分で召喚したサキュバスが… - 松本いちか.dcv</pre>
+        <pre>miaa00629hhb.dcv</pre>
+        <p>この文字列はCID（コンテンツID）と呼ばれる、FANZAのデータベース上の商品識別コードです。人間が読んでもすぐには作品名がわからないため、大量にダウンロードすると管理が非常に困難になります。</p>
+        <p>DMM RenamerはこのCIDをFANZA公式APIで検索し、タイトルと女優名を取得して自動的にリネームするツールです。複数ファイルを一括で変換することができます。</p>
+        <pre>miaa00629hhb.dcv → [MIAA-629] 放課後に遊び半分で召喚したサキュバスが… - 松本いちか.dcv</pre>
 
         <h2>まとめ</h2>
         <ul>
           <li>DCVはDMM独自のDRM保護動画形式</li>
-          <li>専用の「DMM Player v2」でのみ再生可能</li>
+          <li>PCでの再生には「DMM Player v2」が必要</li>
+          <li>Androidアプリは継続配信中、iOS版は2025年4月より配信停止中</li>
           <li>ファイル名はCIDという識別コードで、そのままでは作品名がわからない</li>
           <li>DMM Renamerを使えばファイル名を自動でわかりやすく変換できる</li>
         </ul>
 
-        <a href="/" class="article-cta">DMM Renamerを試す →</a>
+        <a href="/" class="article-cta">👉 DMM Renamerを使ってみる</a>
       </div>
     </div>
   </main>
@@ -285,7 +296,6 @@ document.getElementById('shareCopyLink').addEventListener('click', () => {
 function safeUrl(url) {
   return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#'
 }
-
 async function loadWidget(endpoint, containerId, renderFn) {
   try {
     const res = await fetch(endpoint)
@@ -296,7 +306,6 @@ async function loadWidget(endpoint, containerId, renderFn) {
     items.forEach((item, i) => container.appendChild(renderFn(item, i)))
   } catch (e) { console.warn('widget load failed', e) }
 }
-
 function renderRankItem(item, index) {
   const a = document.createElement('a')
   a.href = safeUrl(item.affiliateUrl)
@@ -322,7 +331,6 @@ function renderRankItem(item, index) {
   a.appendChild(num); a.appendChild(img); a.appendChild(info)
   return a
 }
-
 loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', renderRankItem)
 loadWidget('/api/ranking?type=rank&floor=videoa&keyword=VR&hits=5', 'newrelease-list', renderRankItem)
 </script>

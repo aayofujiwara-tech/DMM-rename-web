@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>.dcvと.wsdcfの違いを解説｜2D動画とVR動画を見分ける方法 - DMM Renamer</title>
-  <meta name="description" content=".dcvと.wsdcfの2種類の拡張子の意味と再生環境、DMM Renamerでの対応状況を解説します。">
+  <meta name="description" content=".dcvと.wsdcfの違い、2D動画とVR動画の見分け方、再生環境の違いをわかりやすく解説。">
   <meta property="og:title" content=".dcvと.wsdcfの違いを解説｜2D動画とVR動画を見分ける方法">
-  <meta property="og:description" content=".dcvと.wsdcfの2種類の拡張子の意味と再生環境を解説。">
+  <meta property="og:description" content=".dcvと.wsdcfの違い、2D動画とVR動画の見分け方、再生環境の違いをわかりやすく解説。">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://dmm-rename-web.aa-yo-fujiwara.workers.dev/guide/dcv-vs-wsdcf">
   <meta property="og:site_name" content="DMM Renamer">
@@ -15,11 +15,17 @@
   <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
   <style>
 :root {
-  --bg-primary: #0d0d1a; --bg-secondary: #16213e; --bg-card: #1a2444;
-  --border: #1e3a6e; --border-hover: #e94560;
-  --text-primary: #f0f0f0; --text-secondary: #8892a4;
-  --accent: #e94560; --accent-dark: #c73652;
-  --font-display: 'Syne', sans-serif; --font-body: 'DM Sans', sans-serif;
+  --bg-primary: #0d0d1a;
+  --bg-secondary: #16213e;
+  --bg-card: #1a2444;
+  --border: #1e3a6e;
+  --border-hover: #e94560;
+  --text-primary: #f0f0f0;
+  --text-secondary: #8892a4;
+  --accent: #e94560;
+  --accent-dark: #c73652;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -68,6 +74,7 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .guide-links-title { font-size: 11px; color: var(--text-secondary); letter-spacing: 1px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
 .guide-link { display: flex; flex-direction: column; gap: 2px; padding: 7px 0; border-bottom: 1px solid rgba(30,58,110,0.3); text-decoration: none; transition: color 0.2s; }
 .guide-link:last-child { border-bottom: none; }
+.guide-link:hover .guide-link-tag { color: var(--accent); }
 .guide-link-tag { font-size: 9px; color: var(--accent); letter-spacing: 1px; }
 .guide-link > span:last-child { font-size: 10px; color: var(--text-secondary); line-height: 1.4; }
 .guide-link:hover > span:last-child { color: var(--text-primary); }
@@ -82,13 +89,13 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .share-menu-item:hover { background: rgba(255,255,255,0.06); color: var(--text-primary); }
 .share-menu-divider { height: 1px; background: #1e3a6e; margin: 4px 8px; }
 .share-overlay { position: fixed; inset: 0; z-index: 99; }
-@media (max-width: 700px) { .nav { padding: 12px 20px; } .nav-link { display: none; } .share-container { bottom: 20px; right: 20px; } .share-main-btn { width: 48px; height: 48px; } }
+@media (max-width: 700px) { .nav { padding: 12px 20px; } .nav-link { display: none; } .share-container { bottom: 20px; right: 20px; } .share-main-btn { width: 48px; height: 48px; } .share-menu { min-width: 180px; } }
 .article-container { max-width: 800px; margin: 0 auto; padding: 48px 24px; }
 .article-breadcrumb { font-size: 12px; color: var(--text-secondary); margin-bottom: 24px; }
 .article-breadcrumb a { color: var(--text-secondary); text-decoration: none; }
 .article-breadcrumb a:hover { color: var(--accent); }
 .article-tag { font-size: 11px; color: var(--accent); letter-spacing: 1.5px; margin-bottom: 12px; }
-.article-title { font-family: var(--font-display); font-size: clamp(22px, 3vw, 32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
+.article-title { font-family: var(--font-display); font-size: clamp(22px,3vw,32px); font-weight: 800; color: var(--text-primary); line-height: 1.4; margin-bottom: 16px; }
 .article-meta { font-size: 12px; color: var(--text-secondary); margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
 .article-body h2 { font-size: 20px; font-weight: 700; color: var(--text-primary); margin: 40px 0 16px; padding-left: 12px; border-left: 3px solid var(--accent); }
 .article-body h3 { font-size: 16px; font-weight: 700; color: var(--text-primary); margin: 28px 0 12px; }
@@ -98,8 +105,8 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 .article-body table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
 .article-body th { background: var(--bg-card); color: var(--text-primary); padding: 10px 14px; text-align: left; border: 1px solid var(--border); }
 .article-body td { color: var(--text-secondary); padding: 10px 14px; border: 1px solid var(--border); }
-.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); transition: transform 0.2s, box-shadow 0.2s; }
-.article-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(233,69,96,0.45); }
+.article-cta { display: inline-block; margin-top: 48px; padding: 14px 32px; background: linear-gradient(135deg,#e94560,#c73652); color: #fff; border-radius: 8px; text-decoration: none; font-size: 15px; font-weight: 500; box-shadow: 0 4px 24px rgba(233,69,96,0.35); }
+.article-warning { background: rgba(233,69,96,0.08); border: 1px solid rgba(233,69,96,0.3); border-radius: 8px; padding: 14px 16px; margin-bottom: 20px; font-size: 14px; color: var(--text-secondary); line-height: 1.8; }
   </style>
 </head>
 <body>
@@ -123,16 +130,30 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
         <span class="widget-title">売上ランキング</span>
         <span class="widget-pr">PR</span>
       </div>
-      <div id="ranking-list"><div class="widget-loading">読み込み中...</div></div>
+      <div id="ranking-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
       <div class="widget-footer">FANZA</div>
     </div>
     <p class="affiliate-label">広告 / Affiliate</p>
     <div class="guide-links-widget">
       <div class="guide-links-title">ガイド記事</div>
-      <a href="/guide/what-is-dcv" class="guide-link"><span class="guide-link-tag">BASIC</span><span>DCVファイルとは？基礎知識</span></a>
-      <a href="/guide/dcv-vs-wsdcf" class="guide-link"><span class="guide-link-tag">BASIC</span><span>.dcvと.wsdcfの違い</span></a>
-      <a href="/guide/file-management" class="guide-link"><span class="guide-link-tag">MANAGE</span><span>ファイルの整理方法</span></a>
-      <a href="/guide/how-to-use" class="guide-link"><span class="guide-link-tag">HOW-TO</span><span>DMM Renamer使い方</span></a>
+      <a href="/guide/what-is-dcv" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>DCVファイルとは？基礎知識</span>
+      </a>
+      <a href="/guide/dcv-vs-wsdcf" class="guide-link">
+        <span class="guide-link-tag">BASIC</span>
+        <span>.dcvと.wsdcfの違い</span>
+      </a>
+      <a href="/guide/file-management" class="guide-link">
+        <span class="guide-link-tag">MANAGE</span>
+        <span>ファイルの整理方法</span>
+      </a>
+      <a href="/guide/how-to-use" class="guide-link">
+        <span class="guide-link-tag">HOW-TO</span>
+        <span>DMM Renamer使い方</span>
+      </a>
     </div>
   </aside>
 
@@ -143,21 +164,34 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
       </div>
       <div class="article-tag">BASIC</div>
       <h1 class="article-title">.dcvと.wsdcfの違いを解説｜2D動画とVR動画を見分ける方法</h1>
-      <div class="article-meta">2026年6月24日 · 読了時間 約4分</div>
+      <div class="article-meta">公開日: 2026年6月24日 · カテゴリ: BASIC · 読了時間: 約4分</div>
 
       <div class="article-body">
         <p>DMMでダウンロードした動画ファイルを見ると、拡張子が2種類あることに気づきます。</p>
-        <pre>miaa00629hhb.dcv          ← 2D動画
-13dsvr01059vrv1uhqe1.wsdcf  ← VR動画</pre>
+        <pre>miaa00629hhb.dcv（← 2D動画）
+13dsvr01059vrv1uhqe1.wsdcf（← VR動画）</pre>
+        <p>この記事では、.dcv と .wsdcf の違いと、それぞれの特徴・再生環境について解説します。</p>
 
         <h2>2つの拡張子の意味</h2>
         <table>
           <thead>
-            <tr><th>拡張子</th><th>正式名称</th><th>対応コンテンツ</th></tr>
+            <tr>
+              <th>拡張子</th>
+              <th>正式名称</th>
+              <th>対応コンテンツ</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><td>.dcv</td><td>DMM Cloud Video</td><td>通常の2D動画</td></tr>
-            <tr><td>.wsdcf</td><td>Wide Screen DMM Content File</td><td>VR（360度）動画</td></tr>
+            <tr>
+              <td>.dcv</td>
+              <td>DMM Cloud Video</td>
+              <td>通常の2D動画</td>
+            </tr>
+            <tr>
+              <td>.wsdcf</td>
+              <td>Wide Screen DMM Content File</td>
+              <td>VR（360度）動画</td>
+            </tr>
           </tbody>
         </table>
         <p>.wsdcf はVR動画専用のフォーマットです。通常の2D動画より解像度が高く、ファイルサイズも大きくなります。</p>
@@ -168,14 +202,13 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
         <h2>ファイル名で見分ける方法</h2>
         <p>拡張子だけでなく、ファイル名のパターンでも2D・VRを見分けられます。</p>
         <ul>
-          <li>2D動画: <code>miaa00629hhb.dcv</code> → シンプルな品番形式</li>
-          <li>VR動画: <code>13dsvr01059vrv1uhqe1.wsdcf</code> → vr や dsvr などVRを示す文字が含まれる</li>
+          <li>2D動画: miaa00629hhb.dcv → シンプルな品番形式</li>
+          <li>VR動画: 13dsvr01059vrv1uhqe1.wsdcf → vr や dsvr などVRを示す文字が含まれる</li>
         </ul>
 
         <h2>DMM Renamer での対応</h2>
-        <p>DMM Renamerは .dcv と .wsdcf 両方のリネームに対応しています。拡張子はそのまま保持され、2D動画は .dcv、VR動画は .wsdcf として出力されます。</p>
-        <pre>13dsvr01059vrv1uhqe1.wsdcf
-→ [DSVR-1059] 全肯定カノジョ。 - 古川いおり.wsdcf</pre>
+        <p>DMM Renamerは .dcv と .wsdcf 両方のリネームに対応しています。VR動画も自動でタイトルと女優名を取得し、わかりやすいファイル名に変換します。</p>
+        <pre>13dsvr01059vrv1uhqe1.wsdcf → [DSVR-1059] 全肯定カノジョ。 - 古川いおり.wsdcf</pre>
 
         <h2>まとめ</h2>
         <ul>
@@ -184,7 +217,7 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
           <li>DMM RenamerはどちらのフォーマットにもCID抽出・リネームが対応している</li>
         </ul>
 
-        <a href="/" class="article-cta">DMM Renamerを試す →</a>
+        <a href="/" class="article-cta">👉 DMM Renamerを使ってみる</a>
       </div>
     </div>
   </main>
@@ -195,7 +228,9 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
         <span class="widget-title">VRランキング</span>
         <span class="widget-pr">PR</span>
       </div>
-      <div id="newrelease-list"><div class="widget-loading">読み込み中...</div></div>
+      <div id="newrelease-list">
+        <div class="widget-loading">読み込み中...</div>
+      </div>
       <div class="widget-footer">FANZA</div>
     </div>
     <p class="affiliate-label">広告 / Affiliate</p>
@@ -220,8 +255,10 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 <footer class="footer">
   <div>© 2026 DMM Renamer</div>
   <div class="footer-links">
-    <a href="/terms.html">利用規約</a><span>|</span>
-    <a href="/privacy.html">プライバシーポリシー</a><span>|</span>
+    <a href="/terms.html">利用規約</a>
+    <span>|</span>
+    <a href="/privacy.html">プライバシーポリシー</a>
+    <span>|</span>
     <a href="/age-check.html">年齢確認</a>
   </div>
   <div class="footer-age">本サービスは成人向けコンテンツを取り扱います。18歳未満の方のご利用はお断りします。</div>
@@ -230,13 +267,16 @@ body { font-family: var(--font-body); background: var(--bg-primary); color: var(
 
 <script>
 if (!localStorage.getItem('ageVerified')) { location.href = '/age-check.html' }
+
 const shareUrl = encodeURIComponent(location.href)
 const shareText = encodeURIComponent('.dcvと.wsdcfの違いを解説｜2D動画とVR動画を見分ける方法 - DMM Renamer')
 document.getElementById('shareTwitter').href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`
 document.getElementById('shareLine').href = `https://line.me/R/msg/text/?${shareText}%20${shareUrl}`
+
 let shareOpen = false
 document.getElementById('shareMainBtn').addEventListener('click', (e) => {
-  e.stopPropagation(); shareOpen = !shareOpen
+  e.stopPropagation()
+  shareOpen = !shareOpen
   document.getElementById('shareMenu').style.display = shareOpen ? 'block' : 'none'
   document.getElementById('shareOverlay').style.display = shareOpen ? 'block' : 'none'
   document.getElementById('shareMainBtn').classList.toggle('share-main-btn-open', shareOpen)
@@ -254,7 +294,10 @@ document.getElementById('shareCopyLink').addEventListener('click', () => {
   setTimeout(() => { el.textContent = 'リンクをコピー' }, 2000)
   closeShare()
 })
-function safeUrl(url) { return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#' }
+
+function safeUrl(url) {
+  return typeof url === 'string' && /^https?:\/\//i.test(url) ? url : '#'
+}
 async function loadWidget(endpoint, containerId, renderFn) {
   try {
     const res = await fetch(endpoint)
@@ -267,14 +310,28 @@ async function loadWidget(endpoint, containerId, renderFn) {
 }
 function renderRankItem(item, index) {
   const a = document.createElement('a')
-  a.href = safeUrl(item.affiliateUrl); a.target = '_blank'; a.rel = 'noopener noreferrer sponsored'; a.className = 'rank-item'
-  const num = document.createElement('span'); num.className = index < 3 ? 'rank-num top3' : 'rank-num'; num.textContent = String(index + 1)
-  const img = document.createElement('img'); img.className = 'rank-thumb'; img.src = safeUrl(item.imageUrl); img.alt = ''; img.loading = 'lazy'
+  a.href = safeUrl(item.affiliateUrl)
+  a.target = '_blank'
+  a.rel = 'noopener noreferrer sponsored'
+  a.className = 'rank-item'
+  const num = document.createElement('span')
+  num.className = index < 3 ? 'rank-num top3' : 'rank-num'
+  num.textContent = String(index + 1)
+  const img = document.createElement('img')
+  img.className = 'rank-thumb'
+  img.src = safeUrl(item.imageUrl)
+  img.alt = ''
+  img.loading = 'lazy'
   img.addEventListener('error', () => { const ph = document.createElement('div'); ph.className = 'rank-thumb'; img.replaceWith(ph) })
-  const info = document.createElement('div'); info.className = 'rank-info'
-  const titleEl = document.createElement('div'); titleEl.className = 'rank-title'; titleEl.textContent = item.title ?? ''; info.appendChild(titleEl)
+  const info = document.createElement('div')
+  info.className = 'rank-info'
+  const titleEl = document.createElement('div')
+  titleEl.className = 'rank-title'
+  titleEl.textContent = item.title ?? ''
+  info.appendChild(titleEl)
   if (item.price) { const p = document.createElement('div'); p.className = 'rank-price'; p.textContent = `¥${item.price}`; info.appendChild(p) }
-  a.appendChild(num); a.appendChild(img); a.appendChild(info); return a
+  a.appendChild(num); a.appendChild(img); a.appendChild(info)
+  return a
 }
 loadWidget('/api/ranking?type=rank&hits=5', 'ranking-list', renderRankItem)
 loadWidget('/api/ranking?type=rank&floor=videoa&keyword=VR&hits=5', 'newrelease-list', renderRankItem)
