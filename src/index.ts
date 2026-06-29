@@ -209,7 +209,7 @@ app.get('/api/ranking', async (c) => {
         ?.actress?.map((a: {name?: string}) => a.name).filter(Boolean) as string[] ?? []
       return {
         title: item.title as string,
-        affiliateUrl: (item.affiliateURL as string) ?? '',
+        affiliateUrl: ((item.affiliateURL as string) ?? '').replace('af_id=ain125-990', 'af_id=ain125-003'),
         imageUrl:
           (item.imageURL as Record<string, string>)?.small ||
           (item.imageURL as Record<string, string>)?.list ||
